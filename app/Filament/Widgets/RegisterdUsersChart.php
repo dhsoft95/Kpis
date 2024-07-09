@@ -10,6 +10,7 @@ class RegisterdUsersChart extends ApexChartWidget
 {
     protected static ?string $chartId = 'registeredUsersChart';
     protected static ?string $heading = 'Registered Users Trend';
+    protected int | string | array $columnSpan = 'full';
 
     protected function getFilters(): ?array
     {
