@@ -5,6 +5,7 @@ use App\Models\User;
 use Flowframe\Trend\Trend;
 use Flowframe\Trend\TrendValue;
 use Leandrocfe\FilamentApexCharts\Widgets\ApexChartWidget;
+use Carbon\Carbon;
 
 class RegisterdUsersChart extends ApexChartWidget
 {
@@ -14,23 +15,18 @@ class RegisterdUsersChart extends ApexChartWidget
     protected function getFilters(): ?array
     {
         return [
-            'today' => 'Today',
-            'week' => 'Last 4 weeks', // Adjusted filter label
-            'month' => 'Last month',
-            'year' => 'This year',
+            'week' => 'This week',
+            'last_week' => 'Last week',
+            'two_weeks' => 'Last 2 weeks',
+            'month' => 'This month',
         ];
     }
 
     protected function getOptions(): array
     {
-        $activeFilter = $this->filter ?? 'week'; // Default to 'week'
+        $activeFilter = $this->filter ?? 'two_weeks';
 
-        $data = match ($activeFilter) {
-            'today' => $this->getTodayData(),
-            'week' => $this->getWeeksData(), // Adjusted function call
-            'month' => $this->getMonthData(),
-            'year' => $this->getYearData(),
-        };
+        $data = $this->getWeekOnWeekData($activeFilter);
 
         return [
             'chart' => [
@@ -39,12 +35,16 @@ class RegisterdUsersChart extends ApexChartWidget
             ],
             'series' => [
                 [
-                    'name' => 'Registered Users',
-                    'data' => $data->map(fn (TrendValue $value) => $value->aggregate)->toArray(),
+                    'name' => 'This Week',
+                    'data' => $data['current']->map(fn (TrendValue $value) => $value->aggregate),
+                ],
+                [
+                    'name' => 'Previous Week',
+                    'data' => $data['previous']->map(fn (TrendValue $value) => $value->aggregate),
                 ],
             ],
             'xaxis' => [
-                'categories' => $data->map(fn (TrendValue $value) => $value->date)->toArray(),
+                'categories' => ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
                 'labels' => [
                     'style' => [
                         'fontFamily' => 'inherit',
@@ -58,57 +58,51 @@ class RegisterdUsersChart extends ApexChartWidget
                     ],
                 ],
             ],
-            'colors' => ['#f59e0b'],
+            'colors' => ['#f59e0b', '#60a5fa'],
             'plotOptions' => [
                 'bar' => [
                     'borderRadius' => 2,
                     'horizontal' => false,
                 ],
-            ],
+            ]
         ];
     }
 
-    private function getTodayData()
+    private function getWeekOnWeekData($filter)
     {
-        return Trend::model(User::class)
-            ->between(
-                start: now()->startOfDay(),
-                end: now()->endOfDay(),
-            )
-            ->perHour()
-            ->count();
-    }
+        $endDate = match ($filter) {
+            'week' => now(),
+            'last_week' => now()->subWeek(),
+            'two_weeks' => now(),
+            'month' => now()->endOfMonth(),
+        };
 
-    private function getWeeksData()
-    {
-        return Trend::model(User::class)
-            ->between(
-                start: now()->subWeeks(4)->startOfWeek(), // Adjusted to capture last 4 weeks
-                end: now()->endOfWeek(),
-            )
-            ->perWeek()
-            ->count();
-    }
+        $startDate = match ($filter) {
+            'week' => $endDate->copy()->startOfWeek(),
+            'last_week' => $endDate->copy()->startOfWeek(),
+            'two_weeks' => $endDate->copy()->subWeek()->startOfWeek(),
+            'month' => $endDate->copy()->startOfMonth(),
+        };
 
-    private function getMonthData()
-    {
-        return Trend::model(User::class)
+        $currentWeekData = Trend::model(User::class)
             ->between(
-                start: now()->startOfMonth(),
-                end: now()->endOfMonth(),
+                start: $startDate,
+                end: $endDate,
             )
             ->perDay()
             ->count();
-    }
 
-    private function getYearData()
-    {
-        return Trend::model(User::class)
+        $previousWeekData = Trend::model(User::class)
             ->between(
-                start: now()->startOfYear(),
-                end: now()->endOfYear(),
+                start: $startDate->copy()->subWeek(),
+                end: $endDate->copy()->subWeek(),
             )
-            ->perMonth()
+            ->perDay()
             ->count();
+
+        return [
+            'current' => $currentWeekData,
+            'previous' => $previousWeekData,
+        ];
     }
 }
