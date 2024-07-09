@@ -2,6 +2,7 @@
 
 namespace App\Filament\Widgets;
 
+use App\Models\AppUser;
 use App\Models\User;
 use Filament\Widgets\Widget;
 use Illuminate\Support\Carbon;
@@ -37,9 +38,9 @@ class UserStatsOverview extends Widget
         $oneWeekAgo = $now->copy()->subWeek();
         $twoWeeksAgo = $now->copy()->subWeeks(2);
 
-        $countTwoWeeksAgo = User::where('created_at', '<=', $twoWeeksAgo)->count();
-        $countOneWeekAgo = User::where('created_at', '<=', $oneWeekAgo)->count();
-        $countNow = User::count();
+        $countTwoWeeksAgo = AppUser::where('created_at', '<=', $twoWeeksAgo)->count();
+        $countOneWeekAgo = AppUser::where('created_at', '<=', $oneWeekAgo)->count();
+        $countNow = AppUser::count();
 
         $percentageChange = $this->calculatePercentageChange($countOneWeekAgo, $countNow);
 
@@ -54,7 +55,7 @@ class UserStatsOverview extends Widget
     {
         Log::info('Starting calculateUserStatuses');
 
-        $totalUsers = User::count();
+        $totalUsers = AppUser::count();
         $statuses = ['active', 'inactive', 'churn'];
 
         $currentPeriodEnd = Carbon::now();
@@ -63,9 +64,9 @@ class UserStatsOverview extends Widget
 
 
         foreach ($statuses as $status) {
-            $currentCount = User::where('status', $status)->count();
+            $currentCount = AppUser::where('status', $status)->count();
 
-            $previousCount = User::where('status', $status)
+            $previousCount = AppUser::where('status', $status)
                 ->where('updated_at', '<', $currentPeriodStart)
                 ->count();
 
