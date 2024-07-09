@@ -21,8 +21,8 @@ class RegisterdUsersChart extends ApexChartWidget
             'last_week' => 'Last week',
             'two_weeks' => 'Last 2 weeks',
             'month' => 'This month',
-            'growth_4' => 'Growth (4 weeks)',
-            'growth_8' => 'Growth (8 weeks)',
+//            'growth_4' => 'Growth (4 weeks)',
+//            'growth_8' => 'Growth (8 weeks)',
         ];
     }
 
@@ -71,7 +71,7 @@ class RegisterdUsersChart extends ApexChartWidget
                 'curve' => 'smooth',
             ],
             'dataLabels' => [
-                'enabled' => false,
+                'enabled' => true,
             ],
         ];
     }
@@ -112,7 +112,7 @@ class RegisterdUsersChart extends ApexChartWidget
             'plotOptions' => [
                 'bar' => [
                     'borderRadius' => 3,
-                    'horizontal' => false,
+                    'horizontal' => true,
                     'colors' => [
                         'ranges' => [
                             [
