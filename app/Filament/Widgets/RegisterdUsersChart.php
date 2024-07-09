@@ -4,6 +4,10 @@ namespace App\Filament\Widgets;
 
 use App\Models\AppUser;
 use App\Models\User;
+use Filament\Forms\Components\Radio;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
+use Filament\Tables\Columns\Layout\Grid;
 use Flowframe\Trend\Trend;
 use Flowframe\Trend\TrendValue;
 use Leandrocfe\FilamentApexCharts\Widgets\ApexChartWidget;
@@ -35,83 +39,82 @@ class RegisterdUsersChart extends ApexChartWidget
      * Chart options (series, labels, types, size, animations...)
      * https://apexcharts.com/docs/options
      */
-    protected function getOptions(): array
+    protected function getFormSchema(): array
     {
         return [
+
+            Radio::make('ordersChartType')
+                ->default('bar')
+                ->options([
+                    'line' => 'Line',
+                    'bar' => 'Col',
+                    'area' => 'Area',
+                ])
+                ->inline(true)
+                ->label('Type'),
+
+            Grid::make()
+                ->schema([
+                    Toggle::make('ordersChartMarkers')
+                        ->default(false)
+                        ->label('Markers'),
+
+                    Toggle::make('ordersChartGrid')
+                        ->default(false)
+                        ->label('Grid'),
+                ]),
+
+            TextInput::make('ordersChartAnnotations')
+                ->required()
+                ->numeric()
+                ->default(7500)
+                ->label('Annotations'),
+        ];
+    }
+
+    /**
+     * Chart options (series, labels, types, size, animations...)
+     * https://apexcharts.com/docs/options
+     */
+    protected function getOptions(): array
+    {
+        $filters = $this->filterFormData;
+
+        return [
             'chart' => [
-                'type' => 'bar',
-                'height' => 260,
-                'parentHeightOffset' => 2,
-                'stacked' => true,
+                'type' => $filters['ordersChartType'],
+                'height' => 250,
                 'toolbar' => [
                     'show' => false,
                 ],
             ],
             'series' => [
                 [
-                    'name' => 'Earning',
-                    'data' => [270, 210, 180, 200, 250, 280, 250, 270, 150, 210, 180, 200],
-                ],
-                [
-                    'name' => 'Expense',
-                    'data' => [-140, -160, -180, -150, -100, -60, -80, -100, -180, -160, -180, -150],
+                    'name' => 'Orders per month',
+                    'data' => [2433, 3454, 4566, 2342, 5545, 5765, 6787, 8767, 7565, 8576, 9686, 8996],
                 ],
             ],
             'plotOptions' => [
                 'bar' => [
-                    'horizontal' => false,
-                    'columnWidth' => '50%',
+                    'borderRadius' => 2,
                 ],
-            ],
-            'dataLabels' => [
-                'enabled' => false,
-            ],
-            'legend' => [
-                'show' => true,
-                'horizontalAlign' => 'right',
-                'position' => 'top',
-                'fontFamily' => 'inherit',
-                'markers' => [
-                    'height' => 12,
-                    'width' => 12,
-                    'radius' => 12,
-                    'offsetX' => -3,
-                    'offsetY' => 2,
-                ],
-                'itemMargin' => [
-                    'horizontal' => 5,
-                ],
-            ],
-            'grid' => [
-                'show' => false,
-
             ],
             'xaxis' => [
-                'categories' => [
-                    'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
-                ],
+                'categories' => ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
                 'labels' => [
                     'style' => [
+                        'fontWeight' => 400,
                         'fontFamily' => 'inherit',
                     ],
-                ],
-                'axisTicks' => [
-                    'show' => false,
-                ],
-                'axisBorder' => [
-                    'show' => false,
                 ],
             ],
             'yaxis' => [
-                'offsetX' => -16,
                 'labels' => [
                     'style' => [
+                        'fontWeight' => 400,
                         'fontFamily' => 'inherit',
                     ],
                 ],
-                'min' => -200,
-                'max' => 300,
-                'tickAmount' => 5,
             ],
             'fill' => [
                 'type' => 'gradient',
@@ -119,18 +122,47 @@ class RegisterdUsersChart extends ApexChartWidget
                     'shade' => 'dark',
                     'type' => 'vertical',
                     'shadeIntensity' => 0.5,
-                    'gradientToColors' => ['#d97706', '#c2410c'],
+                    'gradientToColors' => ['#fbbf24'],
+                    'inverseColors' => true,
                     'opacityFrom' => 1,
                     'opacityTo' => 1,
                     'stops' => [0, 100],
                 ],
             ],
-            'stroke' => [
-                'curve' => 'smooth',
-                'width' => 1,
-                'lineCap' => 'round',
+
+            'dataLabels' => [
+                'enabled' => false,
             ],
-            'colors' => ['#f59e0b', '#ea580c'],
+            'grid' => [
+                'show' => $filters['ordersChartGrid'],
+            ],
+            'markers' => [
+                'size' => $filters['ordersChartMarkers'] ? 3 : 0,
+            ],
+            'tooltip' => [
+                'enabled' => true,
+            ],
+            'stroke' => [
+                'width' => $filters['ordersChartType'] === 'line' ? 4 : 0,
+            ],
+            'colors' => ['#f59e0b'],
+            'annotations' => [
+                'yaxis' => [
+                    [
+                        'y' => $filters['ordersChartAnnotations'],
+                        'borderColor' => '#ef4444',
+                        'borderWidth' => 1,
+                        'label' => [
+                            'borderColor' => '#ef4444',
+                            'style' => [
+                                'color' => '#fffbeb',
+                                'background' => '#ef4444',
+                            ],
+                            'text' => 'Annotation: ' . $filters['ordersChartAnnotations'],
+                        ],
+                    ],
+                ],
+            ],
         ];
     }
 
