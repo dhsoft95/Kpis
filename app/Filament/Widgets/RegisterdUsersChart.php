@@ -2,6 +2,7 @@
 
 namespace App\Filament\Widgets;
 
+use App\Models\AppUser;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Radio;
 use Filament\Forms\Components\TextInput;
@@ -21,25 +22,15 @@ class RegisterdUsersChart extends ApexChartWidget
             'last_week' => 'Last week',
             'two_weeks' => 'Last 2 weeks',
             'month' => 'This month',
-//            'growth_4' => 'Growth (4 weeks)',
-//            'growth_8' => 'Growth (8 weeks)',
         ];
     }
 
-    /**
-     * Widget content height
-     */
     protected static ?int $contentHeight = 275;
 
-    /**
-     * Chart options (series, labels, types, size, animations...)
-     * https://apexcharts.com/docs/options
-     */
     protected function getFormSchema(): array
     {
         return [
-
-            Radio::make('ordersChartType')
+            Radio::make('chartType')
                 ->default('bar')
                 ->options([
                     'line' => 'Line',
@@ -51,34 +42,31 @@ class RegisterdUsersChart extends ApexChartWidget
 
             Grid::make()
                 ->schema([
-                    Toggle::make('ordersChartMarkers')
+                    Toggle::make('chartMarkers')
                         ->default(false)
                         ->label('Markers'),
 
-                    Toggle::make('ordersChartGrid')
+                    Toggle::make('chartGrid')
                         ->default(false)
                         ->label('Grid'),
                 ]),
 
-            TextInput::make('ordersChartAnnotations')
+            TextInput::make('chartAnnotations')
                 ->required()
                 ->numeric()
-                ->default(7500)
+                ->default(100)
                 ->label('Annotations'),
         ];
     }
 
-    /**
-     * Chart options (series, labels, types, size, animations...)
-     * https://apexcharts.com/docs/options
-     */
     protected function getOptions(): array
     {
         $filters = $this->filterFormData;
+        $data = $this->getData();
 
         return [
             'chart' => [
-                'type' => $filters['ordersChartType'],
+                'type' => $filters['chartType'],
                 'height' => 250,
                 'toolbar' => [
                     'show' => false,
@@ -86,8 +74,8 @@ class RegisterdUsersChart extends ApexChartWidget
             ],
             'series' => [
                 [
-                    'name' => 'Orders per month',
-                    'data' => [2433, 3454, 4566, 2342, 5545, 5765, 6787, 8767, 7565, 8576, 9686, 8996],
+                    'name' => 'Registered Users',
+                    'data' => $data['counts'],
                 ],
             ],
             'plotOptions' => [
@@ -96,7 +84,7 @@ class RegisterdUsersChart extends ApexChartWidget
                 ],
             ],
             'xaxis' => [
-                'categories' => ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                'categories' => $data['labels'],
                 'labels' => [
                     'style' => [
                         'fontWeight' => 400,
@@ -125,27 +113,26 @@ class RegisterdUsersChart extends ApexChartWidget
                     'stops' => [0, 100],
                 ],
             ],
-
             'dataLabels' => [
                 'enabled' => false,
             ],
             'grid' => [
-                'show' => $filters['ordersChartGrid'],
+                'show' => $filters['chartGrid'],
             ],
             'markers' => [
-                'size' => $filters['ordersChartMarkers'] ? 3 : 0,
+                'size' => $filters['chartMarkers'] ? 3 : 0,
             ],
             'tooltip' => [
                 'enabled' => true,
             ],
             'stroke' => [
-                'width' => $filters['ordersChartType'] === 'line' ? 4 : 0,
+                'width' => $filters['chartType'] === 'line' ? 4 : 0,
             ],
             'colors' => ['#f59e0b'],
             'annotations' => [
                 'yaxis' => [
                     [
-                        'y' => $filters['ordersChartAnnotations'],
+                        'y' => $filters['chartAnnotations'],
                         'borderColor' => '#ef4444',
                         'borderWidth' => 1,
                         'label' => [
@@ -154,7 +141,7 @@ class RegisterdUsersChart extends ApexChartWidget
                                 'color' => '#fffbeb',
                                 'background' => '#ef4444',
                             ],
-                            'text' => 'Annotation: ' . $filters['ordersChartAnnotations'],
+                            'text' => 'Annotation: ' . $filters['chartAnnotations'],
                         ],
                     ],
                 ],
@@ -162,5 +149,49 @@ class RegisterdUsersChart extends ApexChartWidget
         ];
     }
 
+    private function getData(): array
+    {
+        $filter = $this->filter;
 
+        switch ($filter) {
+            case 'week':
+                $startDate = Carbon::now()->startOfWeek();
+                $endDate = Carbon::now()->endOfWeek();
+                break;
+            case 'last_week':
+                $startDate = Carbon::now()->subWeek()->startOfWeek();
+                $endDate = Carbon::now()->subWeek()->endOfWeek();
+                break;
+            case 'two_weeks':
+                $startDate = Carbon::now()->subWeeks(2)->startOfWeek();
+                $endDate = Carbon::now()->endOfWeek();
+                break;
+            case 'month':
+                $startDate = Carbon::now()->startOfMonth();
+                $endDate = Carbon::now()->endOfMonth();
+                break;
+            default:
+                $startDate = Carbon::now()->startOfWeek();
+                $endDate = Carbon::now()->endOfWeek();
+        }
+
+        $users = AppUser::whereBetween('created_at', [$startDate, $endDate])
+            ->selectRaw('DATE(created_at) as date, COUNT(*) as count')
+            ->groupBy('date')
+            ->orderBy('date')
+            ->get();
+
+        $labels = [];
+        $counts = [];
+
+        foreach ($users as $user) {
+            $labels[] = $user->date;
+            $counts[] = $user->count;
+        }
+
+        return [
+            'labels' => $labels,
+            'counts' => $counts,
+        ];
+    }
 }
