@@ -182,7 +182,7 @@ class RegisterdUsersChart extends ApexChartWidget
         $currentDate = clone $startDate;
         while ($currentDate <= $endDate) {
             $monthKey = $currentDate->format('Y-m');
-            $labels[] = $currentDate->format('M Y');
+            $labels[] = $currentDate->format('M'); // Changed to only show month abbreviation
             $counts[$monthKey] = 0;
             $currentDate->addMonth();
         }
@@ -199,5 +199,27 @@ class RegisterdUsersChart extends ApexChartWidget
             'labels' => $labels,
             'counts' => array_values($counts),
         ];
+    }
+
+    protected function getHeading(): string
+    {
+        $filter = $this->filter;
+        $endDate = Carbon::now();
+
+        switch ($filter) {
+            case '6_months':
+                $startDate = $endDate->copy()->subMonths(6)->startOfMonth();
+                break;
+            case '12_months':
+                $startDate = $endDate->copy()->subMonths(12)->startOfMonth();
+                break;
+            case '24_months':
+                $startDate = $endDate->copy()->subMonths(24)->startOfMonth();
+                break;
+            default:
+                $startDate = $endDate->copy()->subMonths(12)->startOfMonth();
+        }
+
+        return "Registered Users Trend ({$startDate->format('M Y')} - {$endDate->format('M Y')})";
     }
 }
