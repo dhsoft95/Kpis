@@ -8,9 +8,11 @@ use Filament\Widgets\Widget;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Log;
 
-class UserStatsOverview extends Widget
+class userStatsOverview extends Widget
 {
     protected static string $view = 'filament.widgets.user-stats-overview';
+
+    protected int | string | array $columnSpan = 'full';
 
     public array $stats = [
         'all' => ['count' => 0, 'percentageChange' => 0, 'isGrowth' => true],

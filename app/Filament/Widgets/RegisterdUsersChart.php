@@ -62,7 +62,7 @@ class RegisterdUsersChart extends ApexChartWidget
             'plotOptions' => [
                 'bar' => [
                     'borderRadius' => 2,
-                    'horizontal' => true,
+                    'horizontal' => false,
                 ],
                 ]
         ];
