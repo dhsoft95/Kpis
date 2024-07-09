@@ -2,14 +2,10 @@
 
 namespace App\Filament\Widgets;
 
-use App\Models\AppUser;
-use App\Models\User;
+use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Radio;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
-use Filament\Tables\Columns\Layout\Grid;
-use Flowframe\Trend\Trend;
-use Flowframe\Trend\TrendValue;
 use Leandrocfe\FilamentApexCharts\Widgets\ApexChartWidget;
 use Carbon\Carbon;
 
