@@ -9,7 +9,7 @@ use Flowframe\Trend\TrendValue;
 use Leandrocfe\FilamentApexCharts\Widgets\ApexChartWidget;
 use Carbon\Carbon;
 
-class RegisteredUsersChart extends ApexChartWidget
+class RegisterdUsersChart extends ApexChartWidget
 {
     protected static ?string $chartId = 'registeredUsersChart';
     protected static ?string $heading = 'Registered Users Trend';
