@@ -26,20 +26,21 @@ class RegisterdUsersChart extends ApexChartWidget
         ];
     }
 
+    /**
+     * Widget content height
+     */
+    protected static ?int $contentHeight = 275;
+
+    /**
+     * Chart options (series, labels, types, size, animations...)
+     * https://apexcharts.com/docs/options
+     */
     protected function getOptions(): array
     {
-        $activeFilter = $this->filter ?? 'two_weeks';
-
-        if (str_starts_with($activeFilter, 'growth_')) {
-            return $this->getGrowthChartOptions($activeFilter);
-        }
-
-        $data = $this->getWeekOnWeekData($activeFilter);
-
         return [
             'chart' => [
-                'type' => 'line',
-                'height' => 480,
+                'type' => 'bar',
+                'height' => 260,
                 'parentHeightOffset' => 2,
                 'stacked' => true,
                 'toolbar' => [
@@ -48,33 +49,13 @@ class RegisterdUsersChart extends ApexChartWidget
             ],
             'series' => [
                 [
-                    'name' => 'This Week',
-                    'data' => $data['current']->map(fn (TrendValue $value) => $value->aggregate)->toArray(),
+                    'name' => 'Earning',
+                    'data' => [270, 210, 180, 200, 250, 280, 250, 270, 150, 210, 180, 200],
                 ],
                 [
-                    'name' => 'Previous Week',
-                    'data' => $data['previous']->map(fn (TrendValue $value) => $value->aggregate)->toArray(),
+                    'name' => 'Expense',
+                    'data' => [-140, -160, -180, -150, -100, -60, -80, -100, -180, -160, -180, -150],
                 ],
-            ],
-            'xaxis' => [
-                'categories' => ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-                'labels' => [
-                    'style' => [
-                        'fontFamily' => 'inherit',
-                    ],
-                ],
-            ],
-
-            'yaxis' => [
-                'labels' => [
-                    'style' => [
-                        'fontFamily' => 'inherit',
-                    ],
-                ],
-            ],
-            'colors' => ['#f59e0b', '#60a5fa'],
-            'stroke' => [
-                'curve' => 'smooth',
             ],
             'plotOptions' => [
                 'bar' => [
@@ -105,124 +86,53 @@ class RegisterdUsersChart extends ApexChartWidget
                 'show' => false,
 
             ],
-        ];
-    }
-
-    private function getGrowthChartOptions($filter)
-    {
-        $weeks = $filter === 'growth_4' ? 4 : 8;
-        $data = $this->getWeekOverWeekGrowthRate($weeks);
-
-        return [
-            'chart' => [
-                'type' => 'line',
-                'height' => 480,
-            ],
-            'series' => [
-                [
-                    'name' => 'Growth Rate (%)',
-                    'data' => array_column($data, 'growth_rate'),
-                ],
-            ],
             'xaxis' => [
-                'categories' => array_column($data, 'week'),
+                'categories' => [
+                    'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
+                ],
                 'labels' => [
                     'style' => [
                         'fontFamily' => 'inherit',
                     ],
+                ],
+                'axisTicks' => [
+                    'show' => false,
+                ],
+                'axisBorder' => [
+                    'show' => false,
                 ],
             ],
             'yaxis' => [
+                'offsetX' => -16,
                 'labels' => [
                     'style' => [
                         'fontFamily' => 'inherit',
                     ],
-                    'formatter' => 'function(value) { return value.toFixed(2) + "%" }',
+                ],
+                'min' => -200,
+                'max' => 300,
+                'tickAmount' => 5,
+            ],
+            'fill' => [
+                'type' => 'gradient',
+                'gradient' => [
+                    'shade' => 'dark',
+                    'type' => 'vertical',
+                    'shadeIntensity' => 0.5,
+                    'gradientToColors' => ['#d97706', '#c2410c'],
+                    'opacityFrom' => 1,
+                    'opacityTo' => 1,
+                    'stops' => [0, 100],
                 ],
             ],
-            'colors' => ['#10B981'],
-            'plotOptions' => [
-                'bar' => [
-                    'borderRadius' => 3,
-                    'horizontal' => true,
-                    'colors' => [
-                        'ranges' => [
-                            [
-                                'from' => -100,
-                                'to' => 0,
-                                'color' => '#EF4444'
-                            ],
-                            [
-                                'from' => 0,
-                                'to' => 100,
-                                'color' => '#10B981'
-                            ]
-                        ]
-                    ]
-                ],
+            'stroke' => [
+                'curve' => 'smooth',
+                'width' => 1,
+                'lineCap' => 'round',
             ],
-            'dataLabels' => [
-                'enabled' => true,
-                'formatter' => 'function(val) { return val.toFixed(2) + "%" }',
-            ],
+            'colors' => ['#f59e0b', '#ea580c'],
         ];
     }
 
-    private function getWeekOnWeekData($filter)
-    {
-        $endDate = match ($filter) {
-            'week' => now(),
-            'last_week' => now()->subWeek(),
-            'two_weeks' => now(),
-            'month' => now()->endOfMonth(),
-        };
 
-        $startDate = match ($filter) {
-            'week' => $endDate->copy()->startOfWeek(),
-            'last_week' => $endDate->copy()->subWeek()->startOfWeek(),
-            'two_weeks' => $endDate->copy()->subWeeks(2)->startOfWeek(),
-            'month' => $endDate->copy()->startOfMonth(),
-        };
-
-        $currentWeekData = Trend::model(AppUser::class)
-            ->between(
-                start: $startDate,
-                end: $endDate,
-            )
-            ->perDay()
-            ->count();
-
-        $previousWeekData = Trend::model(AppUser::class)
-            ->between(
-                start: $startDate->copy()->subWeek(),
-                end: $endDate->copy()->subWeek(),
-            )
-            ->perDay()
-            ->count();
-
-        return [
-            'current' => $currentWeekData,
-            'previous' => $previousWeekData,
-        ];
-    }
-
-    private function getWeekOverWeekGrowthRate($weeks = 8)
-    {
-        $data = [];
-        for ($i = 0; $i < $weeks; $i++) {
-            $endDate = now()->subWeeks($i)->endOfWeek();
-            $startDate = $endDate->copy()->startOfWeek();
-
-            $thisWeek = AppUser::whereBetween('created_at', [$startDate, $endDate])->count();
-            $lastWeek = AppUser::whereBetween('created_at', [$startDate->copy()->subWeek(), $endDate->copy()->subWeek()])->count();
-
-            $growthRate = $lastWeek > 0 ? (($thisWeek - $lastWeek) / $lastWeek) * 100 : 0;
-
-            $data[] = [
-                'week' => $startDate->format('M d') . ' - ' . $endDate->format('M d'),
-                'growth_rate' => round($growthRate, 2)
-            ];
-        }
-        return array_reverse($data);
-    }
 }
