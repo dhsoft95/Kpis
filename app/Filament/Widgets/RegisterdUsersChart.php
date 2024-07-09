@@ -25,7 +25,7 @@ class RegisterdUsersChart extends ApexChartWidget
         ];
     }
 
-    protected static ?int $contentHeight = 275;
+    protected static ?int $contentHeight = 480;
 
     protected function getFormSchema(): array
     {
