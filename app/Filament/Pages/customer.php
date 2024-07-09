@@ -1,0 +1,52 @@
+<?php
+
+namespace App\Filament\Pages;
+
+
+use App\Filament\Widgets\ActiveChartAp;
+use App\Filament\Widgets\Custvalue;
+use App\Filament\Widgets\userStatsOverview;
+use App\Livewire\CustStatsOverview;
+use App\Livewire\CustvalueChart;
+use App\Livewire\TransvalueChart;
+use Filament\Forms\Components\Tabs\Tab;
+use Filament\Pages\Page;
+
+class customer extends Page
+{
+
+    protected function getHeaderWidgets(): array
+    {
+        return [
+            CustStatsOverview::class,
+            CustvalueChart::class,
+            TransvalueChart::class,
+        ];
+    }
+    protected static ?string $navigationGroup = 'KPIs';
+
+    protected static ?string $title = 'Customer Metric';
+
+//    public function getTabs(): array
+//    {
+//        return [
+//            'All' => Tab::make()
+//                ->badge(transData::query()->count()),
+//            'Today' => Tab::make()
+//                ->modifyQueryUsing(fn(Builder $query) => $query->where('created_at', '>=', now()->startOfDay()))
+//                ->badge(transData::query()->where('created_at', '>=', now()->startOfDay())->count()),
+//            'This Week' => Tab::make()
+//                ->modifyQueryUsing(fn(Builder $query) => $query->where('created_at', '>=', now()->subWeek()))
+//                ->badge(transData::query()->where('created_at', '>=', now()->subWeek())->count()),
+//            'This Month' => Tab::make()
+//                ->modifyQueryUsing(fn(Builder $query) => $query->where('created_at', '>=', now()->subMonth()))
+//                ->badge(transData::query()->where('created_at', '>=', now()->subMonth())->count()),
+//            'This Year' => Tab::make()
+//                ->modifyQueryUsing(fn(Builder $query) => $query->where('created_at', '>=', now()->subYear()))
+//                ->badge(transData::query()->where('created_at', '>=', now()->subYear())->count()),
+//        ];
+//    }
+    protected static ?string $navigationIcon = 'heroicon-o-chart-bar';
+
+    protected static string $view = 'filament.pages.customer';
+}
