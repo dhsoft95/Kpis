@@ -152,7 +152,7 @@ class RegisterdUsersChart extends ApexChartWidget
             'month' => $endDate->copy()->startOfMonth(),
         };
 
-        $currentWeekData = Trend::model(User::class)
+        $currentWeekData = Trend::model(AppUser::class)
             ->between(
                 start: $startDate,
                 end: $endDate,
@@ -160,7 +160,7 @@ class RegisterdUsersChart extends ApexChartWidget
             ->perDay()
             ->count();
 
-        $previousWeekData = Trend::model(User::class)
+        $previousWeekData = Trend::model(AppUser::class)
             ->between(
                 start: $startDate->copy()->subWeek(),
                 end: $endDate->copy()->subWeek(),
