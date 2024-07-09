@@ -51,7 +51,7 @@
                 @endphp
 
                 @foreach ($cards as $key => $card)
-                    <div class="w-full md:w-1/3 px-4 mb-4">
+                    <div class="w-full md:w-1/2 px-4 mb-4">
                         <div class="bg-gradient-to-r {{ $card['bgGradient'] }} text-white rounded-lg shadow-lg p-3 h-35 flex flex-col relative">
                             <!-- Card icon in the top right corner -->
                             <div class="absolute top-2 right-2 text-4xl opacity-20">
