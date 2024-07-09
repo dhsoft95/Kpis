@@ -40,6 +40,11 @@ class RegisterdUsersChart extends ApexChartWidget
             'chart' => [
                 'type' => 'line',
                 'height' => 480,
+                'parentHeightOffset' => 2,
+                'stacked' => true,
+                'toolbar' => [
+                    'show' => false,
+                ],
             ],
             'series' => [
                 [
@@ -59,6 +64,7 @@ class RegisterdUsersChart extends ApexChartWidget
                     ],
                 ],
             ],
+
             'yaxis' => [
                 'labels' => [
                     'style' => [
@@ -70,8 +76,34 @@ class RegisterdUsersChart extends ApexChartWidget
             'stroke' => [
                 'curve' => 'smooth',
             ],
+            'plotOptions' => [
+                'bar' => [
+                    'horizontal' => false,
+                    'columnWidth' => '50%',
+                ],
+            ],
             'dataLabels' => [
-                'enabled' => true,
+                'enabled' => false,
+            ],
+            'legend' => [
+                'show' => true,
+                'horizontalAlign' => 'right',
+                'position' => 'top',
+                'fontFamily' => 'inherit',
+                'markers' => [
+                    'height' => 12,
+                    'width' => 12,
+                    'radius' => 12,
+                    'offsetX' => -3,
+                    'offsetY' => 2,
+                ],
+                'itemMargin' => [
+                    'horizontal' => 5,
+                ],
+            ],
+            'grid' => [
+                'show' => false,
+
             ],
         ];
     }
