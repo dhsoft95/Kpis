@@ -2,6 +2,7 @@
 
 namespace App\Filament\Widgets;
 
+use App\Models\AppUser;
 use App\Models\User;
 use Flowframe\Trend\Trend;
 use Flowframe\Trend\TrendValue;
@@ -37,7 +38,7 @@ class RegisterdUsersChart extends ApexChartWidget
 
         return [
             'chart' => [
-                'type' => 'line',
+                'type' => 'bar',
                 'height' => 480,
             ],
             'series' => [
@@ -180,8 +181,8 @@ class RegisterdUsersChart extends ApexChartWidget
             $endDate = now()->subWeeks($i);
             $startDate = $endDate->copy()->startOfWeek();
 
-            $thisWeek = User::whereBetween('created_at', [$startDate, $endDate])->count();
-            $lastWeek = User::whereBetween('created_at', [$startDate->copy()->subWeek(), $endDate->copy()->subWeek()])->count();
+            $thisWeek = AppUser::whereBetween('created_at', [$startDate, $endDate])->count();
+            $lastWeek = AppUser::whereBetween('created_at', [$startDate->copy()->subWeek(), $endDate->copy()->subWeek()])->count();
 
             $growthRate = $lastWeek > 0 ? (($thisWeek - $lastWeek) / $lastWeek) * 100 : 0;
 
