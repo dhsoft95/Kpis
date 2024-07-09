@@ -14,8 +14,8 @@ class UserStatsOverview extends Widget
 
     public array $stats = [
         'all' => ['count' => 0, 'percentageChange' => 0, 'isGrowth' => true],
-        'active' => ['count' => 0, 'percentageChange' => 0, 'isGrowth' => true],
-        'inactive' => ['count' => 0, 'percentageChange' => 0, 'isGrowth' => true],
+        '1' => ['count' => 0, 'percentageChange' => 0, 'isGrowth' => true],
+        '0' => ['count' => 0, 'percentageChange' => 0, 'isGrowth' => true],
         'churn' => ['count' => 0, 'percentageChange' => 0, 'isGrowth' => true],
         'avgValuePerDay' => ['value' => 0, 'percentageChange' => 0, 'isGrowth' => true],
         'avgTransactionPerCustomer' => ['value' => 0, 'percentageChange' => 0, 'isGrowth' => true],
@@ -56,7 +56,7 @@ class UserStatsOverview extends Widget
         Log::info('Starting calculateUserStatuses');
 
         $totalUsers = AppUser::count();
-        $statuses = ['active', 'inactive', 'churn'];
+        $statuses = ['0', '1', '2'];
 
         $currentPeriodEnd = Carbon::now();
         $currentPeriodStart = $currentPeriodEnd->copy()->startOfWeek();
@@ -64,9 +64,9 @@ class UserStatsOverview extends Widget
 
 
         foreach ($statuses as $status) {
-            $currentCount = AppUser::where('status', $status)->count();
+            $currentCount = AppUser::where('is_active', $status)->count();
 
-            $previousCount = AppUser::where('status', $status)
+            $previousCount = AppUser::where('is_active', $status)
                 ->where('updated_at', '<', $currentPeriodStart)
                 ->count();
 
