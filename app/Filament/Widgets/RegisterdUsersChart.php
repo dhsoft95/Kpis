@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Filament\Widgets;
 
 use App\Models\User;
@@ -19,12 +20,18 @@ class RegisterdUsersChart extends ApexChartWidget
             'last_week' => 'Last week',
             'two_weeks' => 'Last 2 weeks',
             'month' => 'This month',
+            'growth_4' => 'Growth (4 weeks)',
+            'growth_8' => 'Growth (8 weeks)',
         ];
     }
 
     protected function getOptions(): array
     {
         $activeFilter = $this->filter ?? 'two_weeks';
+
+        if (str_starts_with($activeFilter, 'growth_')) {
+            return $this->getGrowthChartOptions($activeFilter);
+        }
 
         $data = $this->getWeekOnWeekData($activeFilter);
 
@@ -59,12 +66,72 @@ class RegisterdUsersChart extends ApexChartWidget
                 ],
             ],
             'colors' => ['#f59e0b', '#60a5fa'],
+            'stroke' => [
+                'curve' => 'smooth',
+            ],
+            'dataLabels' => [
+                'enabled' => false,
+            ],
+        ];
+    }
+
+    private function getGrowthChartOptions($filter)
+    {
+        $weeks = $filter === 'growth_4' ? 4 : 8;
+        $data = $this->getWeekOverWeekGrowthRate($weeks);
+
+        return [
+            'chart' => [
+                'type' => 'bar',
+                'height' => 480,
+            ],
+            'series' => [
+                [
+                    'name' => 'Growth Rate (%)',
+                    'data' => array_column($data, 'growth_rate'),
+                ],
+            ],
+            'xaxis' => [
+                'categories' => array_column($data, 'week'),
+                'labels' => [
+                    'style' => [
+                        'fontFamily' => 'inherit',
+                    ],
+                ],
+            ],
+            'yaxis' => [
+                'labels' => [
+                    'style' => [
+                        'fontFamily' => 'inherit',
+                    ],
+                    'formatter' => 'function(value) { return value.toFixed(2) + "%" }',
+                ],
+            ],
+            'colors' => ['#10B981'],
             'plotOptions' => [
                 'bar' => [
-                    'borderRadius' => 2,
+                    'borderRadius' => 3,
                     'horizontal' => false,
+                    'colors' => [
+                        'ranges' => [
+                            [
+                                'from' => -100,
+                                'to' => 0,
+                                'color' => '#EF4444'
+                            ],
+                            [
+                                'from' => 0,
+                                'to' => 100,
+                                'color' => '#10B981'
+                            ]
+                        ]
+                    ]
                 ],
-            ]
+            ],
+            'dataLabels' => [
+                'enabled' => true,
+                'formatter' => 'function(val) { return val.toFixed(2) + "%" }',
+            ],
         ];
     }
 
@@ -104,5 +171,25 @@ class RegisterdUsersChart extends ApexChartWidget
             'current' => $currentWeekData,
             'previous' => $previousWeekData,
         ];
+    }
+
+    private function getWeekOverWeekGrowthRate($weeks = 8)
+    {
+        $data = [];
+        for ($i = 0; $i < $weeks; $i++) {
+            $endDate = now()->subWeeks($i);
+            $startDate = $endDate->copy()->startOfWeek();
+
+            $thisWeek = User::whereBetween('created_at', [$startDate, $endDate])->count();
+            $lastWeek = User::whereBetween('created_at', [$startDate->copy()->subWeek(), $endDate->copy()->subWeek()])->count();
+
+            $growthRate = $lastWeek > 0 ? (($thisWeek - $lastWeek) / $lastWeek) * 100 : 0;
+
+            $data[] = [
+                'week' => $startDate->format('M d') . ' - ' . $endDate->format('M d'),
+                'growth_rate' => round($growthRate, 2)
+            ];
+        }
+        return array_reverse($data);
     }
 }

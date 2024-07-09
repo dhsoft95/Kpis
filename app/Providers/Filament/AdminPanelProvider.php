@@ -61,7 +61,7 @@ class AdminPanelProvider extends PanelProvider
             ->widgets([
                 userStatsOverview::class,
                 RegisteredChart::class,
-//                RegisterdUsersChart::class,
+                RegisterdUsersChart::class,
                 ActiveChart::class,
                 ChurnChart::class,
             ])
