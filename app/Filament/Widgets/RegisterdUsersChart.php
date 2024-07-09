@@ -15,7 +15,7 @@ class RegisterdUsersChart extends ApexChartWidget
     {
         return [
             'today' => 'Today',
-            'week' => 'Last week',
+            'week' => 'Last 4 weeks', // Adjusted filter label
             'month' => 'Last month',
             'year' => 'This year',
         ];
@@ -23,11 +23,11 @@ class RegisterdUsersChart extends ApexChartWidget
 
     protected function getOptions(): array
     {
-        $activeFilter = $this->filter ?? 'year';
+        $activeFilter = $this->filter ?? 'week'; // Default to 'week'
 
         $data = match ($activeFilter) {
             'today' => $this->getTodayData(),
-            'week' => $this->getWeekData(),
+            'week' => $this->getWeeksData(), // Adjusted function call
             'month' => $this->getMonthData(),
             'year' => $this->getYearData(),
         };
@@ -40,11 +40,11 @@ class RegisterdUsersChart extends ApexChartWidget
             'series' => [
                 [
                     'name' => 'Registered Users',
-                    'data' => $data->map(fn (TrendValue $value) => $value->aggregate),
+                    'data' => $data->map(fn (TrendValue $value) => $value->aggregate)->toArray(),
                 ],
             ],
             'xaxis' => [
-                'categories' => $data->map(fn (TrendValue $value) => $value->date),
+                'categories' => $data->map(fn (TrendValue $value) => $value->date)->toArray(),
                 'labels' => [
                     'style' => [
                         'fontFamily' => 'inherit',
@@ -64,7 +64,7 @@ class RegisterdUsersChart extends ApexChartWidget
                     'borderRadius' => 2,
                     'horizontal' => false,
                 ],
-                ]
+            ],
         ];
     }
 
@@ -79,14 +79,14 @@ class RegisterdUsersChart extends ApexChartWidget
             ->count();
     }
 
-    private function getWeekData()
+    private function getWeeksData()
     {
         return Trend::model(User::class)
             ->between(
-                start: now()->startOfWeek(),
+                start: now()->subWeeks(4)->startOfWeek(), // Adjusted to capture last 4 weeks
                 end: now()->endOfWeek(),
             )
-            ->perDay()
+            ->perWeek()
             ->count();
     }
 
