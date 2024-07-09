@@ -42,8 +42,8 @@
                     // Define card configurations
                     $cards = [
                         'all' => ['title' => 'All Registered Users', 'icon' => 'fas fa-users', 'bgGradient' => 'from-blue-700 to-blue-400', 'color' => 'blue'],
-                        'active' => ['title' => 'Active Users', 'icon' => 'fas fa-check-circle', 'bgGradient' => 'from-green-700 to-green-400', 'color' => 'green'],
-                        'inactive' => ['title' => 'Inactive Users', 'icon' => 'fas fa-user-slash', 'bgGradient' => 'from-red-700 to-red-400', 'color' => 'red'],
+                        '1' => ['title' => 'Active Users', 'icon' => 'fas fa-check-circle', 'bgGradient' => 'from-green-700 to-green-400', 'color' => 'green'],
+                        '0' => ['title' => 'Inactive Users', 'icon' => 'fas fa-user-slash', 'bgGradient' => 'from-red-700 to-red-400', 'color' => 'red'],
                         'churn' => ['title' => 'Churn Users', 'icon' => 'fas fa-exclamation-triangle', 'bgGradient' => 'from-yellow-700 to-yellow-400', 'color' => 'yellow'],
                         'avgValuePerDay' => ['title' => 'Avg Value of Trans Per Day', 'icon' => 'fas fa-dollar-sign', 'bgGradient' => 'from-purple-700 to-purple-400', 'color' => 'purple'],
                         'avgTransactionPerCustomer' => ['title' => 'Avg Tran Trans Customer', 'icon' => 'fas fa-user-friends', 'bgGradient' => 'from-pink-700 to-pink-400', 'color' => 'pink'],
