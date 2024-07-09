@@ -18,6 +18,9 @@ class RegisterdUsersChart extends ApexChartWidget
     protected function getFilters(): ?array
     {
         return [
+            '1_months' => 'Last 1 months',
+            '2_months' => 'Last 2 months',
+            '4_months' => 'Last 4 months',
             '6_months' => 'Last 6 months',
             '12_months' => 'Last 12 months',
             '24_months' => 'Last 24 months',
@@ -153,6 +156,15 @@ class RegisterdUsersChart extends ApexChartWidget
         $filter = $this->filter;
 
         switch ($filter) {
+            case '1_month':
+                $months = 1;
+                break;
+            case '2_months':
+                $months = 2;
+                break;
+            case '4_months':
+                $months = 4;
+                break;
             case '6_months':
                 $months = 6;
                 break;
@@ -163,7 +175,7 @@ class RegisterdUsersChart extends ApexChartWidget
                 $months = 24;
                 break;
             default:
-                $months = 12;
+                $months = 1;
         }
 
         $startDate = Carbon::now()->subMonths($months)->startOfMonth();
@@ -207,6 +219,16 @@ class RegisterdUsersChart extends ApexChartWidget
         $endDate = Carbon::now();
 
         switch ($filter) {
+            case '1_months':
+                $startDate = $endDate->copy()->subMonths(1)->startOfMonth();
+                break;
+            case '2_months':
+                $startDate = $endDate->copy()->subMonths(2)->startOfMonth();
+                break;
+            case '4_months':
+                $startDate = $endDate->copy()->subMonths(4)->startOfMonth();
+                break;
+
             case '6_months':
                 $startDate = $endDate->copy()->subMonths(6)->startOfMonth();
                 break;
