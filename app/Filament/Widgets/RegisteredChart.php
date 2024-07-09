@@ -4,44 +4,43 @@ namespace App\Filament\Widgets;
 
 use App\Models\User;
 use Filament\Widgets\ChartWidget;
-use Flowframe\Trend\Trend;
-use Flowframe\Trend\TrendValue;
 use Carbon\Carbon;
 
 class RegisteredChart extends ChartWidget
 {
-    protected static ?string $heading = 'Registered Users Trend';
+    protected static ?string $heading = 'Week-over-Week User Registration Growth';
     protected static ?string $maxHeight = '300px';
 
     protected function getFilters(): ?array
     {
         return [
-            'week' => 'This week',
-            'last_week' => 'Last week',
-            'two_weeks' => 'Last 2 weeks',
-            'month' => 'This month',
+            4 => '4 weeks',
+            8 => '8 weeks',
+            12 => '12 weeks',
+            26 => '26 weeks',
         ];
     }
 
     protected function getData(): array
     {
-        $activeFilter = $this->filter ?? 'two_weeks';
-        $data = $this->getWeekOnWeekData($activeFilter);
+        $weeks = $this->filter ?? 8;
+        $data = $this->getWeekOverWeekGrowthRate($weeks);
 
         return [
             'datasets' => [
                 [
-                    'label' => 'This Week',
-                    'data' => $data['current']->map(fn (TrendValue $value) => $value->aggregate)->toArray(),
-                    'backgroundColor' => '#f59e0b',
-                ],
-                [
-                    'label' => 'Previous Week',
-                    'data' => $data['previous']->map(fn (TrendValue $value) => $value->aggregate)->toArray(),
-                    'backgroundColor' => '#60a5fa',
+                    'label' => 'Growth Rate (%)',
+                    'data' => array_column($data, 'growth_rate'),
+                    'backgroundColor' => array_map(function ($rate) {
+                        return $rate >= 0 ? 'rgba(34, 197, 94, 0.6)' : 'rgba(239, 68, 68, 0.6)';
+                    }, array_column($data, 'growth_rate')),
+                    'borderColor' => array_map(function ($rate) {
+                        return $rate >= 0 ? 'rgb(34, 197, 94)' : 'rgb(239, 68, 68)';
+                    }, array_column($data, 'growth_rate')),
+                    'borderWidth' => 1,
                 ],
             ],
-            'labels' => ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+            'labels' => array_column($data, 'week'),
         ];
     }
 
@@ -56,46 +55,38 @@ class RegisteredChart extends ChartWidget
             'scales' => [
                 'y' => [
                     'beginAtZero' => true,
+                    'ticks' => [
+                        'callback' => 'function(value) { return value + "%"; }',
+                    ],
+                ],
+            ],
+            'plugins' => [
+                'tooltip' => [
+                    'callbacks' => [
+                        'label' => 'function(context) { return context.parsed.y.toFixed(2) + "%"; }',
+                    ],
                 ],
             ],
         ];
     }
 
-    private function getWeekOnWeekData($filter)
+    private function getWeekOverWeekGrowthRate($weeks = 8)
     {
-        $endDate = match ($filter) {
-            'week' => now(),
-            'last_week' => now()->subWeek(),
-            'two_weeks' => now(),
-            'month' => now()->endOfMonth(),
-        };
+        $data = [];
+        for ($i = 0; $i < $weeks; $i++) {
+            $endDate = now()->subWeeks($i);
+            $startDate = $endDate->copy()->startOfWeek();
 
-        $startDate = match ($filter) {
-            'week' => $endDate->copy()->startOfWeek(),
-            'last_week' => $endDate->copy()->startOfWeek(),
-            'two_weeks' => $endDate->copy()->subWeek()->startOfWeek(),
-            'month' => $endDate->copy()->startOfMonth(),
-        };
+            $thisWeek = User::whereBetween('created_at', [$startDate, $endDate])->count();
+            $lastWeek = User::whereBetween('created_at', [$startDate->copy()->subWeek(), $endDate->copy()->subWeek()])->count();
 
-        $currentWeekData = Trend::model(User::class)
-            ->between(
-                start: $startDate,
-                end: $endDate,
-            )
-            ->perDay()
-            ->count();
+            $growthRate = $lastWeek > 0 ? (($thisWeek - $lastWeek) / $lastWeek) * 100 : 0;
 
-        $previousWeekData = Trend::model(User::class)
-            ->between(
-                start: $startDate->copy()->subWeek(),
-                end: $endDate->copy()->subWeek(),
-            )
-            ->perDay()
-            ->count();
-
-        return [
-            'current' => $currentWeekData,
-            'previous' => $previousWeekData,
-        ];
+            $data[] = [
+                'week' => $startDate->format('M d') . ' - ' . $endDate->format('M d'),
+                'growth_rate' => round($growthRate, 2)
+            ];
+        }
+        return array_reverse($data);
     }
 }
