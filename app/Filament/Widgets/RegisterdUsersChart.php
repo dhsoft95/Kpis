@@ -10,7 +10,7 @@ use Filament\Forms\Components\Toggle;
 use Leandrocfe\FilamentApexCharts\Widgets\ApexChartWidget;
 use Carbon\Carbon;
 
-class RegisterdUsersChart extends ApexChartWidget
+class RegisteredUsersChart extends ApexChartWidget
 {
     protected static ?string $chartId = 'registeredUsersChart';
     protected static ?string $heading = 'Registered Users Trend';
@@ -18,14 +18,13 @@ class RegisterdUsersChart extends ApexChartWidget
     protected function getFilters(): ?array
     {
         return [
-            'week' => 'This week',
-            'last_week' => 'Last week',
-            'two_weeks' => 'Last 2 weeks',
-            'month' => 'This month',
+            '6_months' => 'Last 6 months',
+            '12_months' => 'Last 12 months',
+            '24_months' => 'Last 24 months',
         ];
     }
 
-    protected static ?int $contentHeight = 480;
+    protected static ?int $contentHeight = 275;
 
     protected function getFormSchema(): array
     {
@@ -154,44 +153,51 @@ class RegisterdUsersChart extends ApexChartWidget
         $filter = $this->filter;
 
         switch ($filter) {
-            case 'week':
-                $startDate = Carbon::now()->startOfWeek();
-                $endDate = Carbon::now()->endOfWeek();
+            case '6_months':
+                $months = 6;
                 break;
-            case 'last_week':
-                $startDate = Carbon::now()->subWeek()->startOfWeek();
-                $endDate = Carbon::now()->subWeek()->endOfWeek();
+            case '12_months':
+                $months = 12;
                 break;
-            case 'two_weeks':
-                $startDate = Carbon::now()->subWeeks(2)->startOfWeek();
-                $endDate = Carbon::now()->endOfWeek();
-                break;
-            case 'month':
-                $startDate = Carbon::now()->startOfMonth();
-                $endDate = Carbon::now()->endOfMonth();
+            case '24_months':
+                $months = 24;
                 break;
             default:
-                $startDate = Carbon::now()->startOfWeek();
-                $endDate = Carbon::now()->endOfWeek();
+                $months = 12;
         }
 
+        $startDate = Carbon::now()->subMonths($months)->startOfMonth();
+        $endDate = Carbon::now()->endOfMonth();
+
         $users = AppUser::whereBetween('created_at', [$startDate, $endDate])
-            ->selectRaw('DATE(created_at) as date, COUNT(*) as count')
-            ->groupBy('date')
-            ->orderBy('date')
+            ->selectRaw('DATE_FORMAT(created_at, "%Y-%m") as month, COUNT(*) as count')
+            ->groupBy('month')
+            ->orderBy('month')
             ->get();
 
         $labels = [];
         $counts = [];
 
-        foreach ($users as $user) {
-            $labels[] = $user->date;
-            $counts[] = $user->count;
+        // Create an array of all months in the range
+        $currentDate = clone $startDate;
+        while ($currentDate <= $endDate) {
+            $monthKey = $currentDate->format('Y-m');
+            $labels[] = $currentDate->format('M Y');
+            $counts[$monthKey] = 0;
+            $currentDate->addMonth();
         }
+
+        // Fill in the actual counts
+        foreach ($users as $user) {
+            $counts[$user->month] = $user->count;
+        }
+
+        // Ensure the counts array is in the correct order
+        ksort($counts);
 
         return [
             'labels' => $labels,
-            'counts' => $counts,
+            'counts' => array_values($counts),
         ];
     }
 }
