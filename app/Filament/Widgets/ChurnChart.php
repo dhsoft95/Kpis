@@ -90,7 +90,15 @@ class ChurnChart extends ChartWidget
             ->pluck('count', 'date')
             ->toArray();
 
-        return $this->fillMissingDates($data, $start, $end, $groupBy);
+        $filledData = $this->fillMissingDates($data, $start, $end, $groupBy);
+
+        // Format the labels
+        $formattedData = [];
+        foreach ($filledData as $date => $count) {
+            $formattedData[$this->formatLabel($date, $groupBy)] = $count;
+        }
+
+        return $formattedData;
     }
 
     private function getDateFormat(string $groupBy): string
@@ -131,6 +139,18 @@ class ChurnChart extends ChartWidget
             'day' => new \DateInterval('P1D'),
             'month' => new \DateInterval('P1M'),
             default => new \DateInterval('P1D'),
+        };
+    }
+
+    private function formatLabel(string $date, string $groupBy): string
+    {
+        $carbon = Carbon::createFromFormat($this->getDateFormat($groupBy), $date);
+
+        return match ($groupBy) {
+            'hour' => $carbon->format('H:i'),
+            'day' => $carbon->format('d M'),
+            'month' => $carbon->format('M y'),
+            default => $carbon->format('d M'),
         };
     }
 }
