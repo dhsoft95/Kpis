@@ -36,7 +36,7 @@
             }
         </style>
 
-        <div class="container mx-auto p-4" wire:poll.10s="calculateStats">
+        <div class="container mx-auto p-4" wire:poll.4s="calculateStats">
             <div class="flex flex-wrap -mx-4">
                 @php
                     // Define card configurations
@@ -46,7 +46,7 @@
                         '0' => ['title' => 'Inactive Users', 'icon' => 'fas fa-user-slash', 'bgGradient' => 'from-red-700 to-red-400', 'color' => 'red'],
                         'churn' => ['title' => 'Churn Users', 'icon' => 'fas fa-exclamation-triangle', 'bgGradient' => 'from-yellow-700 to-yellow-400', 'color' => 'yellow'],
                         'avgValuePerDay' => ['title' => 'Avg Value of Trans Per Day', 'icon' => 'fas fa-dollar-sign', 'bgGradient' => 'from-purple-700 to-purple-400', 'color' => 'purple'],
-                        'avgTransactionPerCustomer' => ['title' => 'Avg Tran Trans Customer', 'icon' => 'fas fa-user-friends', 'bgGradient' => 'from-pink-700 to-pink-400', 'color' => 'pink'],
+                        'avgTransactionPerCustomer' => ['title' => 'Avg  Trans Customer', 'icon' => 'fas fa-user-friends', 'bgGradient' => 'from-pink-700 to-pink-400', 'color' => 'pink'],
                     ];
                 @endphp
 
@@ -64,7 +64,12 @@
                                     <div class="w-2/3">
                                         <!-- Card count or value -->
                                         <h2 class="text-2xl font-bold mb-0" wire:key="count-{{ $key }}">
-                                            {{ isset($stats[$key]['count']) ? $stats[$key]['count'] : number_format($stats[$key]['value'], 2) }}
+                                            @php
+                                                $value = isset($stats[$key]['count']) ? $stats[$key]['count'] : $stats[$key]['value'];
+                                                $formattedValue = number_format($value, 2, '.', ',');
+                                            @endphp
+
+                                            {{ $formattedValue }}
                                         </h2>
                                     </div>
                                     <div class="w-1/3 text-right">
