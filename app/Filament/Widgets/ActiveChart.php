@@ -8,7 +8,7 @@ use Carbon\Carbon;
 
 class ActiveChart extends ChartWidget
 {
-    protected static ?string $heading = 'Active Users Trend (Week over Week)';
+    protected static ?string $heading = 'Active Users Trend';
     protected static ?string $maxHeight = '300px';
     protected static ?string $pollingInterval = '3600s'; // Update every hour
 
@@ -32,8 +32,8 @@ class ActiveChart extends ChartWidget
                 [
                     'label' => 'Active Users',
                     'data' => $data['counts'],
-                    'backgroundColor' => '#36A2EB',
-                    'borderColor' => '#9BD0F5',
+                    'backgroundColor' => '#fcbb29',
+                    'borderColor' => '#fcbb29',
                 ],
             ],
             'labels' => $data['labels'],
@@ -149,6 +149,6 @@ class ActiveChart extends ChartWidget
 
     protected function getType(): string
     {
-        return 'line';
+        return 'bar';
     }
 }
