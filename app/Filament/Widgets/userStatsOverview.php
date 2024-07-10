@@ -122,9 +122,33 @@ class userStatsOverview extends Widget
 
     private function calculateAverageTransactionPerCustomer(): array
     {
-        // Placeholder calculation - replace with actual logic
-        $currentValue = 12; // Example value
-        $previousValue = 10; // Example value
+        // Define the current and previous week date ranges
+        $currentWeekStart = Carbon::now()->startOfWeek();
+        $currentWeekEnd = Carbon::now()->endOfWeek();
+        $previousWeekStart = Carbon::now()->subWeek()->startOfWeek();
+        $previousWeekEnd = Carbon::now()->subWeek()->endOfWeek();
+
+        // Calculate the average number of transactions per customer for the current week
+        $currentValue = DB::table(DB::raw('(
+        SELECT receiver_phone, COUNT(*) AS transaction_count
+        FROM tbl_transactions
+        WHERE created_at BETWEEN ? AND ?
+        GROUP BY receiver_phone
+    ) AS weekly_transactions'))
+            ->setBindings([$currentWeekStart, $currentWeekEnd])
+            ->avg('transaction_count');
+
+        // Calculate the average number of transactions per customer for the previous week
+        $previousValue = DB::table(DB::raw('(
+        SELECT receiver_phone, COUNT(*) AS transaction_count
+        FROM tbl_transactions
+        WHERE created_at BETWEEN ? AND ?
+        GROUP BY receiver_phone
+    ) AS weekly_transactions'))
+            ->setBindings([$previousWeekStart, $previousWeekEnd])
+            ->avg('transaction_count');
+
+        // Calculate the difference and percentage change
         $difference = $currentValue - $previousValue;
         $percentageChange = $this->calculatePercentageChange($previousValue, $currentValue);
 
@@ -136,6 +160,7 @@ class userStatsOverview extends Widget
             'isGrowth' => $percentageChange >= 0,
         ];
     }
+
 
     public function calculatePercentageChange($previousValue, $currentValue): float
     {
