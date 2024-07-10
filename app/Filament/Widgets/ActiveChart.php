@@ -6,9 +6,9 @@ use Filament\Widgets\ChartWidget;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 
-class ActiveUserTrendChart extends ChartWidget
+class ActiveChart extends ChartWidget
 {
-    protected static ?string $heading = 'Active Users Trend';
+    protected static ?string $heading = 'Active Users Trend (Week over Week)';
     protected static ?string $maxHeight = '300px';
     protected static ?string $pollingInterval = '3600s'; // Update every hour
 
