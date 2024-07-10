@@ -175,7 +175,7 @@ class RegisterdUsersChart extends ApexChartWidget
                 $months = 24;
                 break;
             default:
-                $months = 1;
+                $months = 6;
         }
 
         $startDate = Carbon::now()->subMonths($months)->startOfMonth();
