@@ -27,6 +27,7 @@ class ActiveChart extends ChartWidget
                     'label' => 'Inactive Users',
                     'data' => $data['inactiveCounts'],
                     'backgroundColor' => '#e52f42',
+                    'borderColor' => '#e52f42',
                 ],
             ],
             'labels' => $data['labels'],
