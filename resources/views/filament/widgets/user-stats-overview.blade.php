@@ -64,12 +64,7 @@
                                     <div class="w-2/3">
                                         <!-- Card count or value -->
                                         <h2 class="text-2xl font-bold mb-0" wire:key="count-{{ $key }}">
-                                            @php
-                                                $value = isset($stats[$key]['count']) ? $stats[$key]['count'] : $stats[$key]['value'];
-                                                $formattedValue = number_format($value, 2, '.', ',');
-                                            @endphp
-
-                                            {{ $formattedValue }}
+                                            {{ isset($stats[$key]['count']) ? $stats[$key]['count'] : number_format($stats[$key]['value'], 0) }}
                                         </h2>
                                     </div>
                                     <div class="w-1/3 text-right">
