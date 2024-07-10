@@ -8,143 +8,61 @@ use Carbon\Carbon;
 
 class ActiveChart extends ChartWidget
 {
-    protected static ?string $heading = 'Active Users Trend';
+    protected static ?string $heading = 'User Activity Trend (Week over Week)';
     protected static ?string $maxHeight = '300px';
     protected static ?string $pollingInterval = '3600s'; // Update every hour
 
-    protected function getFilters(): ?array
-    {
-        return [
-            'today' => 'Today',
-            'week' => 'Last week',
-            'month' => 'Last month',
-            'year' => 'This year',
-        ];
-    }
-
     protected function getData(): array
     {
-        $filter = $this->filter ?? 'week';
-        $data = $this->getActiveUserCounts($filter);
+        $data = $this->getUserCounts();
 
         return [
             'datasets' => [
                 [
                     'label' => 'Active Users',
-                    'data' => $data['counts'],
-                    'backgroundColor' => '#fcbb29',
-                    'borderColor' => '#fcbb29',
+                    'data' => $data['activeCounts'],
+                    'backgroundColor' => '#36A2EB',
+                ],
+                [
+                    'label' => 'Inactive Users',
+                    'data' => $data['inactiveCounts'],
+                    'backgroundColor' => '#FF6384',
                 ],
             ],
             'labels' => $data['labels'],
         ];
     }
 
-    protected function getActiveUserCounts(string $filter): array
+    protected function getUserCounts(): array
     {
-        $counts = [];
+        $activeCounts = [];
+        $inactiveCounts = [];
         $labels = [];
 
-        switch ($filter) {
-            case 'today':
-                $data = $this->getTodayData();
-                break;
-            case 'week':
-                $data = $this->getWeekData();
-                break;
-            case 'month':
-                $data = $this->getMonthData();
-                break;
-            case 'year':
-                $data = $this->getYearData();
-                break;
-            default:
-                $data = $this->getWeekData();
-        }
+        for ($i = 7; $i >= 0; $i--) {
+            $startDate = Carbon::now()->subWeeks($i)->startOfWeek();
+            $endDate = Carbon::now()->subWeeks($i)->endOfWeek();
 
-        return $data;
-    }
-
-    private function getTodayData(): array
-    {
-        $counts = [];
-        $labels = [];
-
-        for ($i = 0; $i < 24; $i++) {
-            $startHour = Carbon::today()->addHours($i);
-            $endHour = $startHour->copy()->addHour();
-
-            $count = DB::table('live.users')
-                ->where('is_active', '1')
-                ->whereBetween('created_at', [$startHour, $endHour])
-                ->count();
-
-            $counts[] = $count;
-            $labels[] = $startHour->format('H:i');
-        }
-
-        return ['counts' => $counts, 'labels' => $labels];
-    }
-
-    private function getWeekData(): array
-    {
-        $counts = [];
-        $labels = [];
-
-        for ($i = 6; $i >= 0; $i--) {
-            $date = Carbon::now()->subDays($i);
-
-            $count = DB::table('live.users')
-                ->where('is_active', '1')
-                ->whereDate('created_at', $date)
-                ->count();
-
-            $counts[] = $count;
-            $labels[] = $date->format('D');
-        }
-
-        return ['counts' => $counts, 'labels' => $labels];
-    }
-
-    private function getMonthData(): array
-    {
-        $counts = [];
-        $labels = [];
-
-        for ($i = 29; $i >= 0; $i--) {
-            $date = Carbon::now()->subDays($i);
-
-            $count = DB::table('live.users')
-                ->where('is_active', '1')
-                ->whereDate('created_at', $date)
-                ->count();
-
-            $counts[] = $count;
-            $labels[] = $date->format('M d');
-        }
-
-        return ['counts' => $counts, 'labels' => $labels];
-    }
-
-    private function getYearData(): array
-    {
-        $counts = [];
-        $labels = [];
-
-        for ($i = 11; $i >= 0; $i--) {
-            $startDate = Carbon::now()->subMonths($i)->startOfMonth();
-            $endDate = $startDate->copy()->endOfMonth();
-
-            $count = DB::table('live.users')
+            $activeCount = DB::table('live.users')
                 ->where('is_active', '1')
                 ->whereBetween('created_at', [$startDate, $endDate])
                 ->count();
 
-            $counts[] = $count;
-            $labels[] = $startDate->format('M');
+            $inactiveCount = DB::table('live.users')
+                ->where('is_active', '0')
+                ->whereBetween('created_at', [$startDate, $endDate])
+                ->count();
+
+            $activeCounts[] = $activeCount;
+            $inactiveCounts[] = $inactiveCount;
+            $labels[] = $startDate->format('M d') . ' - ' . $endDate->format('M d');
         }
 
-        return ['counts' => $counts, 'labels' => $labels];
+        return [
+            'activeCounts' => $activeCounts,
+            'inactiveCounts' => $inactiveCounts,
+            'labels' => $labels,
+        ];
     }
 
     protected function getType(): string
