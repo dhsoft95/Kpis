@@ -9,54 +9,39 @@ use Illuminate\Support\Facades\DB;
 class ChurnChart extends ChartWidget
 {
     protected static ?string $heading = 'Churn Users Trend';
+    protected static ?int $sort = 2;
     protected static ?string $maxHeight = '300px';
 
     protected function getFilters(): ?array
     {
         return [
             'today' => 'Today',
-            'week' => 'Last week',
-            'month' => 'Last month',
-            'year' => 'This year',
+            'week' => 'Last 7 days',
+            'month' => 'Last 30 days',
+            'year' => 'Last 12 months',
         ];
     }
 
     protected function getData(): array
     {
-        $filter = $this->filter; // Get the selected filter
+        $filter = $this->getFilter();
 
-        switch ($filter) {
-            case 'today':
-                $data = $this->getChurnDataByDay();
-                $labels = $this->generateDateLabels('day');
-                break;
+        $data = match ($filter) {
+            'today' => $this->getChurnDataByHour(),
+            'week' => $this->getChurnDataByDay(),
+            'month' => $this->getChurnDataByDay(30),
+            'year' => $this->getChurnDataByMonth(),
+            default => [],
+        };
 
-            case 'week':
-                $data = $this->getChurnDataByWeek();
-                $labels = $this->generateDateLabels('week');
-                break;
-
-            case 'month':
-                $data = $this->getChurnDataByMonth();
-                $labels = $this->generateDateLabels('month');
-                break;
-
-            case 'year':
-                $data = $this->getChurnDataByYear();
-                $labels = $this->generateDateLabels('year');
-                break;
-
-            default:
-                $data = [];
-                $labels = [];
-                break;
-        }
+        $labels = array_keys($data);
+        $values = array_values($data);
 
         return [
             'datasets' => [
                 [
                     'label' => 'Churned users',
-                    'data' => $data,
+                    'data' => $values,
                 ],
             ],
             'labels' => $labels,
@@ -68,107 +53,82 @@ class ChurnChart extends ChartWidget
         return 'line';
     }
 
-    private function getChurnDataByDay(): array
+    private function getChurnDataByHour(): array
     {
-        $days = Carbon::now()->subDays(7)->daysUntil(Carbon::now());
+        $start = Carbon::today();
+        $end = Carbon::now();
 
-        return $days->map(function ($day) {
-            return DB::table('users')
-                ->whereNotIn('phone_number', function ($query) {
-                    $query->select('sender_phone')
-                        ->from('tbl_transactions');
-                })
-                ->whereDate('created_at', $day)
-                ->count();
-        })->values()->toArray();
+        return $this->getChurnData($start, $end, 'hour');
     }
 
-    private function getChurnDataByWeek(): array
+    private function getChurnDataByDay(int $days = 7): array
     {
-        $weeks = collect();
-        for ($i = 6; $i >= 0; $i--) {
-            $weeks->push([
-                Carbon::now()->startOfWeek()->subWeeks($i),
-                Carbon::now()->endOfWeek()->subWeeks($i),
-            ]);
-        }
+        $start = Carbon::now()->subDays($days - 1)->startOfDay();
+        $end = Carbon::now()->endOfDay();
 
-        return $weeks->map(function ($week) {
-            [$start, $end] = $week;
-
-            return DB::table('users')
-                ->whereNotIn('phone_number', function ($query) {
-                    $query->select('sender_phone')
-                        ->from('tbl_transactions');
-                })
-                ->whereBetween('created_at', [$start, $end])
-                ->count();
-        })->values()->toArray();
+        return $this->getChurnData($start, $end, 'day');
     }
 
     private function getChurnDataByMonth(): array
     {
-        $months = collect();
-        for ($i = 5; $i >= 0; $i--) {
-            $months->push([
-                Carbon::now()->startOfMonth()->subMonths($i),
-                Carbon::now()->endOfMonth()->subMonths($i),
-            ]);
-        }
+        $start = Carbon::now()->subMonths(11)->startOfMonth();
+        $end = Carbon::now()->endOfMonth();
 
-        return $months->map(function ($month) {
-            [$start, $end] = $month;
-
-            return DB::table('users')
-                ->whereNotIn('phone_number', function ($query) {
-                    $query->select('sender_phone')
-                        ->from('tbl_transactions');
-                })
-                ->whereBetween('created_at', [$start, $end])
-                ->count();
-        })->values()->toArray();
+        return $this->getChurnData($start, $end, 'month');
     }
 
-    private function getChurnDataByYear(): array
+    private function getChurnData(Carbon $start, Carbon $end, string $groupBy): array
     {
-        $years = collect();
-        for ($i = 4; $i >= 0; $i--) {
-            $years->push([
-                Carbon::now()->startOfYear()->subYears($i),
-                Carbon::now()->endOfYear()->subYears($i),
-            ]);
-        }
+        $data = DB::table('users')
+            ->leftJoin('tbl_transactions', 'users.phone_number', '=', 'tbl_transactions.sender_phone')
+            ->whereNull('tbl_transactions.sender_phone')
+            ->whereBetween('users.created_at', [$start, $end])
+            ->groupBy($groupBy)
+            ->selectRaw("DATE_FORMAT(users.created_at, ?) as date, COUNT(*) as count", [$this->getDateFormat($groupBy)])
+            ->pluck('count', 'date')
+            ->toArray();
 
-        return $years->map(function ($year) {
-            [$start, $end] = $year;
-
-            return DB::table('users')
-                ->whereNotIn('phone_number', function ($query) {
-                    $query->select('sender_phone')
-                        ->from('tbl_transactions');
-                })
-                ->whereBetween('created_at', [$start, $end])
-                ->count();
-        })->values()->toArray();
+        return $this->fillMissingDates($data, $start, $end, $groupBy);
     }
 
-    private function generateDateLabels(string $period): array
+    private function getDateFormat(string $groupBy): string
     {
-        switch ($period) {
-            case 'day':
-                return Carbon::now()->subDays(7)->daysUntil(Carbon::now())->map->toDateString()->values()->toArray();
+        return match ($groupBy) {
+            'hour' => '%Y-%m-%d %H:00',
+            'day' => '%Y-%m-%d',
+            'month' => '%Y-%m',
+            default => '%Y-%m-%d',
+        };
+    }
 
-            case 'week':
-                return collect(range(0, 6))->map(fn($i) => 'Week ' . (7 - $i))->values()->toArray();
+    private function fillMissingDates(array $data, Carbon $start, Carbon $end, string $groupBy): array
+    {
+        $allDates = $this->generateDateRange($start, $end, $groupBy);
+        $filledData = array_fill_keys($allDates, 0);
 
-            case 'month':
-                return Carbon::now()->subMonths(5)->monthsUntil(Carbon::now())->map(fn($date) => $date->format('F'))->values()->toArray();
+        return array_merge($filledData, $data);
+    }
 
-            case 'year':
-                return Carbon::now()->subYears(4)->yearsUntil(Carbon::now())->map->year->values()->toArray();
+    private function generateDateRange(Carbon $start, Carbon $end, string $groupBy): array
+    {
+        $dates = [];
+        $current = $start->copy();
 
-            default:
-                return [];
+        while ($current <= $end) {
+            $dates[] = $current->format($this->getDateFormat($groupBy));
+            $current->add($this->getDateInterval($groupBy));
         }
+
+        return $dates;
+    }
+
+    private function getDateInterval(string $groupBy): \DateInterval
+    {
+        return match ($groupBy) {
+            'hour' => new \DateInterval('PT1H'),
+            'day' => new \DateInterval('P1D'),
+            'month' => new \DateInterval('P1M'),
+            default => new \DateInterval('P1D'),
+        };
     }
 }
