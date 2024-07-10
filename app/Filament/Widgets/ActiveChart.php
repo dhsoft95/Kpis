@@ -38,7 +38,7 @@ class ActiveChart extends ChartWidget
             $startDate = Carbon::now()->subWeeks($i)->startOfWeek();
             $endDate = Carbon::now()->subWeeks($i)->endOfWeek();
 
-            $count = DB::table(DB::table('Users'))
+            $count = DB::table('live.users')
                 ->where('is_active', '1')
                 ->whereBetween('created_at', [$startDate, $endDate])
                 ->count();
