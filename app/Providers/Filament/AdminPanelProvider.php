@@ -53,8 +53,8 @@ class AdminPanelProvider extends PanelProvider
             ]) ->defaultThemeMode(ThemeMode::Dark)  ->sidebarFullyCollapsibleOnDesktop()
 //            ->topNavigation()
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
-//            ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
-            ->pages([customer::class,financial::class,oparations::class,service::class])
+            ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
+//            ->pages([customer::class,financial::class,oparations::class,service::class])
             ->pages([
                 Pages\Dashboard::class,
             ])

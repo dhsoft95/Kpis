@@ -27,6 +27,8 @@ class customer extends Page
 
     protected static ?string $title = 'Customer Metric';
 
+    protected ?string $maxContentWidth = 'full';
+
 //    public function getTabs(): array
 //    {
 //        return [
