@@ -80,7 +80,7 @@ class ChurnChart extends ChartWidget
                 })
                 ->whereDate('created_at', $day)
                 ->count();
-        })->toArray();
+        })->values()->toArray();
     }
 
     private function getChurnDataByWeek(): array
@@ -103,7 +103,7 @@ class ChurnChart extends ChartWidget
                 })
                 ->whereBetween('created_at', [$start, $end])
                 ->count();
-        })->toArray();
+        })->values()->toArray();
     }
 
     private function getChurnDataByMonth(): array
@@ -126,7 +126,7 @@ class ChurnChart extends ChartWidget
                 })
                 ->whereBetween('created_at', [$start, $end])
                 ->count();
-        })->toArray();
+        })->values()->toArray();
     }
 
     private function getChurnDataByYear(): array
@@ -149,23 +149,23 @@ class ChurnChart extends ChartWidget
                 })
                 ->whereBetween('created_at', [$start, $end])
                 ->count();
-        })->toArray();
+        })->values()->toArray();
     }
 
     private function generateDateLabels(string $period): array
     {
         switch ($period) {
             case 'day':
-                return Carbon::now()->subDays(7)->daysUntil(Carbon::now())->map->toDateString()->toArray();
+                return Carbon::now()->subDays(7)->daysUntil(Carbon::now())->map->toDateString()->values()->toArray();
 
             case 'week':
-                return collect(range(0, 6))->map(fn($i) => 'Week ' . (7 - $i))->toArray();
+                return collect(range(0, 6))->map(fn($i) => 'Week ' . (7 - $i))->values()->toArray();
 
             case 'month':
-                return Carbon::now()->subMonths(5)->monthsUntil(Carbon::now())->map(fn($date) => $date->format('F'))->toArray();
+                return Carbon::now()->subMonths(5)->monthsUntil(Carbon::now())->map(fn($date) => $date->format('F'))->values()->toArray();
 
             case 'year':
-                return Carbon::now()->subYears(4)->yearsUntil(Carbon::now())->map->year->toArray();
+                return Carbon::now()->subYears(4)->yearsUntil(Carbon::now())->map->year->values()->toArray();
 
             default:
                 return [];
