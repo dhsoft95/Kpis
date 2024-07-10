@@ -34,7 +34,6 @@ class ActiveChart extends ChartWidget
             'labels' => $data['labels'],
         ];
     }
-
     protected function getUserCounts(): array
     {
         $activeCounts = [];
