@@ -79,12 +79,14 @@ class ChurnChart extends ChartWidget
 
     private function getChurnData(Carbon $start, Carbon $end, string $groupBy): array
     {
+        $dateFormat = $this->getDateFormat($groupBy);
+
         $data = DB::table('users')
             ->leftJoin('tbl_transactions', 'users.phone_number', '=', 'tbl_transactions.sender_phone')
             ->whereNull('tbl_transactions.sender_phone')
             ->whereBetween('users.created_at', [$start, $end])
-            ->groupBy($groupBy)
-            ->selectRaw("DATE_FORMAT(users.created_at, ?) as date, COUNT(*) as count", [$this->getDateFormat($groupBy)])
+            ->groupBy(DB::raw("DATE_FORMAT(users.created_at, '{$dateFormat}')"))
+            ->selectRaw("DATE_FORMAT(users.created_at, '{$dateFormat}') as date, COUNT(*) as count")
             ->pluck('count', 'date')
             ->toArray();
 
