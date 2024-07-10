@@ -46,7 +46,7 @@
                         '0' => ['title' => 'Inactive Users', 'icon' => 'fas fa-user-slash', 'bgGradient' => 'from-red-700 to-red-400', 'color' => 'red'],
                         'churn' => ['title' => 'Churn Users', 'icon' => 'fas fa-exclamation-triangle', 'bgGradient' => 'from-yellow-700 to-yellow-400', 'color' => 'yellow'],
                         'avgValuePerDay' => ['title' => 'Avg Value of Trans Per Day', 'icon' => 'fas fa-dollar-sign', 'bgGradient' => 'from-purple-700 to-purple-400', 'color' => 'purple'],
-                        'avgTransactionPerCustomer' => ['title' => 'Avg  Trans Customer', 'icon' => 'fas fa-user-friends', 'bgGradient' => 'from-pink-700 to-pink-400', 'color' => 'pink'],
+                        'avgTransactionPerCustomer' => ['title' => 'Avg Trans Customer', 'icon' => 'fas fa-user-friends', 'bgGradient' => 'from-pink-700 to-pink-400', 'color' => 'pink'],
                     ];
                 @endphp
 
@@ -64,7 +64,11 @@
                                     <div class="w-2/3">
                                         <!-- Card count or value -->
                                         <h2 class="text-2xl font-bold mb-0" wire:key="count-{{ $key }}">
-                                            {{ isset($stats[$key]['count']) ? $stats[$key]['count'] : number_format($stats[$key]['value'], 0) }}
+                                            @if ($key === 'avgValuePerDay' || $key === 'avgTransactionPerCustomer')
+                                                TSH {{ number_format($stats[$key]['value'], 0) }}
+                                            @else
+                                                {{ isset($stats[$key]['count']) ? $stats[$key]['count'] : number_format($stats[$key]['value'], 0) }}
+                                            @endif
                                         </h2>
                                     </div>
                                     <div class="w-1/3 text-right">
