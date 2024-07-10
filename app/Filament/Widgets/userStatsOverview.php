@@ -3,15 +3,14 @@
 namespace App\Filament\Widgets;
 
 use App\Models\AppUser;
-use App\Models\User;
 use Filament\Widgets\Widget;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class userStatsOverview extends Widget
 {
     protected static string $view = 'filament.widgets.user-stats-overview';
-
 
     public array $stats = [
         'all' => ['count' => 0, 'percentageChange' => 0, 'isGrowth' => true],
@@ -63,7 +62,6 @@ class userStatsOverview extends Widget
         $currentPeriodStart = $currentPeriodEnd->copy()->startOfWeek();
         $previousPeriodStart = $currentPeriodStart->copy()->subWeek();
 
-
         foreach ($statuses as $status) {
             $currentCount = AppUser::where('is_active', $status)->count();
 
@@ -93,9 +91,23 @@ class userStatsOverview extends Widget
 
     private function calculateAverageValuePerDay(): array
     {
-        // Placeholder calculation - replace with actual logic
-        $currentValue = 100; // Example value
-        $previousValue = 2000; // Example value
+        // Get the current and previous week date ranges
+        $currentWeekStart = Carbon::now()->startOfWeek();
+        $currentWeekEnd = Carbon::now()->endOfWeek();
+        $previousWeekStart = Carbon::now()->subWeek()->startOfWeek();
+        $previousWeekEnd = Carbon::now()->subWeek()->endOfWeek();
+
+        // Calculate the average transaction value for the current week
+        $currentValue = DB::table('tbl_transactions')
+            ->whereBetween('created_at', [$currentWeekStart, $currentWeekEnd])
+            ->avg(DB::raw('CAST(sender_amount AS DECIMAL(15, 2))'));
+
+        // Calculate the average transaction value for the previous week
+        $previousValue = DB::table('tbl_transactions')
+            ->whereBetween('created_at', [$previousWeekStart, $previousWeekEnd])
+            ->avg(DB::raw('CAST(sender_amount AS DECIMAL(15, 2))'));
+
+        // Calculate the difference and percentage change
         $difference = $currentValue - $previousValue;
         $percentageChange = $this->calculatePercentageChange($previousValue, $currentValue);
 
