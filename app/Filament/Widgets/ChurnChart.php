@@ -24,7 +24,7 @@ class ChurnChart extends ChartWidget
 
     protected function getData(): array
     {
-        $filter = $this->filter ?? 'week'; // Default to 'week' if no filter is selected
+        $filter = $this->filter ?? 'week';
 
         $data = match ($filter) {
             'today' => $this->getChurnDataByHour(),
@@ -34,17 +34,14 @@ class ChurnChart extends ChartWidget
             default => [],
         };
 
-        $labels = array_keys($data);
-        $values = array_values($data);
-
         return [
             'datasets' => [
                 [
                     'label' => 'Churned users',
-                    'data' => $values,
+                    'data' => array_values($data),
                 ],
             ],
-            'labels' => $labels,
+            'labels' => array_keys($data),
         ];
     }
 
@@ -57,7 +54,6 @@ class ChurnChart extends ChartWidget
     {
         $start = Carbon::today();
         $end = Carbon::now();
-
         return $this->getChurnData($start, $end, 'hour');
     }
 
@@ -65,7 +61,6 @@ class ChurnChart extends ChartWidget
     {
         $start = Carbon::now()->subDays($days - 1)->startOfDay();
         $end = Carbon::now()->endOfDay();
-
         return $this->getChurnData($start, $end, 'day');
     }
 
@@ -73,13 +68,12 @@ class ChurnChart extends ChartWidget
     {
         $start = Carbon::now()->subMonths(11)->startOfMonth();
         $end = Carbon::now()->endOfMonth();
-
         return $this->getChurnData($start, $end, 'month');
     }
 
     private function getChurnData(Carbon $start, Carbon $end, string $groupBy): array
     {
-        $dateFormat = $this->getDateFormat($groupBy);
+        $dateFormat = $this->getSqlDateFormat($groupBy);
 
         $data = DB::table('users')
             ->leftJoin('tbl_transactions', 'users.phone_number', '=', 'tbl_transactions.sender_phone')
@@ -90,24 +84,26 @@ class ChurnChart extends ChartWidget
             ->pluck('count', 'date')
             ->toArray();
 
-        $filledData = $this->fillMissingDates($data, $start, $end, $groupBy);
-
-        // Format the labels
-        $formattedData = [];
-        foreach ($filledData as $date => $count) {
-            $formattedData[$this->formatLabel($date, $groupBy)] = $count;
-        }
-
-        return $formattedData;
+        return $this->fillMissingDates($data, $start, $end, $groupBy);
     }
 
-    private function getDateFormat(string $groupBy): string
+    private function getSqlDateFormat(string $groupBy): string
     {
         return match ($groupBy) {
-            'hour' => '%Y-%m-%d %H:00',
+            'hour' => '%Y-%m-%d %H:00:00',
             'day' => '%Y-%m-%d',
-            'month' => '%Y-%m',
+            'month' => '%Y-%m-01',
             default => '%Y-%m-%d',
+        };
+    }
+
+    private function getPhpDateFormat(string $groupBy): string
+    {
+        return match ($groupBy) {
+            'hour' => 'Y-m-d H:00:00',
+            'day' => 'Y-m-d',
+            'month' => 'Y-m-01',
+            default => 'Y-m-d',
         };
     }
 
@@ -115,17 +111,25 @@ class ChurnChart extends ChartWidget
     {
         $allDates = $this->generateDateRange($start, $end, $groupBy);
         $filledData = array_fill_keys($allDates, 0);
+        $mergedData = array_merge($filledData, $data);
 
-        return array_merge($filledData, $data);
+        // Format the labels
+        $formattedData = [];
+        foreach ($mergedData as $date => $count) {
+            $formattedData[$this->formatLabel($date, $groupBy)] = $count;
+        }
+
+        return $formattedData;
     }
 
     private function generateDateRange(Carbon $start, Carbon $end, string $groupBy): array
     {
         $dates = [];
         $current = $start->copy();
+        $dateFormat = $this->getPhpDateFormat($groupBy);
 
         while ($current <= $end) {
-            $dates[] = $current->format($this->getDateFormat($groupBy));
+            $dates[] = $current->format($dateFormat);
             $current->add($this->getDateInterval($groupBy));
         }
 
@@ -144,7 +148,7 @@ class ChurnChart extends ChartWidget
 
     private function formatLabel(string $date, string $groupBy): string
     {
-        $carbon = Carbon::createFromFormat($this->getDateFormat($groupBy), $date);
+        $carbon = Carbon::createFromFormat($this->getPhpDateFormat($groupBy), $date);
 
         return match ($groupBy) {
             'hour' => $carbon->format('H:i'),
