@@ -13,6 +13,7 @@ use Carbon\Carbon;
 class RegisterdUsersChart extends ApexChartWidget
 {
     protected static ?string $chartId = 'registeredUsersChart';
+    protected static ?string $loadingIndicator = 'Loading...';
     protected static ?string $heading = 'Registered Users Trend';
 
     protected function getFilters(): ?array
@@ -68,8 +69,8 @@ class RegisterdUsersChart extends ApexChartWidget
 
         return [
             'chart' => [
-                'type' => $filters['chartType'],
-                'height' => 250,
+                'type' => $filters['chartType'] === 'line' ? 'line' : 'bar', // Ensure 'line' stays as is
+                'height' => 480, // Increased height for better visibility
                 'toolbar' => [
                     'show' => false,
                 ],
@@ -83,6 +84,10 @@ class RegisterdUsersChart extends ApexChartWidget
             'plotOptions' => [
                 'bar' => [
                     'borderRadius' => 2,
+                    'horizontal' => true, // This makes the bar chart horizontal
+                    'dataLabels' => [
+                        'position' => 'bottom', // Aligns data labels to the right
+                    ],
                 ],
             ],
             'xaxis' => [
@@ -106,7 +111,7 @@ class RegisterdUsersChart extends ApexChartWidget
                 'type' => 'gradient',
                 'gradient' => [
                     'shade' => 'dark',
-                    'type' => 'vertical',
+                    'type' => 'horizontal', // Changed to horizontal for better visual
                     'shadeIntensity' => 0.5,
                     'gradientToColors' => ['#fbbf24'],
                     'inverseColors' => true,
@@ -132,9 +137,9 @@ class RegisterdUsersChart extends ApexChartWidget
             ],
             'colors' => ['#f59e0b'],
             'annotations' => [
-                'yaxis' => [
+                'xaxis' => [ // Changed from 'yaxis' to 'xaxis'
                     [
-                        'y' => $filters['chartAnnotations'],
+                        'x' => $filters['chartAnnotations'], // Changed from 'y' to 'x'
                         'borderColor' => '#ef4444',
                         'borderWidth' => 1,
                         'label' => [
