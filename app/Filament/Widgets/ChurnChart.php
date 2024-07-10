@@ -24,7 +24,7 @@ class ChurnChart extends ChartWidget
 
     protected function getData(): array
     {
-        $filter = $this->getFilter();
+        $filter = $this->filter ?? 'week'; // Default to 'week' if no filter is selected
 
         $data = match ($filter) {
             'today' => $this->getChurnDataByHour(),
