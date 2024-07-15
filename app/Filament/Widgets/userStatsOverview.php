@@ -141,7 +141,7 @@ class userStatsOverview extends Widget
         $previousValue = DB::table('tbl_transactions')
             ->whereBetween('created_at', [$previousWeekStart, $previousWeekEnd])
             ->where('status', 3)
-            ->avg(DB::raw('CAST(sender_amount AS DECIMAL(15, 2))'));;
+            ->avg(DB::raw('CAST(sender_amount AS DECIMAL(15, 2))'));
 
         $difference = $currentValue - $previousValue;
         $percentageChange = $this->calculatePercentageChange($previousValue, $currentValue);
@@ -163,23 +163,24 @@ class userStatsOverview extends Widget
         $previousWeekEnd = Carbon::now()->subWeek()->endOfWeek();
 
         $currentValue = DB::table(DB::raw('(
-            SELECT receiver_phone, COUNT(*) AS transaction_count
-            FROM tbl_transactions
-            WHERE created_at BETWEEN ? AND ?
-            GROUP BY receiver_phone
-        ) AS weekly_transactions'))
-            ->setBindings([$currentWeekStart, $currentWeekEnd])
-            ->avg('transaction_count')->where('status', 3);
+                SELECT receiver_phone, COUNT(*) AS transaction_count
+                FROM tbl_transactions
+                WHERE created_at BETWEEN ? AND ?
+                AND status = 3
+                GROUP BY receiver_phone
+            ) AS weekly_transactions'))
+                        ->setBindings([$currentWeekStart, $currentWeekEnd])
+                        ->avg('transaction_count');
 
-        $previousValue = DB::table(DB::raw('(
-            SELECT receiver_phone, COUNT(*) AS transaction_count
-            FROM tbl_transactions
-            WHERE created_at BETWEEN ? AND ?
-            GROUP BY receiver_phone
-        ) AS weekly_transactions'))
+                    $previousValue = DB::table(DB::raw('(
+                SELECT receiver_phone, COUNT(*) AS transaction_count
+                FROM tbl_transactions
+                WHERE created_at BETWEEN ? AND ?
+                AND status = 3
+                GROUP BY receiver_phone
+            ) AS weekly_transactions'))
             ->setBindings([$previousWeekStart, $previousWeekEnd])
-            ->avg('transaction_count')->where('status', 3);
-
+            ->avg('transaction_count');
         $difference = $currentValue - $previousValue;
         $percentageChange = $this->calculatePercentageChange($previousValue, $currentValue);
 
