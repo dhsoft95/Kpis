@@ -11,6 +11,7 @@ use App\Livewire\CustvalueChart;
 use App\Livewire\TransvalueChart;
 use Filament\Forms\Components\Tabs\Tab;
 use Filament\Pages\Page;
+use Filament\Support\Enums\MaxWidth;
 
 class customer extends Page
 {
@@ -23,11 +24,18 @@ class customer extends Page
             TransvalueChart::class,
         ];
     }
+
+    public function getMaxContentWidth(): MaxWidth
+    {
+        return MaxWidth::Full;
+    }
     protected static ?string $navigationGroup = 'KPIs';
 
     protected static ?string $title = 'Customer Metric';
+    protected int | string | array $columnSpan = 'full';
 
-    protected ?string $maxContentWidth = 'full';
+
+//    protected ?string $maxContentWidth = 'full';
 
 //    public function getTabs(): array
 //    {

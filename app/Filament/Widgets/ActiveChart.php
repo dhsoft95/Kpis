@@ -8,7 +8,7 @@ use Carbon\Carbon;
 
 class ActiveChart extends ChartWidget
 {
-    protected static ?string $heading = 'User Activity Trend (Week over Week)';
+    protected static ?string $heading = ' Active Vs Inactive users (WoW)';
     protected static ?string $maxHeight = '300px';
     protected static ?string $pollingInterval = '3600s'; // Update every hour
 
@@ -44,12 +44,12 @@ class ActiveChart extends ChartWidget
             $startDate = Carbon::now()->subWeeks($i)->startOfWeek();
             $endDate = Carbon::now()->subWeeks($i)->endOfWeek();
 
-            $activeCount = DB::table('live.users')
+            $activeCount = DB::table('kpis.users')
                 ->where('is_active', '1')
                 ->whereBetween('created_at', [$startDate, $endDate])
                 ->count();
 
-            $inactiveCount = DB::table('live.users')
+            $inactiveCount = DB::table('kpis.users')
                 ->where('is_active', '0')
                 ->whereBetween('created_at', [$startDate, $endDate])
                 ->count();

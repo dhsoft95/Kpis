@@ -2,8 +2,10 @@
 
 namespace App\Filament\Pages;
 
+use App\Filament\Widgets\Interactions;
 use App\Livewire\CustStatsOverview;
 use App\Livewire\CustvalueChart;
+use App\Livewire\HelpDeskChart;
 use App\Livewire\SericeDeskOverview;
 use App\Livewire\TransvalueChart;
 use Filament\Pages\Page;
@@ -11,7 +13,13 @@ use Filament\Pages\Page;
 class service extends Page
 {
 
-
+    protected function getHeaderWidgets(): array
+    {
+        return [
+           HelpDeskChart::class,
+            \App\Livewire\Interactions::class
+        ];
+    }
 
     protected static ?string $title = 'Service Desk';
 

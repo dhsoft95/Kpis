@@ -3,10 +3,12 @@
 namespace App\Filament\Widgets;
 
 use App\Models\AppUser;
+use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Radio;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
+use Illuminate\Support\Facades\DB;
 use Leandrocfe\FilamentApexCharts\Widgets\ApexChartWidget;
 use Carbon\Carbon;
 
@@ -16,237 +18,152 @@ class RegisterdUsersChart extends ApexChartWidget
     protected static ?string $loadingIndicator = 'Loading...';
     protected static ?string $heading = 'Registered Users Trend';
 
-    protected function getFilters(): ?array
-    {
-        return [
-            '1_months' => 'Last 1 months',
-            '2_months' => 'Last 2 months',
-            '4_months' => 'Last 4 months',
-            '6_months' => 'Last 6 months',
-            '12_months' => 'Last 12 months',
-            '24_months' => 'Last 24 months',
-        ];
-    }
 
-    protected static ?int $contentHeight = 480;
+    protected static ?int $contentHeight = 440;
 
-    protected function getFormSchema(): array
-    {
-        return [
-            Radio::make('chartType')
-                ->default('bar')
-                ->options([
-                    'line' => 'Line',
-                    'bar' => 'Col',
-                    'area' => 'Area',
-                ])
-                ->inline(true)
-                ->label('Type'),
 
-            Grid::make()
-                ->schema([
-                    Toggle::make('chartMarkers')
-                        ->default(false)
-                        ->label('Markers'),
-
-                    Toggle::make('chartGrid')
-                        ->default(false)
-                        ->label('Grid'),
-                ]),
-
-            TextInput::make('chartAnnotations')
-                ->required()
-                ->numeric()
-                ->default(100)
-                ->label('Annotations'),
-        ];
-    }
 
     protected function getOptions(): array
     {
-        $filters = $this->filterFormData;
-        $data = $this->getData();
+        $userRegistrations = $this->getUserRegistrations();
 
         return [
             'chart' => [
-                'type' => $filters['chartType'] === 'line' ? 'line' : 'bar', // Ensure 'line' stays as is
-                'height' => 480, // Increased height for better visibility
+                'type' => 'bar',
+                'height' => 500,
+                'parentHeightOffset' => 2,
+                'stacked' => true,
                 'toolbar' => [
                     'show' => false,
                 ],
             ],
             'series' => [
                 [
-                    'name' => 'Registered Users',
-                    'data' => $data['counts'],
+                    'name' => 'Current Week',
+                    'data' => array_column($userRegistrations, 'current'),
+                ],
+                [
+                    'name' => 'Previous Week',
+                    'data' => array_column($userRegistrations, 'previous'),
                 ],
             ],
             'plotOptions' => [
                 'bar' => [
-                    'borderRadius' => 2,
-                    'horizontal' => true, // This makes the bar chart horizontal
-                    'dataLabels' => [
-                        'position' => 'bottom', // Aligns data labels to the right
-                    ],
+                    'horizontal' => true,
+                    'columnWidth' => '50%',
                 ],
             ],
+            'dataLabels' => [
+                'enabled' => true,
+            ],
+            'legend' => [
+                'show' => true,
+                'horizontalAlign' => 'right',
+                'position' => 'top',
+                'fontFamily' => 'inherit',
+                'markers' => [
+                    'height' => 12,
+                    'width' => 12,
+                    'radius' => 12,
+                    'offsetX' => -3,
+                    'offsetY' => 2,
+                ],
+                'itemMargin' => [
+                    'horizontal' => 5,
+                ],
+            ],
+            'grid' => [
+                'show' => true,
+            ],
             'xaxis' => [
-                'categories' => $data['labels'],
+                'categories' => $this->getWeekLabels(),
                 'labels' => [
                     'style' => [
-                        'fontWeight' => 400,
                         'fontFamily' => 'inherit',
                     ],
+                ],
+                'axisTicks' => [
+                    'show' => false,
+                ],
+                'axisBorder' => [
+                    'show' => false,
                 ],
             ],
             'yaxis' => [
+                'offsetX' => -16,
                 'labels' => [
                     'style' => [
-                        'fontWeight' => 400,
                         'fontFamily' => 'inherit',
                     ],
                 ],
+                'min' => 0,
+                'tickAmount' => 5,
             ],
             'fill' => [
                 'type' => 'gradient',
                 'gradient' => [
                     'shade' => 'dark',
-                    'type' => 'horizontal', // Changed to horizontal for better visual
+                    'type' => 'vertical',
                     'shadeIntensity' => 0.5,
-                    'gradientToColors' => ['#fbbf24'],
-                    'inverseColors' => true,
+                    'gradientToColors' => ['#d97706', '#c2410c'],
                     'opacityFrom' => 1,
                     'opacityTo' => 1,
                     'stops' => [0, 100],
                 ],
             ],
-            'dataLabels' => [
-                'enabled' => false,
-            ],
-            'grid' => [
-                'show' => $filters['chartGrid'],
-            ],
-            'markers' => [
-                'size' => $filters['chartMarkers'] ? 3 : 0,
-            ],
-            'tooltip' => [
-                'enabled' => true,
-            ],
             'stroke' => [
-                'width' => $filters['chartType'] === 'line' ? 4 : 0,
+                'curve' => 'smooth',
+                'width' => 1,
+                'lineCap' => 'round',
             ],
-            'colors' => ['#f59e0b'],
-            'annotations' => [
-                'xaxis' => [ // Changed from 'yaxis' to 'xaxis'
-                    [
-                        'x' => $filters['chartAnnotations'], // Changed from 'y' to 'x'
-                        'borderColor' => '#ef4444',
-                        'borderWidth' => 1,
-                        'label' => [
-                            'borderColor' => '#ef4444',
-                            'style' => [
-                                'color' => '#fffbeb',
-                                'background' => '#ef4444',
-                            ],
-                            'text' => 'Annotation: ' . $filters['chartAnnotations'],
-                        ],
-                    ],
-                ],
-            ],
+            'colors' => ['#f59e0b', '#ea580c'],
         ];
     }
 
-    private function getData(): array
-    {
-        $filter = $this->filter;
 
-        switch ($filter) {
-            case '1_month':
-                $months = 1;
-                break;
-            case '2_months':
-                $months = 2;
-                break;
-            case '4_months':
-                $months = 4;
-                break;
-            case '6_months':
-                $months = 6;
-                break;
-            case '12_months':
-                $months = 12;
-                break;
-            case '24_months':
-                $months = 24;
-                break;
-            default:
-                $months = 6;
+    /**
+     * Get user registrations for the last 12 weeks.
+     */
+    protected function getUserRegistrations(): array
+    {
+        $registrations = DB::table('users')
+            ->select(DB::raw('YEARWEEK(created_at, 1) as week, COUNT(*) as count'))
+            ->groupBy('week')
+            ->orderBy('week', 'desc')
+            ->take(13)
+            ->get()
+            ->toArray();
+
+        $data = [];
+
+        for ($i = 1; $i < count($registrations); $i++) {
+            $current = $registrations[$i]->count;
+            $previous = $registrations[$i - 1]->count;
+
+            $data[] = [
+                'current' => $current,
+                'previous' => $previous,
+            ];
         }
 
-        $startDate = Carbon::now()->subMonths($months)->startOfMonth();
-        $endDate = Carbon::now()->endOfMonth();
+        return array_reverse(array_slice($data, 0, 6));
+    }
 
-        $users = AppUser::whereBetween('created_at', [$startDate, $endDate])
-            ->selectRaw('DATE_FORMAT(created_at, "%Y-%m") as month, COUNT(*) as count')
-            ->groupBy('month')
-            ->orderBy('month')
-            ->get();
-
+    /**
+     * Get week labels for the last 12 weeks.
+     */
+    protected function getWeekLabels(): array
+    {
+        $endDate = Carbon::now()->startOfWeek();
         $labels = [];
-        $counts = [];
 
-        // Create an array of all months in the range
-        $currentDate = clone $startDate;
-        while ($currentDate <= $endDate) {
-            $monthKey = $currentDate->format('Y-m');
-            $labels[] = $currentDate->format('M'); // Changed to only show month abbreviation
-            $counts[$monthKey] = 0;
-            $currentDate->addMonth();
+        for ($i = 0; $i < 6; $i++) {
+            $startDate = $endDate->copy()->subDays(6);
+            $labels[] = $startDate->format('M d') . '-' . $endDate->format('M d');
+            $endDate->subWeek();
         }
 
-        // Fill in the actual counts
-        foreach ($users as $user) {
-            $counts[$user->month] = $user->count;
-        }
-
-        // Ensure the counts array is in the correct order
-        ksort($counts);
-
-        return [
-            'labels' => $labels,
-            'counts' => array_values($counts),
-        ];
+        return array_reverse($labels);
     }
 
-    protected function getHeading(): string
-    {
-        $filter = $this->filter;
-        $endDate = Carbon::now();
-
-        switch ($filter) {
-            case '1_months':
-                $startDate = $endDate->copy()->subMonths(1)->startOfMonth();
-                break;
-            case '2_months':
-                $startDate = $endDate->copy()->subMonths(2)->startOfMonth();
-                break;
-            case '4_months':
-                $startDate = $endDate->copy()->subMonths(4)->startOfMonth();
-                break;
-
-            case '6_months':
-                $startDate = $endDate->copy()->subMonths(6)->startOfMonth();
-                break;
-            case '12_months':
-                $startDate = $endDate->copy()->subMonths(12)->startOfMonth();
-                break;
-            case '24_months':
-                $startDate = $endDate->copy()->subMonths(24)->startOfMonth();
-                break;
-            default:
-                $startDate = $endDate->copy()->subMonths(12)->startOfMonth();
-        }
-
-        return "Registered Users Trend ({$startDate->format('M Y')} - {$endDate->format('M Y')})";
-    }
 }
