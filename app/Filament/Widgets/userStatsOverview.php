@@ -141,7 +141,7 @@ class userStatsOverview extends Widget
         $previousValue = DB::table('tbl_transactions')
             ->whereBetween('created_at', [$previousWeekStart, $previousWeekEnd])
             ->where('status', 3)
-            ->avg(DB::raw('CAST(sender_amount AS DECIMAL(15, 2))'));
+            ->avg(DB::raw('CAST(sender_amount AS DECIMAL(15, 2))'));;
 
         $difference = $currentValue - $previousValue;
         $percentageChange = $this->calculatePercentageChange($previousValue, $currentValue);
