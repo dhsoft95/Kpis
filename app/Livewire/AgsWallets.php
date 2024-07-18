@@ -72,9 +72,11 @@ class AgsWallets extends Widget
 
     public static function checkDisbursementBalanceTeraPay()
     {
+        $username = env('TERAPAY_USERNAME');
+        $password = env('TERAPAY_PASSWORD');
         $headers = [
-            'X-USERNAME: simbaLive',
-            'X-PASSWORD: b9c90ea40b459a7f9f065b2a8f318940677279ee54fbdaf76fa4040f93f1b041',
+            'X-USERNAME: ' . $username,
+            'X-PASSWORD: ' . $password,
             'X-DATE: ' . now()->format('Y-m-d H:i:s'),
             'X-ORIGINCOUNTRY: TZ',
             'Content-Type: application/json'
@@ -102,4 +104,5 @@ class AgsWallets extends Widget
 
         return $response;
     }
+
 }

@@ -6,7 +6,7 @@
 
         .gradient-tembo { background: linear-gradient(135deg, #ff9a9e, #141415); }
         .gradient-terapay { background: linear-gradient(135deg, #a1c4fd, #141415); }
-        .gradient-cellulant { background: linear-gradient(135deg, #fbc2eb, #141415); }
+        .gradient-cellulant { background: linear-gradient(135deg, rgba(0, 255, 183, 0.5), #141415); }
     </style>
 
     <x-filament::section>
