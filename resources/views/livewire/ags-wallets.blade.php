@@ -21,17 +21,31 @@
                             <h2 class="text-white text-lg font-bold">Tembo Pay</h2>
                             <i class='bx bx-wallet text-white text-2xl'></i>
                         </div>
-                        <div class="flex space-x-4">
-                            <div class="bg-white/20 p-2 rounded flex-1">
-                                <p class="text-white text-xs mb-0.5">Collected</p>
-                                <h3 class="text-white text-base font-bold">+ 400,000 TZS</h3>
+                        @if($errorTembo)
+                            <div class="bg-white/20 p-2 rounded text-center">
+                                <p class="text-red-300 text-xs mb-2">{{ $errorTembo }}</p>
+                                <button wire:click="fetchTemboBalance" class="bg-white/20 text-white text-xs py-1 px-3 rounded hover:bg-white/30 transition duration-300">
+                                    Retry
+                                </button>
                             </div>
-                            <div class="bg-white/20 p-2 rounded flex-1 text-right">
-                                <p class="text-white text-xs mb-0.5">Disbursed</p>
-                                <h3 class="text-white text-base font-bold">- 150,000 TZS</h3>
+                        @else
+                            <div class="flex space-x-4">
+                                <div class="bg-white/20 p-2 rounded flex-1">
+                                    <p class="text-white text-xs mb-0.5">Current Balance</p>
+                                    @if($balanceTembo !== null)
+                                        <h3 class="text-white text-base font-bold">
+                                            {{ number_format((float)$balanceTembo, 2) }} {{ $currencyTembo }}
+                                        </h3>
+                                    @else
+                                        <h3 class="text-white text-xs">Loading...</h3>
+                                    @endif
+                                </div>
+                                <div class="bg-white/20 p-2 rounded flex-1 text-right">
+                                    <p class="text-white text-xs mb-0.5">Status</p>
+                                    <h3 class="text-white text-base font-bold">{{ ucfirst($statusTembo ?? 'Unknown') }}</h3>
+                                </div>
                             </div>
-                        </div>
-                        
+                        @endif
                     </div>
                 </div>
 
@@ -42,9 +56,9 @@
                             <h2 class="text-white text-lg font-bold">Terapay</h2>
                             <i class='bx bx-wallet text-white text-2xl'></i>
                         </div>
-                        @if($error)
+                        @if($errorTerapay)
                             <div class="bg-white/20 p-2 rounded text-center">
-                                <p class="text-red-300 text-xs mb-2">{{ $error }}</p>
+                                <p class="text-red-300 text-xs mb-2">{{ $errorTerapay }}</p>
                                 <button wire:click="fetchDisbursementBalance" class="bg-white/20 text-white text-xs py-1 px-3 rounded hover:bg-white/30 transition duration-300">
                                     Retry
                                 </button>
@@ -53,9 +67,9 @@
                             <div class="flex space-x-4">
                                 <div class="bg-white/20 p-2 rounded flex-1">
                                     <p class="text-white text-xs mb-0.5">Current Balance</p>
-                                    @if($balance !== null)
+                                    @if($balanceTerapay !== null)
                                         <h3 class="text-white text-base font-bold">
-                                            {{ number_format((float)$balance, 2) }} {{ $currency }}
+                                            {{ number_format((float)$balanceTerapay, 2) }} {{ $currencyTerapay }}
                                         </h3>
                                     @else
                                         <h3 class="text-white text-xs">Loading...</h3>
@@ -63,12 +77,13 @@
                                 </div>
                                 <div class="bg-white/20 p-2 rounded flex-1 text-right">
                                     <p class="text-white text-xs mb-0.5">Status</p>
-                                    <h3 class="text-white text-base font-bold">{{ ucfirst($status ?? 'Unknown') }}</h3>
+                                    <h3 class="text-white text-base font-bold">{{ ucfirst($statusTerapay ?? 'Unknown') }}</h3>
                                 </div>
                             </div>
                         @endif
                     </div>
                 </div>
+
                 <!-- Cellulant Wallet Balance Card -->
                 <div class="transform hover:scale-105 transition duration-300">
                     <div class="p-4 rounded-lg gradient-cellulant shadow-md">
@@ -76,24 +91,35 @@
                             <h2 class="text-white text-lg font-bold">Cellulant</h2>
                             <i class='bx bx-wallet text-white text-2xl'></i>
                         </div>
-                        <div class="flex space-x-4">
-                            <div class="bg-white/20 p-2 rounded flex-1">
-                                <p class="text-white text-xs mb-0.5">Collected</p>
-                                <h3 class="text-white text-base font-bold">+ 600,000 TZS</h3>
+                        @if($errorCellulant)
+                            <div class="bg-white/20 p-2 rounded text-center">
+                                <p class="text-red-300 text-xs mb-2">{{ $errorCellulant }}</p>
+                                <button wire:click="fetchCellulantBalance" class="bg-white/20 text-white text-xs py-1 px-3 rounded hover:bg-white/30 transition duration-300">
+                                    Retry
+                                </button>
                             </div>
-                            <div class="bg-white/20 p-2 rounded flex-1 text-right">
-                                <p class="text-white text-xs mb-0.5">Disbursed</p>
-                                <h3 class="text-white text-base font-bold">- 250,000 TZS</h3>
+                        @else
+                            <div class="flex space-x-4">
+                                <div class="bg-white/20 p-2 rounded flex-1">
+                                    <p class="text-white text-xs mb-0.5">Current Balance</p>
+                                    @if($balanceCellulant !== null)
+                                        <h3 class="text-white text-base font-bold">
+                                            {{ number_format((float)$balanceCellulant, 2) }} {{ $currencyCellulant }}
+                                        </h3>
+                                    @else
+                                        <h3 class="text-white text-xs">Loading...</h3>
+                                    @endif
+                                </div>
+                                <div class="bg-white/20 p-2 rounded flex-1 text-right">
+                                    <p class="text-white text-xs mb-0.5">Status</p>
+                                    <h3 class="text-white text-base font-bold">{{ ucfirst($statusCellulant ?? 'Unknown') }}</h3>
+                                </div>
                             </div>
-                        </div>
-                        <div class="mt-3 pt-2 border-t border-white/20 flex justify-between items-center">
-                            <span class="text-white text-xs">Balance</span>
-                            <span class="text-white text-base font-bold">350,000 TZS</span>
-                        </div>
+                        @endif
                     </div>
                 </div>
-
             </div>
         </div>
     </x-filament::section>
+
 </x-filament-widgets::widget>
