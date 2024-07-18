@@ -28,19 +28,10 @@
                             </div>
                             <div class="bg-white/20 p-2 rounded flex-1 text-right">
                                 <p class="text-white text-xs mb-0.5">Disbursed</p>
-                                @if($balance !== null)
-                                    <h3 class="text-white text-base font-bold">
-                                        {{ number_format((float)$balance, 2) }} {{ $currency }}
-                                    </h3>
-                                @else
-                                    <h3 class="text-white text-xs">Loading...</h3>
-                                @endif
+                                <h3 class="text-white text-base font-bold">- 150,000 TZS</h3>
                             </div>
                         </div>
-                        <div class="mt-3 pt-2 border-t border-white/20 flex justify-between items-center">
-                            <span class="text-white text-xs">Balance</span>
-                            <span class="text-white text-base font-bold">250,000 TZS</span>
-                        </div>
+                        
                     </div>
                 </div>
 
@@ -51,28 +42,29 @@
                             <h2 class="text-white text-lg font-bold">Terapay</h2>
                             <i class='bx bx-wallet text-white text-2xl'></i>
                         </div>
-                        <div class="flex space-x-4">
-                            <div class="bg-white/20 p-2 rounded flex-1">
-                                <p class="text-white text-xs mb-0.5">Current Balance</p>
-                                @if($balance !== null)
-                                    <h3 class="text-white text-base font-bold">
-                                        {{ number_format((float)$balance, 2) }} {{ $currency }}
-                                    </h3>
-                                @else
-                                    <h3 class="text-white text-xs">Loading...</h3>
-                                @endif
-                            </div>
-                            <div class="bg-white/20 p-2 rounded flex-1 text-right">
-                                <p class="text-white text-xs mb-0.5">Status</p>
-                                <h3 class="text-white text-base font-bold">{{ ucfirst($status ?? 'Unknown') }}</h3>
-                            </div>
-                        </div>
                         @if($error)
-                            <div class="mt-3 pt-2 border-t border-white/20 text-center">
+                            <div class="bg-white/20 p-2 rounded text-center">
                                 <p class="text-red-300 text-xs mb-2">{{ $error }}</p>
                                 <button wire:click="fetchDisbursementBalance" class="bg-white/20 text-white text-xs py-1 px-3 rounded hover:bg-white/30 transition duration-300">
                                     Retry
                                 </button>
+                            </div>
+                        @else
+                            <div class="flex space-x-4">
+                                <div class="bg-white/20 p-2 rounded flex-1">
+                                    <p class="text-white text-xs mb-0.5">Current Balance</p>
+                                    @if($balance !== null)
+                                        <h3 class="text-white text-base font-bold">
+                                            {{ number_format((float)$balance, 2) }} {{ $currency }}
+                                        </h3>
+                                    @else
+                                        <h3 class="text-white text-xs">Loading...</h3>
+                                    @endif
+                                </div>
+                                <div class="bg-white/20 p-2 rounded flex-1 text-right">
+                                    <p class="text-white text-xs mb-0.5">Status</p>
+                                    <h3 class="text-white text-base font-bold">{{ ucfirst($status ?? 'Unknown') }}</h3>
+                                </div>
                             </div>
                         @endif
                     </div>
