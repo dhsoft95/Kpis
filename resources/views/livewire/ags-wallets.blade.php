@@ -60,13 +60,9 @@
                                 <span class="text-white text-xs">Balance</span>
                                 @if($error)
                                     <span class="text-red-300 text-xs">Error fetching balance</span>
-                                @elseif($balance)
+                                @elseif($balance !== null)
                                     <span class="text-white text-base font-bold">
-                        @if(is_object($balance) && isset($balance->balance))
-                                            {{ number_format($balance->balance, 2) }} {{ $balance->currency ?? 'TZS' }}
-                                        @else
-                                            {{ is_numeric($balance) ? number_format($balance, 2) : $balance }} TZS
-                                        @endif
+                        {{ number_format((float)$balance, 2) }} {{ $currency }}
                     </span>
                                 @else
                                     <span class="text-white text-xs">Loading...</span>
