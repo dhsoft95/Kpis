@@ -44,8 +44,8 @@ class AgsWallets extends Widget
     public static function checkDisbursementBalanceTeraPay()
     {
         $headers = [
-            'X-USERNAME: ' . config('api.TERAPAYUSER'),
-            'X-PASSWORD: ' . config('api.TERAPAYPASSWORD'),
+            'X-USERNAME: simbaLive' ,
+            'X-PASSWORD: b9c90ea40b459a7f9f065b2a8f318940677279ee54fbdaf76fa4040f93f1b041' ,
             'X-DATE: ' . now()->format('Y-m-d H:i:s'),
             'X-ORIGINCOUNTRY: TZ',
             'Content-Type: application/json'
