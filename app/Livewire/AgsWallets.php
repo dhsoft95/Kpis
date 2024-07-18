@@ -20,7 +20,7 @@ class AgsWallets extends Widget
 
     public function checkDisbursementBalanceTeraPay()
     {
-        $response = Http::withHeaders([
+        $response = Http::withoutVerifying()->withHeaders([
             'X-USERNAME' => config('api.TERAPAYUSER'),
             'X-PASSWORD' => config('api.TERAPAYPASSWORD'),
             'X-DATE' => now()->format('Y-m-d H:i:s'),
