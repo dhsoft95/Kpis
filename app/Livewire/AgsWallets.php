@@ -30,23 +30,18 @@ class AgsWallets extends Widget
         $rawResponse = self::checkDisbursementBalanceTeraPay();
         Log::info('Raw TeraPay API Response', ['response' => $rawResponse]);
 
-        if ($rawResponse === false) {
-            $this->error = 'Failed to connect to TeraPay API. Please try again later.';
-            return;
-        }
-
         $response = json_decode($rawResponse);
 
         if (json_last_error() !== JSON_ERROR_NONE) {
-            $this->error = 'Failed to parse API response. Please try again later.';
+            $this->error = 'Failed to parse API response';
             Log::error('TeraPay API JSON Parse Error', ['error' => json_last_error_msg()]);
             return;
         }
 
-        if (is_array($response) && !empty($response) && isset($response[0]->currentBalance)) {
-            $this->balance = $response[0]->currentBalance;
-            $this->currency = $response[0]->currency ?? 'USD';
-            $this->status = $response[0]->status ?? 'unknown';
+        if (isset($response->currentBalance)) {
+            $this->balance = $response->currentBalance;
+            $this->currency = $response->currency ?? 'USD';
+            $this->status = $response->status ?? 'unknown';
         } elseif (isset($response->error)) {
             $this->error = $response->error->errorDescription ?? 'Unknown API error';
             Log::error('TeraPay API Error', (array)$response->error);
@@ -86,7 +81,6 @@ class AgsWallets extends Widget
 
         if (curl_errno($curl)) {
             Log::error('cURL Error', ['error' => curl_error($curl)]);
-            $response = false;
         }
 
         curl_close($curl);
