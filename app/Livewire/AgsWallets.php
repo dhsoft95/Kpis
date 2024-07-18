@@ -38,10 +38,10 @@ class AgsWallets extends Widget
             return;
         }
 
-        if (isset($response->currentBalance)) {
-            $this->balance = $response->currentBalance;
-            $this->currency = $response->currency ?? 'USD';
-            $this->status = $response->status ?? 'unknown';
+        if (is_array($response) && !empty($response) && isset($response[0]->currentBalance)) {
+            $this->balance = $response[0]->currentBalance;
+            $this->currency = $response[0]->currency ?? 'USD';
+            $this->status = $response[0]->status ?? 'unknown';
         } elseif (isset($response->error)) {
             $this->error = $response->error->errorDescription ?? 'Unknown API error';
             Log::error('TeraPay API Error', (array)$response->error);
