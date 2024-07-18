@@ -35,7 +35,7 @@ class customer extends Page
     protected int | string | array $columnSpan = 'full';
 
 
-//    protected ?string $maxContentWidth = 'full';
+    protected ?string $maxContentWidth = 'full';
 
 //    public function getTabs(): array
 //    {

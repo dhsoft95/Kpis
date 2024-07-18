@@ -9,6 +9,7 @@ use App\Livewire\HelpDeskChart;
 use App\Livewire\SericeDeskOverview;
 use App\Livewire\TransvalueChart;
 use Filament\Pages\Page;
+use Filament\Support\Enums\MaxWidth;
 
 class service extends Page
 {
@@ -19,6 +20,11 @@ class service extends Page
            HelpDeskChart::class,
             \App\Livewire\Interactions::class
         ];
+    }
+
+    public function getMaxContentWidth(): MaxWidth
+    {
+        return MaxWidth::Full;
     }
 
     protected static ?string $title = 'Service Desk';
