@@ -47,39 +47,30 @@
                         </div>
                         <div class="flex space-x-4">
                             <div class="bg-white/20 p-2 rounded flex-1">
-                                <p class="text-white text-xs mb-0.5">Collected</p>
-                                <h3 class="text-white text-base font-bold">+ 500,000 TZS</h3>
-                            </div>
-                            <div class="bg-white/20 p-2 rounded flex-1 text-right">
-                                <p class="text-white text-xs mb-0.5">Disbursed</p>
-                                <h3 class="text-white text-base font-bold">- 200,000 TZS</h3>
-                            </div>
-                        </div>
-                        <div class="mt-3 pt-2 border-t border-white/20">
-                            <div class="flex justify-between items-center">
-                                <span class="text-white text-xs">Balance</span>
-                                @if($error)
-                                    <span class="text-red-300 text-xs">Error fetching balance</span>
-                                @elseif($balance !== null)
-                                    <span class="text-white text-base font-bold">
-                        {{ number_format((float)$balance, 2) }} {{ $currency }}
-                    </span>
+                                <p class="text-white text-xs mb-0.5">Current Balance</p>
+                                @if($balance !== null)
+                                    <h3 class="text-white text-base font-bold">
+                                        {{ number_format((float)$balance, 2) }} {{ $currency }}
+                                    </h3>
                                 @else
-                                    <span class="text-white text-xs">Loading...</span>
+                                    <h3 class="text-white text-xs">Loading...</h3>
                                 @endif
                             </div>
-                            @if($error)
-                                <div class="mt-2 text-center">
-                                    <p class="text-red-300 text-xs mb-2">{{ $error }}</p>
-                                    <button wire:click="fetchDisbursementBalance" class="bg-white/20 text-white text-xs py-1 px-3 rounded hover:bg-white/30 transition duration-300">
-                                        Retry
-                                    </button>
-                                </div>
-                            @endif
+                            <div class="bg-white/20 p-2 rounded flex-1 text-right">
+                                <p class="text-white text-xs mb-0.5">Status</p>
+                                <h3 class="text-white text-base font-bold">{{ ucfirst($status ?? 'Unknown') }}</h3>
+                            </div>
                         </div>
+                        @if($error)
+                            <div class="mt-3 pt-2 border-t border-white/20 text-center">
+                                <p class="text-red-300 text-xs mb-2">{{ $error }}</p>
+                                <button wire:click="fetchDisbursementBalance" class="bg-white/20 text-white text-xs py-1 px-3 rounded hover:bg-white/30 transition duration-300">
+                                    Retry
+                                </button>
+                            </div>
+                        @endif
                     </div>
                 </div>
-
                 <!-- Cellulant Wallet Balance Card -->
                 <div class="transform hover:scale-105 transition duration-300">
                     <div class="p-4 rounded-lg gradient-cellulant shadow-md">

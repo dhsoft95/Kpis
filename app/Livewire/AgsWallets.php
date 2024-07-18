@@ -27,15 +27,14 @@ class AgsWallets extends Widget
         $this->error = null;
         $this->balance = null;
         $this->currency = null;
+        $this->status = null;
 
         $response = self::checkDisbursementBalanceTeraPay();
 
-        if (isset($response->error)) {
-            $this->error = $response->error->errorDescription;
-            Log::error('TeraPay API Error', (array)$response->error);
-        } elseif (isset($response->currentBalance)) {
+        if (isset($response->currentBalance)) {
             $this->balance = $response->currentBalance;
             $this->currency = $response->currency ?? 'USD';
+            $this->status = $response->status ?? 'unknown';
         } else {
             $this->error = 'Unexpected response format from TeraPay API';
             Log::error('TeraPay API Unexpected Response', (array)$response);
