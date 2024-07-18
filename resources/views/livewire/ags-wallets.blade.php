@@ -52,14 +52,24 @@
                             </div>
                             <div class="bg-white/20 p-2 rounded flex-1 text-right">
                                 <p class="text-white text-xs mb-0.5">Disbursed</p>
-                                @if($balance)
-                                    <h3 class="text-white text-base font-bold">{{ json_encode($balance, JSON_PRETTY_PRINT) }}</h3>
-                                @endif
+                                <h3 class="text-white text-base font-bold">- 200,000 TZS</h3>
                             </div>
                         </div>
                         <div class="mt-3 pt-2 border-t border-white/20 flex justify-between items-center">
                             <span class="text-white text-xs">Balance</span>
-                            <span class="text-white text-base font-bold">300,000 TZS</span>
+                            @if($error)
+                                <span class="text-red-300 text-xs">Error: {{ $error }}</span>
+                            @elseif($balance)
+                                <span class="text-white text-base font-bold">
+                                @if(is_object($balance) && isset($balance->balance))
+                                        {{ number_format($balance->balance, 2) }} {{ $balance->currency ?? 'TZS' }}
+                                    @else
+                                        {{ is_numeric($balance) ? number_format($balance, 2) : $balance }} TZS
+                                    @endif
+                            </span>
+                            @else
+                                <span class="text-white text-xs">Loading...</span>
+                            @endif
                         </div>
                     </div>
                 </div>
