@@ -28,7 +28,13 @@
                             </div>
                             <div class="bg-white/20 p-2 rounded flex-1 text-right">
                                 <p class="text-white text-xs mb-0.5">Disbursed</p>
-                                <h3 class="text-white text-base font-bold">- 150,000 TZS</h3>
+                                @if($balance !== null)
+                                    <h3 class="text-white text-base font-bold">
+                                        {{ number_format((float)$balance, 2) }} {{ $currency }}
+                                    </h3>
+                                @else
+                                    <h3 class="text-white text-xs">Loading...</h3>
+                                @endif
                             </div>
                         </div>
                         <div class="mt-3 pt-2 border-t border-white/20 flex justify-between items-center">
