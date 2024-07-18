@@ -15,9 +15,21 @@ class AgsWallets extends Widget
     public $currency;
     public $status;
 
+    public $balanceTembo;
+    public $errorTembo;
+    public $currencyTembo;
+    public $statusTembo;
+
+    public $balanceCellulant;
+    public $errorCellulant;
+    public $currencyCellulant;
+    public $statusCellulant;
+
     public function mount()
     {
         $this->fetchDisbursementBalance();
+        $this->fetchTemboBalance();
+        $this->fetchCellulantBalance();
     }
 
     public function fetchDisbursementBalance()
@@ -38,6 +50,24 @@ class AgsWallets extends Widget
             $this->error = 'Unexpected response format from TeraPay API';
             Log::error('TeraPay API Unexpected Response', (array)$response);
         }
+    }
+
+    public function fetchTemboBalance()
+    {
+        // Dummy data for Tembo Pay
+        $this->balanceTembo = 400;
+        $this->currencyTembo = 'USD';
+        $this->statusTembo = 'available';
+        $this->errorTembo = null;
+    }
+
+    public function fetchCellulantBalance()
+    {
+        // Dummy data for Cellulant
+        $this->balanceCellulant = 67;
+        $this->currencyCellulant = 'USD';
+        $this->statusCellulant = 'available';
+        $this->errorCellulant = null;
     }
 
     public static function checkDisbursementBalanceTeraPay()

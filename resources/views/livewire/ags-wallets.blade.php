@@ -3,9 +3,7 @@
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
 
     <style>
-        .gradient-airtel { background: linear-gradient(135deg, #f43f5e, #f97316); }
-        .gradient-tigo { background: linear-gradient(135deg, #10b981, #3b82f6); }
-        .gradient-vodacom { background: linear-gradient(135deg, #6366f1, #141415); }
+
         .gradient-tembo { background: linear-gradient(135deg, #ff9a9e, #141415); }
         .gradient-terapay { background: linear-gradient(135deg, #a1c4fd, #141415); }
         .gradient-cellulant { background: linear-gradient(135deg, #fbc2eb, #141415); }
@@ -56,9 +54,9 @@
                             <h2 class="text-white text-lg font-bold">Terapay</h2>
                             <i class='bx bx-wallet text-white text-2xl'></i>
                         </div>
-                        @if($errorTerapay)
+                        @if($error)
                             <div class="bg-white/20 p-2 rounded text-center">
-                                <p class="text-red-300 text-xs mb-2">{{ $errorTerapay }}</p>
+                                <p class="text-red-300 text-xs mb-2">{{ $error }}</p>
                                 <button wire:click="fetchDisbursementBalance" class="bg-white/20 text-white text-xs py-1 px-3 rounded hover:bg-white/30 transition duration-300">
                                     Retry
                                 </button>
@@ -67,9 +65,9 @@
                             <div class="flex space-x-4">
                                 <div class="bg-white/20 p-2 rounded flex-1">
                                     <p class="text-white text-xs mb-0.5">Current Balance</p>
-                                    @if($balanceTerapay !== null)
+                                    @if($balance !== null)
                                         <h3 class="text-white text-base font-bold">
-                                            {{ number_format((float)$balanceTerapay, 2) }} {{ $currencyTerapay }}
+                                            {{ number_format((float)$balance, 2) }} {{ $currency }}
                                         </h3>
                                     @else
                                         <h3 class="text-white text-xs">Loading...</h3>
@@ -77,7 +75,7 @@
                                 </div>
                                 <div class="bg-white/20 p-2 rounded flex-1 text-right">
                                     <p class="text-white text-xs mb-0.5">Status</p>
-                                    <h3 class="text-white text-base font-bold">{{ ucfirst($statusTerapay ?? 'Unknown') }}</h3>
+                                    <h3 class="text-white text-base font-bold">{{ ucfirst($status ?? 'Unknown') }}</h3>
                                 </div>
                             </div>
                         @endif
@@ -121,5 +119,6 @@
             </div>
         </div>
     </x-filament::section>
+
 
 </x-filament-widgets::widget>
