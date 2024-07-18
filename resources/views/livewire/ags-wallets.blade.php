@@ -55,20 +55,30 @@
                                 <h3 class="text-white text-base font-bold">- 200,000 TZS</h3>
                             </div>
                         </div>
-                        <div class="mt-3 pt-2 border-t border-white/20 flex justify-between items-center">
-                            <span class="text-white text-xs">Balance</span>
+                        <div class="mt-3 pt-2 border-t border-white/20">
+                            <div class="flex justify-between items-center">
+                                <span class="text-white text-xs">Balance</span>
+                                @if($error)
+                                    <span class="text-red-300 text-xs">Error fetching balance</span>
+                                @elseif($balance)
+                                    <span class="text-white text-base font-bold">
+                        @if(is_object($balance) && isset($balance->balance))
+                                            {{ number_format($balance->balance, 2) }} {{ $balance->currency ?? 'TZS' }}
+                                        @else
+                                            {{ is_numeric($balance) ? number_format($balance, 2) : $balance }} TZS
+                                        @endif
+                    </span>
+                                @else
+                                    <span class="text-white text-xs">Loading...</span>
+                                @endif
+                            </div>
                             @if($error)
-                                <span class="text-red-300 text-xs">Error: {{ $error }}</span>
-                            @elseif($balance)
-                                <span class="text-white text-base font-bold">
-                                @if(is_object($balance) && isset($balance->balance))
-                                        {{ number_format($balance->balance, 2) }} {{ $balance->currency ?? 'TZS' }}
-                                    @else
-                                        {{ is_numeric($balance) ? number_format($balance, 2) : $balance }} TZS
-                                    @endif
-                            </span>
-                            @else
-                                <span class="text-white text-xs">Loading...</span>
+                                <div class="mt-2 text-center">
+                                    <p class="text-red-300 text-xs mb-2">{{ $error }}</p>
+                                    <button wire:click="fetchDisbursementBalance" class="bg-white/20 text-white text-xs py-1 px-3 rounded hover:bg-white/30 transition duration-300">
+                                        Retry
+                                    </button>
+                                </div>
                             @endif
                         </div>
                     </div>

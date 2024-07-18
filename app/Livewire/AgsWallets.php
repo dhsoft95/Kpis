@@ -24,6 +24,9 @@ class AgsWallets extends Widget
 
     public function fetchDisbursementBalance()
     {
+        $this->error = null;
+        $this->balance = null;
+
         $response = self::checkDisbursementBalanceTeraPay();
 
         if (isset($response->error)) {
@@ -36,6 +39,7 @@ class AgsWallets extends Widget
             Log::error('TeraPay API Unexpected Response', (array)$response);
         }
     }
+
 
     public static function checkDisbursementBalanceTeraPay()
     {
