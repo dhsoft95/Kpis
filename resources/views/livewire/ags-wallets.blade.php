@@ -13,8 +13,6 @@
 
     <x-filament::section>
         <div class="container px-2 py-8 mx-auto">
-{{--            <h6 class="text-white text-1xl font-bold mb-6 text-left">MNS Wallets</h6>--}}
-
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 <!-- Tembo Pay Wallet Balance Card -->
                 <div class="transform hover:scale-105 transition duration-300">
@@ -55,7 +53,7 @@
                             <div class="bg-white/20 p-2 rounded flex-1 text-right">
                                 <p class="text-white text-xs mb-0.5">Disbursed</p>
                                 @if($balance)
-                                <h3 class="text-white text-base font-bold">{{ json_encode($balance, JSON_PRETTY_PRINT) }}</h3>
+                                    <h3 class="text-white text-base font-bold">{{ json_encode($balance, JSON_PRETTY_PRINT) }}</h3>
                                 @endif
                             </div>
                         </div>
