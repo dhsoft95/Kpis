@@ -21,16 +21,19 @@ class AgsWallets extends Widget
 
 
 
+
     public function fetchDisbursementBalance()
     {
-        try {
-            $this->balance = self::checkDisbursementBalanceTeraPay();
-            if (!$this->balance) {
-                $this->error = 'Failed to fetch balance. Empty response received.';
-            }
-        } catch (\Exception $e) {
-            $this->error = 'An error occurred while fetching the balance.';
-            Log::error('TeraPay API Exception', ['message' => $e->getMessage()]);
+        $response = self::checkDisbursementBalanceTeraPay();
+
+        if (isset($response->error)) {
+            $this->error = $response->error->errorDescription;
+            Log::error('TeraPay API Error', (array)$response->error);
+        } elseif (isset($response->balance)) {
+            $this->balance = $response->balance;
+        } else {
+            $this->error = 'Unexpected response format from TeraPay API';
+            Log::error('TeraPay API Unexpected Response', (array)$response);
         }
     }
 
