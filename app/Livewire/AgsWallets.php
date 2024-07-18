@@ -4,6 +4,7 @@ namespace App\Livewire;
 
 use Filament\Widgets\Widget;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Http;
 
 class AgsWallets extends Widget
 {
@@ -11,14 +12,15 @@ class AgsWallets extends Widget
     protected static string $view = 'livewire.ags-wallets';
 
     public $balance;
-    public $currency;
-    public $status;
     public $error;
 
     public function mount()
     {
         $this->fetchDisbursementBalance();
     }
+
+
+
 
     public function fetchDisbursementBalance()
     {
@@ -27,35 +29,24 @@ class AgsWallets extends Widget
         $this->currency = null;
         $this->status = null;
 
-        $rawResponse = self::checkDisbursementBalanceTeraPay();
-        Log::info('Raw TeraPay API Response', ['response' => $rawResponse]);
-
-        $response = json_decode($rawResponse);
-
-        if (json_last_error() !== JSON_ERROR_NONE) {
-            $this->error = 'Failed to parse API response';
-            Log::error('TeraPay API JSON Parse Error', ['error' => json_last_error_msg()]);
-            return;
-        }
+        $response = self::checkDisbursementBalanceTeraPay();
 
         if (isset($response->currentBalance)) {
             $this->balance = $response->currentBalance;
             $this->currency = $response->currency ?? 'USD';
             $this->status = $response->status ?? 'unknown';
-        } elseif (isset($response->error)) {
-            $this->error = $response->error->errorDescription ?? 'Unknown API error';
-            Log::error('TeraPay API Error', (array)$response->error);
         } else {
             $this->error = 'Unexpected response format from TeraPay API';
             Log::error('TeraPay API Unexpected Response', (array)$response);
         }
     }
 
+
     public static function checkDisbursementBalanceTeraPay()
     {
         $headers = [
-            'X-USERNAME: simbaLive',
-            'X-PASSWORD: b9c90ea40b459a7f9f065b2a8f318940677279ee54fbdaf76fa4040f93f1b041',
+            'X-USERNAME: simbaLive' ,
+            'X-PASSWORD: b9c90ea40b459a7f9f065b2a8f318940677279ee54fbdaf76fa4040f93f1b041' ,
             'X-DATE: ' . now()->format('Y-m-d H:i:s'),
             'X-ORIGINCOUNTRY: TZ',
             'Content-Type: application/json'
@@ -77,11 +68,7 @@ class AgsWallets extends Widget
             CURLOPT_HTTPHEADER => $headers,
         ));
 
-        $response = curl_exec($curl);
-
-        if (curl_errno($curl)) {
-            Log::error('cURL Error', ['error' => curl_error($curl)]);
-        }
+        $response = json_decode(curl_exec($curl));
 
         curl_close($curl);
 
