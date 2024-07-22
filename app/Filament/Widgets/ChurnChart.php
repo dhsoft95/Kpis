@@ -75,7 +75,7 @@ class ChurnChart extends ChartWidget
     {
         $dateFormat = $this->getSqlDateFormat($groupBy);
 
-        $data = DB::table('users')
+        $data = DB::connection('mysql_second')->table('users')
             ->leftJoin('tbl_transactions', 'users.phone_number', '=', 'tbl_transactions.sender_phone')
             ->whereNull('tbl_transactions.sender_phone')
             ->whereBetween('users.created_at', [$start, $end])
@@ -86,6 +86,7 @@ class ChurnChart extends ChartWidget
 
         return $this->fillMissingDates($data, $start, $end, $groupBy);
     }
+
 
     private function getSqlDateFormat(string $groupBy): string
     {
