@@ -52,8 +52,8 @@ class TransvalueChart extends ChartWidget
         $endDate = Carbon::now()->endOfWeek();
         $startDate = $endDate->copy()->subWeeks($weeks)->startOfWeek();
 
-        $data = DB::table('tbl_transactions')  // Replace 'transactions' with your actual table name if different
-        ->select(DB::raw('YEARWEEK(created_at) as yearweek, SUM(CAST(sender_amount AS DECIMAL(15,2))) as volume'))
+        $data = DB::connection('mysql_second')->table('tbl_transactions')  
+        ->select(DB::connection('mysql_second')->raw('YEARWEEK(created_at) as yearweek, SUM(CAST(sender_amount AS DECIMAL(15,2))) as volume'))
             ->whereBetween('created_at', [$startDate, $endDate])
             ->where('status', '!=', 1)  // Assuming status 0 might be for failed or cancelled transactions
             ->groupBy('yearweek')

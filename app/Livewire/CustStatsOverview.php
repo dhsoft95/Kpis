@@ -36,7 +36,7 @@ class CustStatsOverview extends Widget
         $previousWeekStart = Carbon::now()->subWeek()->startOfWeek();
         $previousWeekEnd = Carbon::now()->subWeek()->endOfWeek();
 
-        $currentValue = DB::table('tbl_transactions')
+        $currentValue = DB::connection('mysql_second')->table('tbl_transactions')
             ->whereBetween('created_at', [$currentWeekStart, $currentWeekEnd])
             ->avg(DB::raw('CAST(sender_amount AS DECIMAL(15, 2))'));
 
@@ -60,7 +60,7 @@ class CustStatsOverview extends Widget
         $previousWeekStart = Carbon::now()->subWeek()->startOfWeek();
         $previousWeekEnd = Carbon::now()->subWeek()->endOfWeek();
 
-        $currentValue = DB::table(DB::raw('(
+        $currentValue = DB::connection('mysql_second')->table(DB::raw('(
             SELECT receiver_phone, COUNT(*) AS transaction_count
             FROM tbl_transactions
             WHERE created_at BETWEEN ? AND ?
@@ -94,7 +94,7 @@ class CustStatsOverview extends Widget
 
         // Example stratification logic
         $stratum1Threshold = 2000; // Example threshold for high-value transactions
-        $stratum1Count = DB::table('tbl_transactions')
+        $stratum1Count = DB::connection('mysql_second')->table('tbl_transactions')
             ->select(DB::raw('SUM(sender_amount) AS total_amount'))
             ->whereBetween('created_at', [$currentWeekStart, $currentWeekEnd])
             ->groupBy('receiver_phone')
@@ -104,7 +104,7 @@ class CustStatsOverview extends Widget
         $previousWeekStart = Carbon::now()->subWeek()->startOfWeek();
         $previousWeekEnd = Carbon::now()->subWeek()->endOfWeek();
 
-        $previousStratum1Count = DB::table('tbl_transactions')
+        $previousStratum1Count = DB::connection('mysql_second')->table('tbl_transactions')
             ->select(DB::raw('SUM(sender_amount) AS total_amount'))
             ->whereBetween('created_at', [$previousWeekStart, $previousWeekEnd])
             ->groupBy('receiver_phone')
