@@ -64,7 +64,6 @@ class AdminPanelProvider extends PanelProvider
 //              RegisteredChart::class,
                 ActiveChart::class,
                 ChurnChart::class,
-                ChurnChart::class,
                 RegisterdUsersChart::class,
 
             ])
