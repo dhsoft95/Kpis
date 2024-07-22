@@ -126,7 +126,7 @@ class RegisterdUsersChart extends ApexChartWidget
      */
     protected function getUserRegistrations(): array
     {
-        $registrations = DB::table('users')
+        $registrations = DB::connection('mysql_second')->table('users')
             ->select(DB::raw('YEARWEEK(created_at, 1) as week, COUNT(*) as count'))
             ->groupBy('week')
             ->orderBy('week', 'desc')
