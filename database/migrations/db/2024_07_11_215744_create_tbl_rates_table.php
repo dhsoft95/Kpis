@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('tbl_rates', function (Blueprint $table) {
+        Schema::connection('mysql_second')->create('tbl_rates', function (Blueprint $table) {
             $table->id();
             $table->string('phone_number');
             $table->string('customer_name');

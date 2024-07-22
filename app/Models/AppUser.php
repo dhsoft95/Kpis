@@ -11,6 +11,8 @@ class AppUser extends Model
 
     protected $table="users";
 
+    protected $connection = 'mysql_second';
+
     protected $fillable = [
         'first_name',
         'last_name',

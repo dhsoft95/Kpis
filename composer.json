@@ -13,7 +13,8 @@
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^2.9",
         "leandrocfe/filament-apex-charts": "^3.1",
-        "ext-curl": "*"
+        "ext-curl": "*",
+      "ext-pdo": "*"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",

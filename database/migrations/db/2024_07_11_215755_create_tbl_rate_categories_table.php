@@ -11,9 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('tbl_questions', function (Blueprint $table) {
+        Schema::connection('mysql_second')->create('tbl_rate_categories', function (Blueprint $table) {
             $table->id();
-            $table->text('question');
+            $table->string('name');
             $table->timestamps();
         });
     }
@@ -23,6 +23,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('tbl_questions');
+        Schema::dropIfExists('tbl_rate_categories');
     }
 };

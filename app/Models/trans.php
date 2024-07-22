@@ -8,6 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 class trans extends Model
 {
     use HasFactory;
-
+    protected $connection = 'mysql_second';
     protected $table="tbl_transactions";
+
+
+
 }
