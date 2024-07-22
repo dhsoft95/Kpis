@@ -36,8 +36,8 @@
             }
         </style>
 
-        <div class="container mx-auto p-4" wire:poll.4s="calculateStats">
-            <div class="flex flex-wrap -mx-4">
+        <div class="container mx-auto p-2" wire:poll.4s="calculateStats">
+            <div class="flex flex-wrap -mx-2">
                 @php
                     // Define card configurations
                     $cards = [
@@ -51,19 +51,19 @@
                 @endphp
 
                 @foreach ($cards as $key => $card)
-                    <div class="w-full md:w-1/2 px-4 mb-4">
-                        <div class="bg-gradient-to-r {{ $card['bgGradient'] }} text-white rounded-lg shadow-lg p-3 h-35 flex flex-col relative">
+                    <div class="w-full sm:w-1/2 md:w-1/3 px-2 mb-3">
+                        <div class="bg-gradient-to-r {{ $card['bgGradient'] }} text-white rounded-lg shadow-lg p-2 h-28 flex flex-col relative">
                             <!-- Card icon in the top right corner -->
-                            <div class="absolute top-2 right-2 text-4xl opacity-20">
+                            <div class="absolute top-1 right-1 text-3xl opacity-20">
                                 <i class="{{ $card['icon'] }}"></i>
                             </div>
-                            <div class="pt-8 flex-grow">
+                            <div class="pt-4 flex-grow">
                                 <!-- Card title -->
-                                <h5 class="sm:text-sm font-semibold mb-1">{{ $card['title'] }}</h5>
+                                <h5 class="text-xs font-semibold mb-1">{{ $card['title'] }}</h5>
                                 <div class="flex items-center mb-1">
                                     <div class="w-2/3">
                                         <!-- Card count or value -->
-                                        <h2 class="text-2xl font-bold mb-0" wire:key="count-{{ $key }}">
+                                        <h2 class="text-lg font-bold mb-0" wire:key="count-{{ $key }}">
                                             @if ($key === 'avgValuePerDay' || $key === 'avgTransactionPerCustomer')
                                                 TSH {{ number_format($stats[$key]['value'], 0) }}
                                             @else
@@ -73,7 +73,7 @@
                                     </div>
                                     <div class="w-1/3 text-right">
                                         <!-- Percentage change and growth icon -->
-                                        <span class="text-white text-start">
+                                        <span class="text-white text-xs">
                                             @php
                                                 $percentageChange = $stats[$key]['percentageChange'];
                                                 $formattedPercentage = number_format(abs($percentageChange), 2);
