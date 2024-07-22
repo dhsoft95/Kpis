@@ -2,7 +2,11 @@
 
 namespace App\Providers;
 
+use Google\Service\BigLakeService\Database;
+use Google\Service\CloudBuild\Security;
 use Illuminate\Support\ServiceProvider;
+use Spatie\Health\Checks\Checks\DatabaseConnectionCountCheck;
+use Spatie\Health\Checks\Checks\DatabaseTableSizeCheck;
 use Spatie\Health\Facades\Health;
 use Spatie\Health\Checks\Checks\OptimizedAppCheck;
 use Spatie\Health\Checks\Checks\DebugModeCheck;
@@ -26,6 +30,9 @@ class AppServiceProvider extends ServiceProvider
             OptimizedAppCheck::new(),
             DebugModeCheck::new(),
             EnvironmentCheck::new(),
+            DatabaseConnectionCountCheck::new(),
+            DatabaseTableSizeCheck::new(),
+            Q
         ]);
     }
 }
