@@ -37,6 +37,7 @@ use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Leandrocfe\FilamentApexCharts\FilamentApexChartsPlugin;
 use ShuvroRoy\FilamentSpatieLaravelHealth\FilamentSpatieLaravelHealthPlugin;
+use ShuvroRoy\FilamentSpatieLaravelHealth\Pages\HealthCheckResults;
 
 
 class AdminPanelProvider extends PanelProvider
@@ -101,6 +102,8 @@ class AdminPanelProvider extends PanelProvider
                         'sm' => 2,
                     ]),
                 FilamentApexChartsPlugin::make(),
+                FilamentSpatieLaravelHealthPlugin::make()
+                    ->usingPage(HealthCheckResults::class)
 
             ])
             ->authMiddleware([
