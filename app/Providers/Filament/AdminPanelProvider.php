@@ -61,10 +61,11 @@ class AdminPanelProvider extends PanelProvider
 //            ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
                 userStatsOverview::class,
+                RegisterdUsersChart::class,
 //              RegisteredChart::class,
                 ActiveChart::class,
                 ChurnChart::class,
-                RegisterdUsersChart::class,
+
 
             ])
             ->middleware([
