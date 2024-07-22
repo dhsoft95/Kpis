@@ -17,6 +17,7 @@ use App\Filament\Widgets\TestOverview;
 use App\Filament\Widgets\UserPerformance;
 use App\Filament\Widgets\userStatsOverview;
 use App\Livewire\MapOverview;
+use Awcodes\FilamentStickyHeader\StickyHeaderPlugin;
 use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
 use Filament\Enums\ThemeMode;
 use Filament\Http\Middleware\Authenticate;
@@ -96,7 +97,10 @@ class AdminPanelProvider extends PanelProvider
                         'default' => 1,
                         'sm' => 2,
                     ]),
-                FilamentApexChartsPlugin::make()
+                FilamentApexChartsPlugin::make(),
+                StickyHeaderPlugin::make()
+                    ->floating()
+                    ->colored()
             ])
             ->authMiddleware([
                 Authenticate::class,

@@ -8,6 +8,7 @@
         "php": "^8.2",
         "ext-curl": "*",
         "ext-pdo": "*",
+        "awcodes/filament-sticky-header": "^2.0",
         "bezhansalleh/filament-shield": "^3.2",
         "filament/filament": "^3.2",
         "flowframe/laravel-trend": "^0.2.0",
