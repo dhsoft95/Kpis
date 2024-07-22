@@ -76,7 +76,7 @@ class ChurnChart extends ChartWidget
         $dateFormat = $this->getSqlDateFormat($groupBy);
 
         $data = DB::connection('mysql_second')->table('users')
-            ->leftJoin('tbl_transactions', 'users.phone_number', '=', 'tbl_transactions.sender_phone')
+            ->leftJoin('mysql_second.tbl_transactions', 'users.phone_number', '=', 'tbl_transactions.sender_phone')
             ->whereNull('tbl_transactions.sender_phone')
             ->whereBetween('users.created_at', [$start, $end])
             ->groupBy(DB::raw("DATE_FORMAT(users.created_at, '{$dateFormat}')"))
