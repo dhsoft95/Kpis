@@ -8,10 +8,10 @@ use Illuminate\Database\Eloquent\Model;
 class AppUser extends Model
 {
     use HasFactory;
-
+    protected $connection = 'mysql_second';
     protected $table="users";
 
-    protected $connection = 'mysql_second';
+
 
     protected $fillable = [
         'first_name',
