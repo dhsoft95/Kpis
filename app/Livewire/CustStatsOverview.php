@@ -40,7 +40,7 @@ class CustStatsOverview extends Widget
             ->whereBetween('created_at', [$currentWeekStart, $currentWeekEnd])
             ->avg(DB::raw('CAST(sender_amount AS DECIMAL(15, 2))'));
 
-        $previousValue = DB::table('tbl_transactions')
+        $previousValue = DB::connection('mysql_second')->table('tbl_transactions')
             ->whereBetween('created_at', [$previousWeekStart, $previousWeekEnd])
             ->avg(DB::raw('CAST(sender_amount AS DECIMAL(15, 2))'));
 
@@ -61,20 +61,20 @@ class CustStatsOverview extends Widget
         $previousWeekEnd = Carbon::now()->subWeek()->endOfWeek();
 
         $currentValue = DB::connection('mysql_second')->table(DB::raw('(
-            SELECT receiver_phone, COUNT(*) AS transaction_count
-            FROM tbl_transactions
-            WHERE created_at BETWEEN ? AND ?
-            GROUP BY receiver_phone
-        ) AS weekly_transactions'))
+        SELECT receiver_phone, COUNT(*) AS transaction_count
+        FROM tbl_transactions
+        WHERE created_at BETWEEN ? AND ?
+        GROUP BY receiver_phone
+    ) AS weekly_transactions'))
             ->setBindings([$currentWeekStart, $currentWeekEnd])
             ->avg('transaction_count');
 
-        $previousValue = DB::table(DB::raw('(
-            SELECT receiver_phone, COUNT(*) AS transaction_count
-            FROM tbl_transactions
-            WHERE created_at BETWEEN ? AND ?
-            GROUP BY receiver_phone
-        ) AS weekly_transactions'))
+        $previousValue = DB::connection('mysql_second')->table(DB::raw('(
+        SELECT receiver_phone, COUNT(*) AS transaction_count
+        FROM tbl_transactions
+        WHERE created_at BETWEEN ? AND ?
+        GROUP BY receiver_phone
+    ) AS weekly_transactions'))
             ->setBindings([$previousWeekStart, $previousWeekEnd])
             ->avg('transaction_count');
 
