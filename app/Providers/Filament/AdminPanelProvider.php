@@ -47,8 +47,9 @@ class AdminPanelProvider extends PanelProvider
     {
         return $panel
             ->default()
+
+//            ->id('admin')
             ->plugin(FilamentSpatieLaravelHealthPlugin::make())
-            ->id('admin')
             ->path('admin')
             ->login()  ->collapsibleNavigationGroups(true)->sidebarCollapsibleOnDesktop()
             ->brandLogo(asset('asset/images/logo.svg'))->brandLogoHeight('2rem')
