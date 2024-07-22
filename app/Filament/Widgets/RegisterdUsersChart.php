@@ -19,7 +19,7 @@ class RegisterdUsersChart extends ApexChartWidget
     protected static ?string $heading = 'Registered Users Trend';
 
 
-    protected static ?int $contentHeight = 440;
+    protected static ?int $contentHeight = 300;
 
 
 

@@ -62,9 +62,11 @@ class AdminPanelProvider extends PanelProvider
             ->widgets([
                 userStatsOverview::class,
 //              RegisteredChart::class,
-                RegisterdUsersChart::class,
                 ActiveChart::class,
                 ChurnChart::class,
+                ChurnChart::class,
+                RegisterdUsersChart::class,
+
             ])
             ->middleware([
                 EncryptCookies::class,
