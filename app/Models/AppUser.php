@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class AppUser extends Model
 {
     use HasFactory;
-    protected $connection = 'mysql_second';
+    protected $connection ='mysql_second';
     protected $table="users";
 
 
@@ -33,5 +33,7 @@ class AppUser extends Model
         'status',
         'otp_pin',
         'phone_verified_at',
+        'last_session_id',
+        'is_active',
     ];
 }
