@@ -38,6 +38,7 @@ use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Leandrocfe\FilamentApexCharts\FilamentApexChartsPlugin;
 use ShuvroRoy\FilamentSpatieLaravelHealth\FilamentSpatieLaravelHealthPlugin;
 
+
 class AdminPanelProvider extends PanelProvider
 {
 
@@ -45,9 +46,9 @@ class AdminPanelProvider extends PanelProvider
     {
         return $panel
             ->default()
+            ->plugin(FilamentSpatieLaravelHealthPlugin::make())
             ->id('admin')
             ->path('admin')
-            ->plugin(FilamentSpatieLaravelHealthPlugin::make())
             ->login()  ->collapsibleNavigationGroups(true)->sidebarCollapsibleOnDesktop()
             ->brandLogo(asset('asset/images/logo.svg'))->brandLogoHeight('2rem')
             ->favicon(asset('asset/images/favicon.svg')) ->topbar(true)
