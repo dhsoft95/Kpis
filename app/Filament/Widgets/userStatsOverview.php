@@ -96,7 +96,7 @@ class userStatsOverview extends Widget
         $previousWeekEnd = Carbon::now()->subWeek()->endOfWeek();
 
         // Calculate the number of users who haven't made any transactions for the current week
-        $currentCount = DB::table('users')
+        $currentCount = DB::connection('mysql_second')->table('users')
             ->whereNotIn('phone_number', function ($query) {
                 $query->select('sender_phone')
                     ->from('tbl_transactions');
@@ -105,7 +105,7 @@ class userStatsOverview extends Widget
             ->count();
 
         // Calculate the number of users who haven't made any transactions for the previous week
-        $previousCount = DB::table('users')
+        $previousCount = DB::connection('mysql_second')->table('users')
             ->whereNotIn('phone_number', function ($query) {
                 $query->select('sender_phone')
                     ->from('tbl_transactions');
@@ -133,12 +133,12 @@ class userStatsOverview extends Widget
         $previousWeekStart = Carbon::now()->subWeek()->startOfWeek();
         $previousWeekEnd = Carbon::now()->subWeek()->endOfWeek();
 
-        $currentValue = DB::table('tbl_transactions')
+        $currentValue = DB::connection('mysql_second')->table('tbl_transactions')
             ->whereBetween('created_at', [$currentWeekStart, $currentWeekEnd])
             ->where('status', 3)
             ->avg(DB::raw('CAST(sender_amount AS DECIMAL(15, 2))'));
 
-        $previousValue = DB::table('tbl_transactions')
+        $previousValue = DB::connection('mysql_second')->table('tbl_transactions')
             ->whereBetween('created_at', [$previousWeekStart, $previousWeekEnd])
             ->where('status', 3)
             ->avg(DB::raw('CAST(sender_amount AS DECIMAL(15, 2))'));
@@ -162,25 +162,26 @@ class userStatsOverview extends Widget
         $previousWeekStart = Carbon::now()->subWeek()->startOfWeek();
         $previousWeekEnd = Carbon::now()->subWeek()->endOfWeek();
 
-        $currentValue = DB::table(DB::raw('(
-                SELECT receiver_phone, COUNT(*) AS transaction_count
-                FROM tbl_transactions
-                WHERE created_at BETWEEN ? AND ?
-                AND status = 3
-                GROUP BY receiver_phone
-            ) AS weekly_transactions'))
-                        ->setBindings([$currentWeekStart, $currentWeekEnd])
-                        ->avg('transaction_count');
+        $currentValue = DB::connection('mysql_second')->table(DB::raw('(
+            SELECT receiver_phone, COUNT(*) AS transaction_count
+            FROM tbl_transactions
+            WHERE created_at BETWEEN ? AND ?
+            AND status = 3
+            GROUP BY receiver_phone
+        ) AS weekly_transactions'))
+            ->setBindings([$currentWeekStart, $currentWeekEnd])
+            ->avg('transaction_count');
 
-                    $previousValue = DB::table(DB::raw('(
-                SELECT receiver_phone, COUNT(*) AS transaction_count
-                FROM tbl_transactions
-                WHERE created_at BETWEEN ? AND ?
-                AND status = 3
-                GROUP BY receiver_phone
-            ) AS weekly_transactions'))
+        $previousValue = DB::connection('mysql_second')->table(DB::raw('(
+            SELECT receiver_phone, COUNT(*) AS transaction_count
+            FROM tbl_transactions
+            WHERE created_at BETWEEN ? AND ?
+            AND status = 3
+            GROUP BY receiver_phone
+        ) AS weekly_transactions'))
             ->setBindings([$previousWeekStart, $previousWeekEnd])
             ->avg('transaction_count');
+
         $difference = $currentValue - $previousValue;
         $percentageChange = $this->calculatePercentageChange($previousValue, $currentValue);
 
