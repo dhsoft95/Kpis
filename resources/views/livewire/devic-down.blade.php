@@ -91,12 +91,16 @@
                     </svg>
                     <div class="absolute inset-0 flex flex-col items-center justify-center mt-8">
                         <span class="text-xs font-medium text-gray-600 dark:text-gray-400">iOS</span>
-                        <span class="text-xl font-bold text-green-500">55%</span> <!-- Update this percentage -->
+                        <span class="text-xl font-bold text-green-500">70%</span> <!-- Update this percentage -->
                         <span class="text-xs font-medium text-gray-600 dark:text-gray-400 mt-2">Android</span>
                         <span class="text-xl font-bold text-blue-500">45%</span> <!-- Update this percentage -->
                     </div>
                 </div>
             </div>
         </div>
+
+        @assets
+        <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+        @endassets
     </x-filament::section>
 </x-filament-widgets::widget>
