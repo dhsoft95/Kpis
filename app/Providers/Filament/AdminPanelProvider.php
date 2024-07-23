@@ -18,6 +18,7 @@ use App\Filament\Widgets\UserGander;
 use App\Filament\Widgets\UserPerformance;
 use App\Filament\Widgets\userStatsOverview;
 use App\Livewire\MapOverview;
+use App\Livewire\UserGanders;
 use Awcodes\FilamentStickyHeader\StickyHeaderPlugin;
 use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
 use Filament\Enums\ThemeMode;
@@ -68,7 +69,7 @@ class AdminPanelProvider extends PanelProvider
 //            ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
                 userStatsOverview::class,
-                UserGander::class,
+                UserGanders::class,
                 RegisterdUsersChart::class,
 //              RegisteredChart::class,
                 ActiveChart::class,
