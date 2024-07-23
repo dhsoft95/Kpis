@@ -5,25 +5,22 @@ namespace App\Filament\Widgets;
 use Filament\Forms\Components\View;
 use Leandrocfe\FilamentApexCharts\Widgets\ApexChartWidget;
 
+
 class UserGander extends ApexChartWidget
 {
     /**
      * Chart Id
-     *
-     * @var string
      */
-    protected static ?string $chartId = 'userGander';
+    protected static ?string $chartId = 'orderStatusChart';
 
     /**
      * Widget Title
-     *
-     * @var string|null
      */
-    protected static ?string $heading = 'UserGander';
-    /**
-     * Chart Id
-     */
+    protected static ?string $heading = 'Order Status - last week';
 
+    /**
+     * Sort
+     */
     protected static ?int $sort = 1;
 
     /**
