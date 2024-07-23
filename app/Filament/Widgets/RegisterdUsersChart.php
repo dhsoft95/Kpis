@@ -20,7 +20,7 @@ class RegisterdUsersChart extends ApexChartWidget
 
     protected int | string | array $columnSpan = 'full';
 //    protected static ?int $contentHeight = 440;
-    protected static ?int $contentHeight = 200;
+    protected static ?int $contentHeight = 300;
 
 
 
