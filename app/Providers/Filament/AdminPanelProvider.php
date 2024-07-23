@@ -16,6 +16,7 @@ use App\Filament\Widgets\RegisteredChart;
 use App\Filament\Widgets\TestOverview;
 use App\Filament\Widgets\UserPerformance;
 use App\Filament\Widgets\userStatsOverview;
+use App\Livewire\devicDown;
 use App\Livewire\MapOverview;
 use App\Livewire\UserGanders;
 use Awcodes\FilamentStickyHeader\StickyHeaderPlugin;
@@ -68,7 +69,7 @@ class AdminPanelProvider extends PanelProvider
 //            ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
                 userStatsOverview::class,
-                UserGanders::class,
+                devicDown::class,
                 RegisterdUsersChart::class,
 //              RegisteredChart::class,
                 ActiveChart::class,
