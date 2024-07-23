@@ -10,7 +10,7 @@
         }
 
         .fi-sidebar, :is(.dark .fi-sidebar) {
-            --tw-bg-opacity: 1 !important
+            background-color: #fafafa !important
         }
 
         :is(.dark .fi-sidebar) {
