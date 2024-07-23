@@ -31,7 +31,7 @@ class RegisterdUsersChart extends ApexChartWidget
         return [
             'chart' => [
                 'type' => 'bar',
-                'height' => 500,
+                'height' => 200,
                 'parentHeightOffset' => 2,
                 'stacked' => true,
                 'toolbar' => [
