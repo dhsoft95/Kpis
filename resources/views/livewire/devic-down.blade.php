@@ -1,6 +1,6 @@
 <x-filament::widget>
     <x-filament::card>
-        <div class="space-y-6 p-4"> <!-- Added p-4 padding here -->
+        <div class="space-y-4 p-3"> <!-- Added p-4 padding here -->
             <!-- Device Downloads Section -->
             <div>
                 <h3 class="text-sm font-medium text-gray-900 dark:text-white mb-2">Device Downloads</h3>
