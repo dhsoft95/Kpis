@@ -18,7 +18,7 @@ class RegisterdUsersChart extends ApexChartWidget
     protected static ?string $loadingIndicator = 'Loading...';
     protected static ?string $heading = 'Registered Users Trend';
 
-//    protected int | string | array $columnSpan = 'full';
+    protected int | string | array $columnSpan = 'full';
 //    protected static ?int $contentHeight = 440;
     protected static ?int $contentHeight = 200;
 
