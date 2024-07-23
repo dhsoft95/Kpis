@@ -4,56 +4,24 @@ namespace App\Livewire;
 
 use App\Models\AppUser;
 use Filament\Widgets\Widget;
-use Google\Client;
-use Google\Service\AnalyticsData;
-
-// Import the User model
+use App\Models\User; // Import the User model
 
 class devicDown extends Widget
 {
-    public function getDownloads(): array
+    public function getDownloads()
     {
-        // Initialize Google Client
-        $client = new Client();
-        $client->useApplicationDefaultCredentials();
-        $client->addScope(AnalyticsData::ANALYTICS_READONLY);
-
-        // Create Analytics Data service
-        $analyticsData = new AnalyticsData($client);
-
-        // Define the report request
-        $request = new AnalyticsData\RunReportRequest([
-            'property' => 'properties/[b291b2ae7a7be450565e49024a0d19020c77fd14]',
-            'dimensions' => [
-                new AnalyticsData\Dimension(['name' => 'appPlatform']),
-            ],
-            'metrics' => [
-                new AnalyticsData\Metric(['name' => 'firstOpens']), // You might want to use a different metric based on your definition of "download"
-            ],
-        ]);
-
-        // Execute the report request
-        $response = $analyticsData->properties->runReport($request);
-
-        // Process the response
-        $downloads = [
-            'ios' => 0,
-            'android' => 0,
+        // Keep dummy data for downloads
+        return [
+            'ios' => 4352,
+            'android' => 5352,
         ];
-        foreach ($response->getRows() as $row) {
-            $platform = $row->getDimensionValues()[0]->getValue();
-            $count = $row->getMetricValues()[0]->getValue();
-            $downloads[$platform] = $count;
-        }
-
-        return $downloads;
     }
 
     public function getUserStats()
     {
         // Fetch user statistics using the User model
         $maleCount = AppUser::where('gender', 'male')->count();
-        $femaleCount = AppUser::where('gender', 'female')->count();
+        $femaleCount = User::where('gender', 'female')->count();
 
         // Return the results
         return [
