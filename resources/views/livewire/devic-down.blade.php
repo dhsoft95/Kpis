@@ -28,7 +28,7 @@
                                     }
                                 }
                             },
-                            series: [60, 40],
+                            series: [60, 40], // Update these values with actual data
                             labels: ['Male', 'Female'],
                             colors: ['#3b82f6', '#ec4899'],
                             legend: {
@@ -77,7 +77,7 @@
                               fill="none"
                               stroke="#4ade80"
                               stroke-width="2"
-                              stroke-dasharray="100, 100"
+                              stroke-dasharray="55, 100" <!-- Update this value -->
                         />
                         <path d="M18 2.0845
                             a 15.9155 15.9155 0 0 1 0 31.831
@@ -85,15 +85,15 @@
                               fill="none"
                               stroke="#3b82f6"
                               stroke-width="2"
-                              stroke-dasharray="55, 100"
+                              stroke-dasharray="45, 100" <!-- Update this value -->
                         />
-                        <text x="18" y="20.35" class="text-5xl font-bold text-gray-900 dark:text-white" text-anchor="middle">55%</text>
+                        <text x="18" y="20.35" class="text-5xl font-bold text-gray-900 dark:text-white" text-anchor="middle">55%</text> <!-- Update this percentage -->
                     </svg>
                     <div class="absolute inset-0 flex flex-col items-center justify-center mt-16">
                         <span class="text-sm font-medium text-gray-600 dark:text-gray-400">iOS</span>
-                        <span class="text-3xl font-bold text-green-500">55%</span>
+                        <span class="text-3xl font-bold text-green-500">55%</span> <!-- Update this percentage -->
                         <span class="text-sm font-medium text-gray-600 dark:text-gray-400 mt-2">Android</span>
-                        <span class="text-3xl font-bold text-blue-500">45%</span>
+                        <span class="text-3xl font-bold text-blue-500">45%</span> <!-- Update this percentage -->
                     </div>
                 </div>
             </div>
