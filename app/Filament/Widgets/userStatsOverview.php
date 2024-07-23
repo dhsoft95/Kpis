@@ -64,6 +64,7 @@ class UserStatsOverview extends Widget
         // Calculate the count and Week-on-Week (WoW) percentage change for active users
         $now = Carbon::now();
         $thirtyDaysAgo = $now->copy()->subDays(30);
+        $oneWeekAgo = $now->copy()->subWeek();
 
         // Count of active users in the last 30 days
         $currentCount = DB::connection('mysql_second')->table('users')
@@ -76,10 +77,10 @@ class UserStatsOverview extends Widget
 
         // Count of active users 30 days ago
         $previousCount = DB::connection('mysql_second')->table('users')
-            ->whereIn('phone_number', function ($query) use ($thirtyDaysAgo) {
+            ->whereIn('phone_number', function ($query) use ($oneWeekAgo) {
                 $query->select('sender_phone')
                     ->from('tbl_transactions')
-                    ->where('created_at', '<', $thirtyDaysAgo);
+                    ->where('created_at', '<', $oneWeekAgo);
             })
             ->count();
 
@@ -213,17 +214,14 @@ class UserStatsOverview extends Widget
         // Calculate the average number of transactions per customer
         $now = Carbon::now();
         $last30DaysStart = $now->copy()->subDays(30);
-        $currentWeekStart = $now->startOfWeek();
-        $currentWeekEnd = $now->endOfWeek();
-        $previousWeekStart = $now->copy()->subWeek()->startOfWeek();
-        $previousWeekEnd = $now->copy()->subWeek()->endOfWeek();
+        $oneWeekAgo = $now->copy()->subWeek();
 
         $currentTransactionCount = DB::connection('mysql_second')->table('tbl_transactions')
             ->whereBetween('created_at', [$last30DaysStart, $now])
             ->count();
 
         $previousTransactionCount = DB::connection('mysql_second')->table('tbl_transactions')
-            ->whereBetween('created_at', [$previousWeekStart, $previousWeekEnd])
+            ->whereBetween('created_at', [$oneWeekAgo, $now])
             ->count();
 
         $currentUserCount = DB::connection('mysql_second')->table('users')
@@ -235,10 +233,10 @@ class UserStatsOverview extends Widget
             ->count();
 
         $previousUserCount = DB::connection('mysql_second')->table('users')
-            ->whereIn('phone_number', function ($query) use ($previousWeekStart) {
+            ->whereIn('phone_number', function ($query) use ($oneWeekAgo) {
                 $query->select('sender_phone')
                     ->from('tbl_transactions')
-                    ->where('created_at', '>=', $previousWeekStart);
+                    ->where('created_at', '>=', $oneWeekAgo);
             })
             ->count();
 
