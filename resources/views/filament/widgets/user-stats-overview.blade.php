@@ -11,8 +11,7 @@
                 width: 0;
                 height: 100%;
                 transition: width 0.6s ease;
-                background-image: linear-gradient(45deg, rgba(255, 255, 255, 0.2) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.2) 50%, rgba(255, 255, 255, 0.2) 75%, transparent 75%);
-                background-size: 40px 40px;
+                background-color: rgba(255, 255, 255, 0.2);
                 position: relative;
                 display: flex;
                 align-items: center;
@@ -29,8 +28,8 @@
             .progress-text {
                 position: absolute;
                 color: white;
-                font-size: 0.75rem;
-                font-weight: bold;
+                font-size: 0.65rem; /* Reduced font size */
+                font-weight: 500; /* Reduced font weight */
                 z-index: 1;
             }
 
@@ -51,7 +50,7 @@
                 opacity: 0;
                 transition: opacity 0.3s, transform 0.3s;
                 box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-                font-size: 0.875rem;
+                font-size: 0.75rem; /* Reduced font size */
                 line-height: 1.4;
                 transform: translateY(10px);
             }
@@ -74,7 +73,7 @@
             }
 
             .tooltip-title {
-                font-weight: bold;
+                font-weight: 500; /* Reduced font weight */
                 margin-bottom: 5px;
                 color: #4a5568;
             }
@@ -103,16 +102,16 @@
                         <div class="card-container relative">
                             <div class="{{ $card['bgColor'] }} text-gray-900 dark:text-white rounded-lg shadow-lg p-2 h-28 flex flex-col relative">
                                 <!-- Card icon in the top right corner -->
-                                <div class="absolute top-1 right-1 text-3xl opacity-20">
+                                <div class="absolute top-1 right-1 text-2xl opacity-20">
                                     <i class="{{ $card['icon'] }}"></i>
                                 </div>
                                 <div class="pt-4 flex-grow">
                                     <!-- Card title -->
-                                    <h5 class="text-xs font-semibold mb-1 {{ $key === 'avgValuePerDay' ? 'text-xxs' : '' }}">{{ $card['title'] }}</h5>
+                                    <h5 class="text-xs font-medium mb-1 {{ $key === 'avgValuePerDay' ? 'text-xxs' : '' }}">{{ $card['title'] }}</h5>
                                     <div class="flex items-center mb-1">
                                         <div class="w-2/3">
                                             <!-- Card count or value -->
-                                            <h2 class="text-sm font-bold mb-0" wire:key="count-{{ $key }}">
+                                            <h2 class="text-sm font-medium mb-0" wire:key="count-{{ $key }}">
                                                 @if ($key === 'avgValuePerDay')
                                                     TSH {{ number_format($stats[$key]['value'] ?? 0, 0) }}
                                                 @else
