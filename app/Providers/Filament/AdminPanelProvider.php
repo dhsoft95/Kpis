@@ -14,6 +14,7 @@ use App\Filament\Widgets\CustStatsOverview;
 use App\Filament\Widgets\RegisterdUsersChart;
 use App\Filament\Widgets\RegisteredChart;
 use App\Filament\Widgets\TestOverview;
+use App\Filament\Widgets\UserGander;
 use App\Filament\Widgets\UserPerformance;
 use App\Filament\Widgets\userStatsOverview;
 use App\Livewire\MapOverview;
@@ -67,6 +68,7 @@ class AdminPanelProvider extends PanelProvider
 //            ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
                 userStatsOverview::class,
+                UserGander::class,
                 RegisterdUsersChart::class,
 //              RegisteredChart::class,
                 ActiveChart::class,
