@@ -113,7 +113,7 @@
                                     <div class="flex items-center mb-1">
                                         <div class="w-2/3">
                                             <!-- Card count or value -->
-                                            <h2 class="text-sm font-bold mb-0" wire:key="count-{{ $key }}">
+                                            <h2 class="text-xs font-bold mb-0" wire:key="count-{{ $key }}">
                                                 @if ($key === 'avgValuePerDay')
                                                     TSH {{ number_format($stats[$key]['value'] ?? 0, 0) }}
                                                 @else
