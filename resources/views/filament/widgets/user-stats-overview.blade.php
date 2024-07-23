@@ -4,10 +4,9 @@
         <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 
         <!-- Include Font Awesome -->
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
         <style>
-            /* Progress bar styles and animations */
             .progress-bar {
                 width: 0;
                 height: 100%;
@@ -26,16 +25,6 @@
                 from { width: 0; }
                 to { width: var(--progress-width); }
             }
-
-            .progress-text {
-                position: absolute;
-                color: white;
-                font-size: 0.75rem;
-                font-weight: bold;
-                z-index: 1;
-            }
-
-            /* Tooltip styles */
             .card-tooltip {
                 visibility: hidden;
                 width: 200px;
@@ -52,7 +41,6 @@
                 opacity: 0;
                 transition: opacity 0.3s;
             }
-
             .card-container:hover .card-tooltip {
                 visibility: visible;
                 opacity: 1;
@@ -62,11 +50,10 @@
         <div class="container mx-auto p-2" wire:poll.4s="calculateStats">
             <div class="flex flex-wrap -mx-2">
                 @php
-                    // Define card configurations with dummy descriptions
                     $cards = [
                         'all' => ['title' => 'All Registered Users', 'icon' => 'fas fa-users', 'bgGradient' => 'from-blue-700 to-blue-400', 'color' => 'blue', 'description' => 'Total number of users who have registered in our system, including both active and inactive accounts.'],
-                        '1' => ['title' => 'Active Users', 'icon' => 'fas fa-check-circle', 'bgGradient' => 'from-green-700 to-green-400', 'color' => 'green', 'description' => 'Users who have logged in or performed an action within the last 30 days.'],
-                        '0' => ['title' => 'Inactive Users', 'icon' => 'fas fa-user-slash', 'bgGradient' => 'from-red-700 to-red-400', 'color' => 'red', 'description' => 'Users who haven't logged in or performed any actions in the past 30 days.'],
+                        'active' => ['title' => 'Active Users', 'icon' => 'fas fa-check-circle', 'bgGradient' => 'from-green-700 to-green-400', 'color' => 'green', 'description' => 'Users who have logged in or performed an action within the last 30 days.'],
+                        'inactive' => ['title' => 'Inactive Users', 'icon' => 'fas fa-user-slash', 'bgGradient' => 'from-red-700 to-red-400', 'color' => 'red', 'description' => 'Users who haven\'t logged in or performed any actions in the past 30 days.'],
                         'churn' => ['title' => 'Churn Users', 'icon' => 'fas fa-exclamation-triangle', 'bgGradient' => 'from-yellow-700 to-yellow-400', 'color' => 'yellow', 'description' => 'Users who have stopped using our service or have not renewed their subscription.'],
                         'avgValuePerDay' => ['title' => 'Avg Value of Trans Per Day', 'icon' => 'fas fa-dollar-sign', 'bgGradient' => 'from-purple-700 to-purple-400', 'color' => 'purple', 'description' => 'The average monetary value of all transactions processed per day.'],
                         'avgTransactionPerCustomer' => ['title' => 'Avg Trans Per Customer', 'icon' => 'fas fa-user-friends', 'bgGradient' => 'from-pink-700 to-pink-400', 'color' => 'pink', 'description' => 'The average number of transactions each customer makes over a specific period.'],
@@ -77,39 +64,34 @@
                     <div class="w-full sm:w-1/2 md:w-1/3 px-2 mb-3">
                         <div class="card-container relative">
                             <div class="bg-gradient-to-r {{ $card['bgGradient'] }} text-white rounded-lg shadow-lg p-2 h-28 flex flex-col relative">
-                                <!-- Card icon in the top right corner -->
                                 <div class="absolute top-1 right-1 text-3xl opacity-20">
                                     <i class="{{ $card['icon'] }}"></i>
                                 </div>
                                 <div class="pt-4 flex-grow">
-                                    <!-- Card title -->
                                     <h5 class="text-xs font-semibold mb-1">{{ $card['title'] }}</h5>
                                     <div class="flex items-center mb-1">
                                         <div class="w-2/3">
-                                            <!-- Card count or value -->
                                             <h2 class="text-lg font-bold mb-0" wire:key="count-{{ $key }}">
-                                                @if ($key === 'avgValuePerDay' || $key === 'avgTransactionPerCustomer')
-                                                    TSH {{ number_format($stats[$key]['value'], 0) }}
+                                                @if (in_array($key, ['avgValuePerDay', 'avgTransactionPerCustomer']))
+                                                    TSH {{ number_format($stats[$key]['value'] ?? 0, 0) }}
                                                 @else
-                                                    {{ isset($stats[$key]['count']) ? $stats[$key]['count'] : number_format($stats[$key]['value'], 0) }}
+                                                    {{ number_format($stats[$key]['count'] ?? $stats[$key]['value'] ?? 0, 0) }}
                                                 @endif
                                             </h2>
                                         </div>
                                         <div class="w-1/3 text-right">
-                                            <!-- Percentage change and growth icon -->
+                                            @php
+                                                $percentageChange = $stats[$key]['percentageChange'] ?? 0;
+                                                $formattedPercentage = number_format(abs($percentageChange), 2);
+                                                $isGrowth = $stats[$key]['isGrowth'] ?? false;
+                                            @endphp
                                             <span class="text-white text-xs">
-                                                @php
-                                                    $percentageChange = $stats[$key]['percentageChange'];
-                                                    $formattedPercentage = number_format(abs($percentageChange), 2);
-                                                    $isGrowth = $stats[$key]['isGrowth'];
-                                                @endphp
                                                 {{ $isGrowth ? '+' : '-' }}{{ $formattedPercentage }}%
-                                                <i class="fa fa-arrow-{{ $isGrowth ? 'up' : 'down' }} ml-1"></i>
+                                                <i class="fas fa-arrow-{{ $isGrowth ? 'up' : 'down' }} ml-1"></i>
                                             </span>
                                             <span class="text-xs block">(WoW)</span>
                                         </div>
                                     </div>
-                                    <!-- Progress bar -->
                                     <div class="relative pt-1">
                                         <div class="w-full bg-gray-300 rounded-full h-1">
                                             <div class="bg-{{ $card['color'] }}-500 h-1 rounded-full progress-bar progress-bar-animate"
@@ -118,7 +100,6 @@
                                         </div>
                                     </div>
                                 </div>
-                                <!-- Tooltip -->
                                 <span class="card-tooltip">{{ $card['description'] }}</span>
                             </div>
                         </div>
