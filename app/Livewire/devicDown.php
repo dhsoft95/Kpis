@@ -21,7 +21,7 @@ class devicDown extends Widget
     {
         // Fetch user statistics using the User model
         $maleCount = AppUser::where('gender', 'male')->count();
-        $femaleCount = User::where('gender', 'female')->count();
+        $femaleCount = AppUser::where('gender', 'female')->count();
 
         // Return the results
         return [
