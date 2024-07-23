@@ -32,7 +32,7 @@ class AppServiceProvider extends ServiceProvider
             EnvironmentCheck::new(),
             DatabaseConnectionCountCheck::new(),
             DatabaseTableSizeCheck::new(),
-            
+
         ]);
     }
 }

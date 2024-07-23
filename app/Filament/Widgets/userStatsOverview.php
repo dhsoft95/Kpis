@@ -130,15 +130,18 @@ class userStatsOverview extends Widget
 
     private function calculateAverageValuePerDay(): array
     {
+        $currentDate = Carbon::now();
+        $thirtyDaysAgo = Carbon::now()->subDays(30);
+
+        $currentValue = DB::connection('mysql_second')->table('tbl_transactions')
+            ->whereBetween('created_at', [$thirtyDaysAgo, $currentDate])
+            ->where('status', 3)
+            ->avg(DB::raw('CAST(sender_amount AS DECIMAL(15, 2))'));
+
         $currentWeekStart = Carbon::now()->startOfWeek();
         $currentWeekEnd = Carbon::now()->endOfWeek();
         $previousWeekStart = Carbon::now()->subWeek()->startOfWeek();
         $previousWeekEnd = Carbon::now()->subWeek()->endOfWeek();
-
-        $currentValue = DB::connection('mysql_second')->table('tbl_transactions')
-            ->whereBetween('created_at', [$currentWeekStart, $currentWeekEnd])
-            ->where('status', 3)
-            ->avg(DB::raw('CAST(sender_amount AS DECIMAL(15, 2))'));
 
         $previousValue = DB::connection('mysql_second')->table('tbl_transactions')
             ->whereBetween('created_at', [$previousWeekStart, $previousWeekEnd])
@@ -156,6 +159,7 @@ class userStatsOverview extends Widget
             'isGrowth' => $percentageChange >= 0,
         ];
     }
+
 
     private function calculateAverageTransactionPerCustomer(): array
     {
