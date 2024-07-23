@@ -89,8 +89,8 @@
                     // Define card configurations
                     $cards = [
                         'all' => ['title' => 'All Registered Users', 'icon' => 'fas fa-users', 'bgColor' => 'bg-blue-500 bg-opacity-20', 'color' => 'blue', 'description' => 'Total number of users registered in the system.'],
-                        '1' => ['title' => 'Active Users', 'icon' => 'fas fa-check-circle', 'bgColor' => 'bg-green-500 bg-opacity-20', 'color' => 'green', 'description' => 'Users who have logged in within the last 30 days.'],
-                        '0' => ['title' => 'Inactive Users', 'icon' => 'fas fa-user-slash', 'bgColor' => 'bg-red-500 bg-opacity-20', 'color' => 'red', 'description' => 'Users who haven\'t logged in for more than 30 days.'],
+                        'active' => ['title' => 'Active Users', 'icon' => 'fas fa-check-circle', 'bgColor' => 'bg-green-500 bg-opacity-20', 'color' => 'green', 'description' => 'Users who have logged in within the last 30 days.'],
+                        'inactive' => ['title' => 'Inactive Users', 'icon' => 'fas fa-user-slash', 'bgColor' => 'bg-red-500 bg-opacity-20', 'color' => 'red', 'description' => 'Users who haven\'t logged in for more than 30 days.'],
                         'churn' => ['title' => 'Churn Users', 'icon' => 'fas fa-exclamation-triangle', 'bgColor' => 'bg-yellow-500 bg-opacity-20', 'color' => 'yellow', 'description' => 'Users who have stopped using the service.'],
                         'avgValuePerDay' => ['title' => 'Avg Trans Value/Day', 'icon' => 'fas fa-dollar-sign', 'bgColor' => 'bg-purple-500 bg-opacity-20', 'color' => 'purple', 'description' => 'Average monetary value of transactions per day.'],
                         'avgTransactionPerCustomer' => ['title' => 'Avg Trans/Customer', 'icon' => 'fas fa-user-friends', 'bgColor' => 'bg-pink-500 bg-opacity-20', 'color' => 'pink', 'description' => 'Average number of transactions per customer.'],

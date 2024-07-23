@@ -10,40 +10,46 @@ use Illuminate\Support\Facades\Log;
 
 class userStatsOverview extends Widget
 {
+    // Specifies the view associated with this widget
     protected static string $view = 'filament.widgets.user-stats-overview';
 
-//    protected int | string | array $columnSpan = 'full';
-
+    // Initialize statistics with default values
     public array $stats = [
         'all' => ['count' => 0, 'percentageChange' => 0, 'isGrowth' => true],
-        '1' => ['count' => 0, 'percentageChange' => 0, 'isGrowth' => true],
-        '0' => ['count' => 0, 'percentageChange' => 0, 'isGrowth' => true],
+        'active' => ['count' => 0, 'percentageChange' => 0, 'isGrowth' => true], // Added statistic for active users
+        'inactive' => ['count' => 0, 'percentageChange' => 0, 'isGrowth' => true], // Updated statistic for inactive users
         'churn' => ['count' => 0, 'percentageChange' => 0, 'isGrowth' => true], // Updated statistic for churn
         'avgValuePerDay' => ['value' => 0, 'percentageChange' => 0, 'isGrowth' => true],
         'avgTransactionPerCustomer' => ['value' => 0, 'percentageChange' => 0, 'isGrowth' => true],
     ];
 
+    // Lifecycle hook to calculate stats when the component is mounted
     public function mount(): void
     {
         $this->calculateStats();
     }
 
+    // Method to calculate all statistics
     public function calculateStats(): void
     {
         $this->calculateGrowth();
         $this->calculateUserStatuses();
     }
 
+    // Method to calculate the growth in the number of users
     public function calculateGrowth(): void
     {
         $now = Carbon::now();
         $oneWeekAgo = $now->copy()->subWeek();
 
+        // Count users as of one week ago and now
         $countOneWeekAgo = AppUser::where('created_at', '<=', $oneWeekAgo)->count();
         $countNow = AppUser::count();
 
+        // Calculate percentage change
         $percentageChange = $this->calculatePercentageChange($countOneWeekAgo, $countNow);
 
+        // Update stats with calculated values
         $this->stats['all'] = [
             'count' => $countNow,
             'percentageChange' => $percentageChange,
@@ -51,108 +57,124 @@ class userStatsOverview extends Widget
         ];
     }
 
+    // Method to calculate user statuses and additional statistics
     public function calculateUserStatuses(): void
     {
         Log::info('Starting calculateUserStatuses');
 
-        $totalUsers = AppUser::count();
-        $statuses = ['0', '1', '2'];
-
-        $currentPeriodEnd = Carbon::now();
-        $currentPeriodStart = $currentPeriodEnd->copy()->startOfWeek();
+        $now = Carbon::now();
+        $currentPeriodStart = $now->startOfWeek();
         $previousPeriodStart = $currentPeriodStart->copy()->subWeek();
+        $previousPeriodEnd = $currentPeriodStart->copy()->subSecond(); // End of previous week
 
-        foreach ($statuses as $status) {
-            $currentCount = AppUser::where('is_active', $status)->count();
+        // Total registered users
+        $totalUsersCurrent = AppUser::count();
 
-            $previousCount = AppUser::where('is_active', $status)
-                ->where('updated_at', '<', $currentPeriodStart)
-                ->count();
+        // Active users in the last 30 days
+        $activeUsersCurrent = DB::table('tbl_transactions')
+            ->select('receiver_phone')
+            ->where('created_at', '>=', $currentPeriodStart->subDays(30)) // Last 30 days
+            ->distinct()
+            ->count('receiver_phone');
 
-            $difference = $currentCount - $previousCount;
-            $percentage = $totalUsers > 0 ? ($currentCount / $totalUsers) * 100 : 0;
-            $percentageChange = $this->calculatePercentageChange($previousCount, $currentCount);
+        // Calculate inactive users in the current period
+        $inactiveUsersCurrent = $totalUsersCurrent - $activeUsersCurrent;
 
-            Log::info("$status: Current: $currentCount, Previous: $previousCount, Difference: $difference, Percentage: " . round($percentage, 2) . "%, PercentageChange: $percentageChange%");
+        // Active users in the previous period
+        $activeUsersPrevious = DB::table('tbl_transactions')
+            ->select('receiver_phone')
+            ->whereBetween('created_at', [$previousPeriodStart, $previousPeriodEnd])
+            ->distinct()
+            ->count('receiver_phone');
 
-            $this->stats[$status] = [
-                'count' => $currentCount,
-                'percentage' => round($percentage, 2),
-                'percentageChange' => $percentageChange,
-                'isGrowth' => $percentageChange >= 0,
-            ];
-        }
+        // Calculate inactive users in the previous period
+        $inactiveUsersPrevious = $totalUsersCurrent - $activeUsersPrevious;
 
+        // Calculate percentage change in inactive users
+        $percentageChangeInactiveUsers = $this->calculatePercentageChange($inactiveUsersPrevious, $inactiveUsersCurrent);
+
+        // Calculate percentage change in active users
+        $percentageChangeActiveUsers = $this->calculatePercentageChange($activeUsersPrevious, $activeUsersCurrent);
+
+        // Calculate churn users
+        $churnUsersCurrent = $this->calculateChurnUsers($currentPeriodStart);
+        $churnUsersPrevious = $this->calculateChurnUsers($previousPeriodStart, $previousPeriodEnd);
+
+        // Calculate percentage change in churn users
+        $percentageChangeChurnUsers = $this->calculatePercentageChange($churnUsersPrevious, $churnUsersCurrent);
+
+        // Log results
+        Log::info("Active Users: Current: $activeUsersCurrent, Previous: $activeUsersPrevious, Change: $percentageChangeActiveUsers%");
+        Log::info("Inactive Users: Current: $inactiveUsersCurrent, Previous: $inactiveUsersPrevious, Change: $percentageChangeInactiveUsers%");
+        Log::info("Churn Users: Current: $churnUsersCurrent, Previous: $churnUsersPrevious, Change: $percentageChangeChurnUsers%");
+
+        // Update stats
+        $this->stats['active'] = [
+            'count' => $activeUsersCurrent,
+            'percentageChange' => $percentageChangeActiveUsers,
+            'isGrowth' => $percentageChangeActiveUsers >= 0,
+        ];
+
+        $this->stats['inactive'] = [
+            'count' => $inactiveUsersCurrent,
+            'percentageChange' => $percentageChangeInactiveUsers,
+            'isGrowth' => $percentageChangeInactiveUsers <= 0, // Decrease in inactive users is considered growth
+        ];
+
+        $this->stats['churn'] = [
+            'count' => $churnUsersCurrent,
+            'percentageChange' => $percentageChangeChurnUsers,
+            'isGrowth' => $percentageChangeChurnUsers <= 0, // Decrease in churn users is considered growth
+        ];
+
+        // Calculate additional statistics
         $this->stats['avgValuePerDay'] = $this->calculateAverageValuePerDay();
         $this->stats['avgTransactionPerCustomer'] = $this->calculateAverageTransactionPerCustomer();
-        $this->stats['churn'] = $this->calculateChurn(); // Call the new method for churn
 
         Log::info('Finished calculateUserStatuses');
     }
 
-    private function calculateChurn(): array
+    // Method to calculate churn users
+    private function calculateChurnUsers(Carbon $start, Carbon $end = null): int
     {
-        $currentWeekStart = Carbon::now()->startOfWeek();
-        $currentWeekEnd = Carbon::now()->endOfWeek();
-        $previousWeekStart = Carbon::now()->subWeek()->startOfWeek();
-        $previousWeekEnd = Carbon::now()->subWeek()->endOfWeek();
+        $end = $end ?? Carbon::now();
+        $churnUsers = DB::table('users')
+            ->leftJoin('tbl_transactions', 'users.phone_number', '=', 'tbl_transactions.receiver_phone')
+            ->whereNull('tbl_transactions.receiver_phone')
+            ->where('users.created_at', '<=', $end->subDays(30))
+            ->count('users.id');
 
-        // Calculate the number of users who haven't made any transactions for the current week
-        $currentCount = DB::connection('mysql_second')->table('users')
-            ->whereNotIn('phone_number', function ($query) {
-                $query->select('sender_phone')
-                    ->from('tbl_transactions');
-            })
-            ->whereBetween('created_at', [$currentWeekStart, $currentWeekEnd])
-            ->count();
-
-        // Calculate the number of users who haven't made any transactions for the previous week
-        $previousCount = DB::connection('mysql_second')->table('users')
-            ->whereNotIn('phone_number', function ($query) {
-                $query->select('sender_phone')
-                    ->from('tbl_transactions');
-            })
-            ->whereBetween('created_at', [$previousWeekStart, $previousWeekEnd])
-            ->count();
-
-        // Calculate the percentage change
-        $percentageChange = $this->calculatePercentageChange($previousCount, $currentCount);
-
-        // Log the result
-        Log::info("Churn: Current: $currentCount, Previous: $previousCount, Change: $percentageChange%");
-
-        return [
-            'count' => $currentCount,
-            'percentageChange' => $percentageChange,
-            'isGrowth' => $percentageChange >= 0,
-        ];
+        return $churnUsers;
     }
 
+    // Method to calculate average value per day
     private function calculateAverageValuePerDay(): array
     {
         $currentDate = Carbon::now();
         $thirtyDaysAgo = Carbon::now()->subDays(30);
 
-        $currentValue = DB::connection('mysql_second')->table('tbl_transactions')
+        // Average value for transactions in the last 30 days
+        $currentValue = DB::table('tbl_transactions')
             ->whereBetween('created_at', [$thirtyDaysAgo, $currentDate])
             ->where('status', 3)
             ->avg(DB::raw('CAST(sender_amount AS DECIMAL(15, 2))'));
 
+        // Calculate previous week's average value
         $currentWeekStart = Carbon::now()->startOfWeek();
         $currentWeekEnd = Carbon::now()->endOfWeek();
         $previousWeekStart = Carbon::now()->subWeek()->startOfWeek();
         $previousWeekEnd = Carbon::now()->subWeek()->endOfWeek();
-
-        $previousValue = DB::connection('mysql_second')->table('tbl_transactions')
+        $previousValue = DB::table('tbl_transactions')
             ->whereBetween('created_at', [$previousWeekStart, $previousWeekEnd])
             ->where('status', 3)
             ->avg(DB::raw('CAST(sender_amount AS DECIMAL(15, 2))'));
 
+        // Calculate difference and percentage change
         $difference = $currentValue - $previousValue;
         $percentageChange = $this->calculatePercentageChange($previousValue, $currentValue);
-
         Log::info("Avg Value Per Day: Current: $currentValue, Previous: $previousValue, Difference: $difference, Change: $percentageChange%");
 
+        // Return average value stats
         return [
             'value' => $currentValue,
             'percentageChange' => $percentageChange,
@@ -160,21 +182,19 @@ class userStatsOverview extends Widget
         ];
     }
 
-
+    // Method to calculate average transactions per customer
     private function calculateAverageTransactionPerCustomer(): array
     {
-        // Calculate the date range for the last 30 days
+        // Define date ranges for calculations
         $last30DaysStart = Carbon::now()->subDays(30);
         $last30DaysEnd = Carbon::now();
-
-        // Calculate the date range for the current and previous weeks
         $currentWeekStart = Carbon::now()->startOfWeek();
         $currentWeekEnd = Carbon::now()->endOfWeek();
         $previousWeekStart = Carbon::now()->subWeek()->startOfWeek();
         $previousWeekEnd = Carbon::now()->subWeek()->endOfWeek();
 
-        // Last 30 days' average transactions
-        $averageValue = DB::connection('mysql_second')->table(DB::raw('(
+        // Calculate average transactions for the last 30 days
+        $averageValue = DB::table(DB::raw('(
         SELECT receiver_phone, COUNT(*) AS transaction_count
         FROM tbl_transactions
         WHERE created_at BETWEEN ? AND ?
@@ -184,8 +204,8 @@ class userStatsOverview extends Widget
             ->setBindings([$last30DaysStart, $last30DaysEnd])
             ->avg('transaction_count');
 
-        // Current week's average transactions
-        $currentWeekValue = DB::connection('mysql_second')->table(DB::raw('(
+        // Calculate average transactions for the current week
+        $currentWeekValue = DB::table(DB::raw('(
         SELECT receiver_phone, COUNT(*) AS transaction_count
         FROM tbl_transactions
         WHERE created_at BETWEEN ? AND ?
@@ -195,8 +215,8 @@ class userStatsOverview extends Widget
             ->setBindings([$currentWeekStart, $currentWeekEnd])
             ->avg('transaction_count');
 
-        // Previous week's average transactions
-        $previousWeekValue = DB::connection('mysql_second')->table(DB::raw('(
+        // Calculate average transactions for the previous week
+        $previousWeekValue = DB::table(DB::raw('(
         SELECT receiver_phone, COUNT(*) AS transaction_count
         FROM tbl_transactions
         WHERE created_at BETWEEN ? AND ?
@@ -206,19 +226,19 @@ class userStatsOverview extends Widget
             ->setBindings([$previousWeekStart, $previousWeekEnd])
             ->avg('transaction_count');
 
-        // Calculate the percentage change week-over-week
+        // Calculate percentage change and log results
         $percentageChange = $this->calculatePercentageChange($previousWeekValue, $currentWeekValue);
-
-        // Log the results
         Log::info("Avg Transaction Per Customer: Last 30 Days: $averageValue, Current Week: $currentWeekValue, Previous Week: $previousWeekValue, Change: $percentageChange%");
 
-        // Return the results
+        // Return average transaction stats
         return [
             'value' => $averageValue,
             'percentageChange' => $percentageChange,
             'isGrowth' => $percentageChange >= 0,
         ];
     }
+
+    // Helper method to calculate percentage change
     public function calculatePercentageChange($previousValue, $currentValue): float
     {
         if ($previousValue == 0) {
@@ -229,6 +249,7 @@ class userStatsOverview extends Widget
         return ($change / $previousValue) * 100;
     }
 
+    // Method to provide data to the view
     protected function getViewData(): array
     {
         return [
