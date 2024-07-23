@@ -94,7 +94,7 @@
                         '1' => ['title' => 'Active Users', 'icon' => 'fas fa-check-circle', 'bgGradient' => 'from-green-700 to-green-400', 'color' => 'green', 'description' => 'Users who have logged in within the last 30 days.'],
                         '0' => ['title' => 'Inactive Users', 'icon' => 'fas fa-user-slash', 'bgGradient' => 'from-red-700 to-red-400', 'color' => 'red', 'description' => 'Users who haven\'t logged in for more than 30 days.'],
                         'churn' => ['title' => 'Churn Users', 'icon' => 'fas fa-exclamation-triangle', 'bgGradient' => 'from-yellow-700 to-yellow-400', 'color' => 'yellow', 'description' => 'Users who have stopped using the service.'],
-                        'avgValuePerDay' => ['title' => 'Avg Value of Trans Per Day', 'icon' => 'fas fa-dollar-sign', 'bgGradient' => 'from-purple-700 to-purple-400', 'color' => 'purple', 'description' => 'Average monetary value of transactions per day.'],
+                        'avgValuePerDay' => ['title' => 'Avg Trans Value/Day', 'icon' => 'fas fa-dollar-sign', 'bgGradient' => 'from-purple-700 to-purple-400', 'color' => 'purple', 'description' => 'Average monetary value of transactions per day.'],
                         'avgTransactionPerCustomer' => ['title' => 'Avg Trans Per Customer', 'icon' => 'fas fa-user-friends', 'bgGradient' => 'from-pink-700 to-pink-400', 'color' => 'pink', 'description' => 'Average number of transactions per customer.'],
                     ];
                 @endphp
@@ -113,7 +113,7 @@
                                     <div class="flex items-center mb-1">
                                         <div class="w-2/3">
                                             <!-- Card count or value -->
-                                            <h2 class="text-xs font-bold mb-0" wire:key="count-{{ $key }}">
+                                            <h2 class="text-sm font-bold mb-0" wire:key="count-{{ $key }}">
                                                 @if ($key === 'avgValuePerDay')
                                                     TSH {{ number_format($stats[$key]['value'] ?? 0, 0) }}
                                                 @else
