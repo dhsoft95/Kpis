@@ -50,56 +50,26 @@
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
         <script>
             document.addEventListener('DOMContentLoaded', function() {
-                const ctx = document.getElementById('genderChart').getContext('2d');
-                new Chart(ctx, {
-                    type: 'doughnut',
-                    data: {
-                        labels: ['Male', 'Female'],
-                        datasets: [{
-                            data: [{{ $maleGamersPercentage }}, {{ $femaleGamersPercentage }}],
-                            backgroundColor: ['#3b82f6', '#ec4899'],
-                            borderColor: ['#2563eb', '#db2777'],
-                            borderWidth: 1
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: {
-                            legend: {
-                                position: 'bottom',
-                                labels: {
-                                    boxWidth: 12,
-                                    padding: 15,
-                                    font: {
-                                        size: 12
-                                    }
-                                }
-                            },
-                            tooltip: {
-                                callbacks: {
-                                    label: function(context) {
-                                        return context.label + ': ' + context.parsed + '%';
-                                    }
-                                }
-                            },
-                            doughnutlabel: {
-                                labels: [{
-                                    text: 'Total',
-                                    font: {
-                                        size: '16'
-                                    }
-                                }, {
-                                    text: '100%',
-                                    font: {
-                                        size: '20'
-                                    }
-                                }]
-                            }
+                const ctx = document.getElementById('genderChart');
+                if (ctx) {
+                    new Chart(ctx, {
+                        type: 'pie',
+                        data: {
+                            labels: ['Male', 'Female'],
+                            datasets: [{
+                                data: [{{ $maleGamersPercentage }}, {{ $femaleGamersPercentage }}],
+                                backgroundColor: ['#3b82f6', '#ec4899'],
+                            }]
                         },
-                        cutout: '60%'
-                    }
-                });
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                        }
+                    });
+                } else {
+                    console.error('Cannot find canvas element with id "genderChart"');
+                    console.log('All canvas elements:', document.getElementsByTagName('canvas'));
+                }
             });
         </script>
     @endpush
