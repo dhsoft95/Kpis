@@ -8,22 +8,14 @@ class devicDown extends Widget
 {
 
 
-    public function getDownloads()
+    public function render(): \Illuminate\Contracts\View\View
     {
-        // Replace with actual data fetching logic
-        return [
-            'ios' => 4352,
-            'android' => 5352,
-        ];
-    }
-
-    public function getUserStats()
-    {
-        // Replace with actual data fetching logic
-        return [
-            'male' => 3520,
-            'female' => 6184,
-        ];
+        return view('filament.widgets.user-statistics-widget', [
+            'iosDownloads' => 1234,
+            'androidDownloads' => 5678,
+            'maleUsers' => 3000,
+            'femaleUsers' => 2000,
+        ]);
     }
 
     protected static string $view = 'livewire.devic-down';
