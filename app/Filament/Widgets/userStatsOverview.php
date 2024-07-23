@@ -74,15 +74,13 @@ class userStatsOverview extends Widget
 
     private function calculateChurnUsers(Carbon $now): void
     {
-        $currentWeekStart = $now->copy()->startOfWeek();
-        $currentWeekEnd = $now->copy()->endOfWeek();
-        $previousWeekStart = $now->copy()->subWeek()->startOfWeek();
-        $previousWeekEnd = $now->copy()->subWeek()->endOfWeek();
+        $thirtyDaysAgo = $now->copy()->subDays(30);
+        $sevenDaysAgo = $now->copy()->subDays(7);
 
-        $currentCount = $this->getChurnUsersCount($currentWeekStart, $currentWeekEnd);
-        $previousCount = $this->getChurnUsersCount($previousWeekStart, $previousWeekEnd);
+        $currentChurn = $this->getChurnUsersCount($thirtyDaysAgo);
+        $previousChurn = $this->getChurnUsersCount($sevenDaysAgo);
 
-        $this->updateStat('churn', $currentCount, $previousCount);
+        $this->updateStat('churn', $currentChurn, $previousChurn);
     }
 
     private function calculateAdditionalStats(Carbon $now, Carbon $oneWeekAgo, Carbon $thirtyDaysAgo): void
@@ -118,15 +116,15 @@ class userStatsOverview extends Widget
             ->count();
     }
 
-    private function getChurnUsersCount(Carbon $startDate, Carbon $endDate): int
+    private function getChurnUsersCount(Carbon $date): int
     {
         return DB::connection('mysql_second')->table('users')
-            ->whereNotIn('phone_number', function ($query) {
+            ->whereIn('phone_number', function ($query) use ($date) {
                 $query->select('sender_phone')
                     ->from('tbl_transactions')
-                    ->where('created_at', '>=', Carbon::now()->subDays(30));
+                    ->groupBy('sender_phone')
+                    ->havingRaw('MAX(created_at) < ?', [$date]);
             })
-            ->whereBetween('created_at', [$startDate, $endDate])
             ->count();
     }
 
