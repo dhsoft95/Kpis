@@ -1,74 +1,136 @@
-<x-filament-widgets::widget>
+<x-filament-widgets::widget class="bg-transparent p-4">
     <x-filament::section>
         <div class="card custom-card">
             <div class="card-header custom-card-header">
-                <h4>User Locations</h4>
+                <h4>User Statistics</h4>
             </div>
             <div class="card-body custom-card-body">
                 <div class="row custom-row">
-                    <div class="col-md-4 custom-col">
-                        <ul class="list-group custom-list-group">
-{{--                            @foreach($userLocations as $location)--}}
-{{--                                @if ($loop->first)--}}
-{{--                                    @continue--}}
-{{--                                @endif--}}
-{{--                                <li class="list-group-item custom-list-group-item">--}}
-{{--                                    <strong>{{ $location[0] }}</strong>--}}
-{{--                                    <p>Users: {{ $location[4] }}</p>--}}
-{{--                                </li>--}}
-{{--                            @endforeach--}}
-                        </ul>
+                    <!-- Gender Distribution Chart -->
+                    <div class="col-md-6 custom-col">
+                        <div x-data="{
+                            chart: null,
+                            init() {
+                                this.chart = new ApexCharts($refs.genderChart, {
+                                    chart: {
+                                        type: 'donut',
+                                        height: 250,
+                                        animations: {
+                                            enabled: true,
+                                            easing: 'easeinout',
+                                            speed: 800,
+                                            animateGradually: {
+                                                enabled: true,
+                                                delay: 150
+                                            },
+                                            dynamicAnimation: {
+                                                enabled: true,
+                                                speed: 350
+                                            }
+                                        }
+                                    },
+                                    series: [60, 40], // Update these values with actual data
+                                    labels: ['Male', 'Female'],
+                                    colors: ['#3b82f6', '#ec4899'],
+                                    legend: {
+                                        position: 'bottom'
+                                    },
+                                    plotOptions: {
+                                        pie: {
+                                            donut: {
+                                                size: '70%'
+                                            }
+                                        }
+                                    },
+                                    dataLabels: {
+                                        enabled: true,
+                                        formatter: function (val) {
+                                            return val.toFixed(1) + '%'
+                                        }
+                                    },
+                                    responsive: [{
+                                        breakpoint: 480,
+                                        options: {
+                                            chart: {
+                                                width: 150
+                                            },
+                                            legend: {
+                                                position: 'bottom'
+                                            }
+                                        }
+                                    }]
+                                });
+                                this.chart.render();
+                            }
+                        }" x-init="init()" class="mt-4">
+                            <div x-ref="genderChart" class="custom-chart"></div>
+                        </div>
                     </div>
-                    <div class="col-md-8 custom-col">
-                        <div wire:ignore>
-                            <div id="userLocationsChart" class="custom-chart" style="width: 100%; height: 500px;"></div>
+
+                    <!-- Device Downloads -->
+                    <div class="col-md-6 custom-col">
+                        <div class="relative w-full h-64 mx-auto">
+                            <div x-data="{
+                                chart: null,
+                                init() {
+                                    this.chart = new ApexCharts($refs.downloadsChart, {
+                                        chart: {
+                                            type: 'donut',
+                                            height: 250,
+                                            animations: {
+                                                enabled: true,
+                                                easing: 'easeinout',
+                                                speed: 800,
+                                                animateGradually: {
+                                                    enabled: true,
+                                                    delay: 150
+                                                },
+                                                dynamicAnimation: {
+                                                    enabled: true,
+                                                    speed: 350
+                                                }
+                                            }
+                                        },
+                                        series: [55, 45], // Update these values with actual data
+                                        labels: ['iOS', 'Android'],
+                                        colors: ['#4ade80', '#3b82f6'],
+                                        legend: {
+                                            position: 'bottom'
+                                        },
+                                        plotOptions: {
+                                            pie: {
+                                                donut: {
+                                                    size: '70%'
+                                                }
+                                            }
+                                        },
+                                        dataLabels: {
+                                            enabled: true,
+                                            formatter: function (val) {
+                                                return val.toFixed(1) + '%'
+                                            }
+                                        },
+                                        responsive: [{
+                                            breakpoint: 480,
+                                            options: {
+                                                chart: {
+                                                    width: 150
+                                                },
+                                                legend: {
+                                                    position: 'bottom'
+                                                }
+                                            }
+                                        }]
+                                    });
+                                    this.chart.render();
+                                }
+                            }" x-init="init()" class="mt-4">
+                                <div x-ref="downloadsChart" class="custom-chart"></div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-
-            @assets
-            <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-            @endassets
-
-            @script
-            <script type="text/javascript">
-                google.charts.load('current', {
-                    packages: ['geochart'],
-                    mapsApiKey: 'YOUR_GOOGLE_MAPS_API_KEY' // Replace with your actual API key
-                });
-
-                google.charts.setOnLoadCallback(drawRegionsMap);
-
-                function drawRegionsMap() {
-                    const userLocations = @json($userLocations); // Pass PHP data to JavaScript
-
-                    const data = google.visualization.arrayToDataTable([
-                        ['Country', 'Users'], // Header row
-                            @foreach($userLocations as $location)
-                            @if ($loop->first)
-                            @continue
-                            @endif
-                        ['{{ $location[0] }}', {{ $location[4] }}], // Country name, user count
-                        @endforeach
-                    ]);
-                    const options = {
-                        colorAxis: { colors: ['#e7711c', '#4374e0'] }, // Gradient color (optional for markers)
-                        backgroundColor: '#030712',
-                        datalessRegionColor: '#f8bbd0',
-                        defaultColor: '#f5f5f5',
-                    };
-
-                    const chart = new google.visualization.GeoChart(document.getElementById('userLocationsChart'));
-                    chart.draw(data, options);
-                }
-
-                // Listen for 'userLocationsUpdated' event and update chart
-                window.addEventListener('userLocationsUpdated', (event) => {
-                    drawRegionsMap(); // Redraw the chart with updated data
-                });
-            </script>
-            @endscript
         </div>
     </x-filament::section>
 </x-filament-widgets::widget>
@@ -80,6 +142,7 @@
         border-radius: 0.25rem;
         box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
         margin-bottom: 1rem;
+        background-color: transparent; /* Transparent background */
     }
 
     .custom-card-header {
@@ -100,16 +163,6 @@
 
     .custom-col {
         padding: 0 0.75rem;
-    }
-
-    .custom-list-group {
-        margin-bottom: 0;
-    }
-
-    .custom-list-group-item {
-        border: 1px solid #dee2e6;
-        margin-bottom: 0.5rem;
-        padding: 0.75rem 1.25rem;
     }
 
     .custom-chart {
