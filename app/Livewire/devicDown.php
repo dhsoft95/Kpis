@@ -3,13 +3,13 @@
 namespace App\Livewire;
 
 use Filament\Widgets\Widget;
+use Illuminate\Support\Facades\DB;
 
 class devicDown extends Widget
 {
-
     public function getDownloads()
     {
-        // Replace with actual data fetching logic
+        // Keep dummy data for downloads
         return [
             'ios' => 4352,
             'android' => 5352,
@@ -18,10 +18,17 @@ class devicDown extends Widget
 
     public function getUserStats()
     {
-        // Replace with actual data fetching logic
+        // Fetch user statistics from the database
+        $userStats = DB::connection('mysql_second')->table('users')
+            ->select(DB::raw('gender, COUNT(*) as count'))
+            ->groupBy('gender')
+            ->pluck('count', 'gender')
+            ->toArray();
+
+        // Ensure that both 'male' and 'female' are set in case of missing data
         return [
-            'male' => 3520,
-            'female' => 6184,
+            'male' => $userStats['male'] ?? 0,
+            'female' => $userStats['female'] ?? 0,
         ];
     }
 
