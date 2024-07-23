@@ -6,7 +6,7 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Filament\Widgets\Widget;
 
-class UserStatsOverview extends Widget
+class userStatsOverview extends Widget
 {
     protected static string $view = 'filament.widgets.user-stats-overview';
 
@@ -34,8 +34,7 @@ class UserStatsOverview extends Widget
         $this->calculateActiveUsers($now, $oneWeekAgo, $thirtyDaysAgo);
         $this->calculateInactiveUsers($now, $oneWeekAgo, $thirtyDaysAgo);
         $this->calculateChurnUsers($now);
-        $this->calculateAverageValuePerDay($now, $oneWeekAgo);
-        $this->calculateAverageTransactionPerCustomer($now, $oneWeekAgo);
+        $this->calculateAdditionalStats($now, $oneWeekAgo, $thirtyDaysAgo);
     }
 
     private function calculateRegisteredUsers(Carbon $now, Carbon $oneWeekAgo): void
@@ -84,20 +83,26 @@ class UserStatsOverview extends Widget
         $this->updateStat('churn', $currentChurn, $previousChurn);
     }
 
-    private function calculateAverageValuePerDay(Carbon $now, Carbon $oneWeekAgo): void
+    private function calculateAdditionalStats(Carbon $now, Carbon $oneWeekAgo, Carbon $thirtyDaysAgo): void
     {
-        $currentValue = $this->getAverageValuePerDay($now->copy()->subDays(7), $now);
-        $previousValue = $this->getAverageValuePerDay($oneWeekAgo->copy()->subDays(7), $oneWeekAgo);
-
-        $this->updateStat('avgValuePerDay', $currentValue, $previousValue);
+        $this->stats['avgValuePerDay'] = $this->calculateAverageValuePerDay($now, $oneWeekAgo, $thirtyDaysAgo);
+        $this->stats['avgTransactionPerCustomer'] = $this->calculateAverageTransactionPerCustomer($now, $oneWeekAgo, $thirtyDaysAgo);
     }
 
-    private function calculateAverageTransactionPerCustomer(Carbon $now, Carbon $oneWeekAgo): void
+    private function calculateAverageValuePerDay(Carbon $now, Carbon $oneWeekAgo, Carbon $thirtyDaysAgo): array
     {
-        $currentValue = $this->getAverageTransactionPerCustomer($now->copy()->subDays(30), $now);
-        $previousValue = $this->getAverageTransactionPerCustomer($oneWeekAgo->copy()->subDays(30), $oneWeekAgo);
+        $currentValue = $this->getAverageTransactionValue($thirtyDaysAgo, $now);
+        $previousValue = $this->getAverageTransactionValue($oneWeekAgo, $now);
 
-        $this->updateStat('avgTransactionPerCustomer', $currentValue, $previousValue);
+        return $this->calculateStatArray($currentValue, $previousValue);
+    }
+
+    private function calculateAverageTransactionPerCustomer(Carbon $now, Carbon $oneWeekAgo, Carbon $thirtyDaysAgo): array
+    {
+        $currentValue = $this->getAverageTransactionPerCustomer($thirtyDaysAgo, $now);
+        $previousValue = $this->getAverageTransactionPerCustomer($oneWeekAgo, $now);
+
+        return $this->calculateStatArray($currentValue, $previousValue);
     }
 
     private function getActiveUsersCount(Carbon $fromDate): int
@@ -123,37 +128,23 @@ class UserStatsOverview extends Widget
             ->count();
     }
 
-    private function getAverageValuePerDay(Carbon $fromDate, Carbon $toDate): float
+    private function getAverageTransactionValue(Carbon $fromDate, Carbon $toDate): float
     {
-        $totalValue = DB::connection('mysql_second')->table('tbl_transactions')
-            ->whereBetween('created_at', [$fromDate, $toDate])
-            ->where('status', 3) // Assuming status 3 means successful transaction
-            ->sum(DB::raw('CAST(sender_amount AS DECIMAL(15, 2))'));
-
-        $totalTransactions = DB::connection('mysql_second')->table('tbl_transactions')
+        return DB::connection('mysql_second')->table('tbl_transactions')
             ->whereBetween('created_at', [$fromDate, $toDate])
             ->where('status', 3)
-            ->count();
-
-        $numberOfDays = $toDate->diffInDays($fromDate) + 1; // +1 to include both start and end dates
-
-        return ($totalTransactions > 0 && $numberOfDays > 0) ? ($totalValue / $totalTransactions) / $numberOfDays : 0;
+            ->avg(DB::raw('CAST(sender_amount AS DECIMAL(15, 2))')) ?? 0;
     }
 
     private function getAverageTransactionPerCustomer(Carbon $fromDate, Carbon $toDate): float
     {
         $transactionCount = DB::connection('mysql_second')->table('tbl_transactions')
             ->whereBetween('created_at', [$fromDate, $toDate])
-            ->where('status', 3) // Assuming status 3 means completed transaction
             ->count();
 
-        $customerCount = DB::connection('mysql_second')->table('tbl_transactions')
-            ->whereBetween('created_at', [$fromDate, $toDate])
-            ->where('status', 3)
-            ->distinct('sender_phone')
-            ->count('sender_phone');
+        $userCount = $this->getActiveUsersCount($fromDate);
 
-        return $customerCount > 0 ? $transactionCount / $customerCount : 0;
+        return $userCount > 0 ? $transactionCount / $userCount : 0;
     }
 
     private function updateStat(string $key, $currentValue, $previousValue): void
@@ -161,6 +152,16 @@ class UserStatsOverview extends Widget
         $percentageChange = $this->calculatePercentageChange($previousValue, $currentValue);
         $this->stats[$key] = [
             'count' => $currentValue,
+            'percentageChange' => $percentageChange,
+            'isGrowth' => $percentageChange >= 0,
+        ];
+    }
+
+    private function calculateStatArray($currentValue, $previousValue): array
+    {
+        $percentageChange = $this->calculatePercentageChange($previousValue, $currentValue);
+        return [
+            'value' => $currentValue,
             'percentageChange' => $percentageChange,
             'isGrowth' => $percentageChange >= 0,
         ];
