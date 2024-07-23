@@ -3,7 +3,7 @@
         <div class="space-y-6">
             <!-- Device Downloads Section -->
             <div>
-                <h3 class="text-lg font-semibold mb-3">Device Downloads</h3>
+                <h3 class="text-sm font-semibold mb-3">Device Downloads</h3>
                 <div class="grid grid-cols-2 gap-4">
                     <div class="bg-gray-100 dark:bg-gray-800 rounded-lg p-4 transition-all duration-300 hover:shadow-md">
                         <div class="flex items-center space-x-3">
@@ -28,7 +28,7 @@
 
             <!-- User Gender Stats Section -->
             <div>
-                <h3 class="text-lg font-semibold mb-3">User Gender Stats</h3>
+                <h3 class="text-sm font-semibold mb-3">User Gender Stats</h3>
                 <div class="bg-gray-100 dark:bg-gray-800 rounded-lg p-4 transition-all duration-300 hover:shadow-md">
                     <div class="flex justify-between items-center">
                         <div class="flex items-center space-x-3">
