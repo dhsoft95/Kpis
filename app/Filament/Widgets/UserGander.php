@@ -31,16 +31,16 @@ class UserGander extends ApexChartWidget
     /**
      * Widget Footer
      */
-    protected function getFooter(): string | View
-    {
-        $data = [
-            'new' => 230,
-            'delivered' => 890,
-            'cancelled' => 54,
-        ];
-
-        return view('charts.order-status.footer', ['data' => $data]);
-    }
+//    protected function getFooter(): string | View
+//    {
+//        $data = [
+//            'new' => 230,
+//            'delivered' => 890,
+//            'cancelled' => 54,
+//        ];
+//
+//        return view('charts.order-status.footer', ['data' => $data]);
+//    }
 
     /**
      * Chart options (series, labels, types, size, animations...)
