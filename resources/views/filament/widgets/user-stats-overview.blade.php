@@ -29,8 +29,8 @@
             .progress-text {
                 position: absolute;
                 color: white;
-                font-size: 0.65rem; /* Reduced font size */
-                font-weight: 500; /* Reduced font weight */
+                font-size: 0.65rem;
+                font-weight: 500;
                 z-index: 1;
             }
 
@@ -51,7 +51,7 @@
                 opacity: 0;
                 transition: opacity 0.3s, transform 0.3s;
                 box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-                font-size: 0.75rem; /* Reduced font size */
+                font-size: 0.75rem;
                 line-height: 1.4;
                 transform: translateY(10px);
             }
@@ -74,7 +74,7 @@
             }
 
             .tooltip-title {
-                font-weight: 500; /* Reduced font weight */
+                font-weight: 500;
                 margin-bottom: 5px;
                 color: #4a5568;
             }
@@ -89,7 +89,7 @@
                 @php
                     // Define card configurations
                     $cards = [
-                        'all' => ['title' => 'All Registered Users', 'icon' => 'fas fa-users', 'bgColor' => 'bg-blue-500 bg-opacity-20', 'color' => 'blue', 'description' => 'Total number of users registered in the system.'],
+                        'registered' => ['title' => 'All Registered Users', 'icon' => 'fas fa-users', 'bgColor' => 'bg-blue-500 bg-opacity-20', 'color' => 'blue', 'description' => 'Total number of users registered in the system.'],
                         'active' => ['title' => 'Active Users', 'icon' => 'fas fa-check-circle', 'bgColor' => 'bg-green-500 bg-opacity-20', 'color' => 'green', 'description' => 'Users who have logged in within the last 30 days.'],
                         'inactive' => ['title' => 'Inactive Users', 'icon' => 'fas fa-user-slash', 'bgColor' => 'bg-red-500 bg-opacity-20', 'color' => 'red', 'description' => 'Users who haven\'t logged in for more than 30 days.'],
                         'churn' => ['title' => 'Churn Users', 'icon' => 'fas fa-exclamation-triangle', 'bgColor' => 'bg-yellow-500 bg-opacity-20', 'color' => 'yellow', 'description' => 'Users who have stopped using the service.'],
@@ -115,8 +115,10 @@
                                             <h2 class="text-sm font-medium mb-0" wire:key="count-{{ $key }}">
                                                 @if ($key === 'avgValuePerDay')
                                                     TSH {{ number_format($stats[$key]['value'] ?? 0, 0) }}
+                                                @elseif ($key === 'avgTransactionPerCustomer')
+                                                    {{ number_format($stats[$key]['value'] ?? 0, 2) }}
                                                 @else
-                                                    {{ isset($stats[$key]['count']) ? $stats[$key]['count'] : number_format($stats[$key]['value'] ?? 0, 0) }}
+                                                    {{ number_format($stats[$key]['count'] ?? 0, 0) }}
                                                 @endif
                                             </h2>
                                         </div>
