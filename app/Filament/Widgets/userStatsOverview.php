@@ -8,10 +8,10 @@ use Filament\Widgets\Widget;
 
 class UserStatsOverview extends Widget
 {
-    // View associated with this widget
+    // Define the view associated with this widget
     protected static string $view = 'filament.widgets.user-stats-overview';
 
-    // Array to store various statistics
+    // Initialize the stats array with default values
     public array $stats = [
         'registered' => ['count' => 0, 'percentageChange' => 0, 'isGrowth' => true],
         'active' => ['count' => 0, 'percentageChange' => 0, 'isGrowth' => true],
@@ -21,19 +21,20 @@ class UserStatsOverview extends Widget
         'avgTransactionPerCustomer' => ['value' => 0, 'percentageChange' => 0, 'isGrowth' => true],
     ];
 
-    // Initialize the widget and calculate statistics
+    // Called when the widget is initialized
     public function mount(): void
     {
         $this->calculateStats();
     }
 
-    // Method to calculate all required statistics
+    // Method to calculate all statistics
     public function calculateStats(): void
     {
         $now = Carbon::now();
         $oneWeekAgo = $now->copy()->subWeek();
         $thirtyDaysAgo = $now->copy()->subDays(30);
 
+        // Calculate various statistics
         $this->calculateRegisteredUsers($now, $oneWeekAgo);
         $this->calculateActiveUsers($now, $oneWeekAgo, $thirtyDaysAgo);
         $this->calculateInactiveUsers($now, $oneWeekAgo, $thirtyDaysAgo);
@@ -45,14 +46,15 @@ class UserStatsOverview extends Widget
     // Calculate the number of registered users
     private function calculateRegisteredUsers(Carbon $now, Carbon $oneWeekAgo): void
     {
-        // Count of registered users up to one week ago
+        // Count users registered up to one week ago
         $countOneWeekAgo = DB::connection('mysql_second')->table('users')
             ->where('created_at', '<=', $oneWeekAgo)
             ->count();
 
-        // Current count of registered users
+        // Count total registered users as of now
         $countNow = DB::connection('mysql_second')->table('users')->count();
 
+        // Update the statistics
         $this->updateStat('registered', $countNow, $countOneWeekAgo);
     }
 
@@ -68,6 +70,7 @@ class UserStatsOverview extends Widget
     // Calculate the number of inactive users
     private function calculateInactiveUsers(Carbon $now, Carbon $oneWeekAgo, Carbon $thirtyDaysAgo): void
     {
+        // Count total users and active users for the current and previous periods
         $totalUsersCurrent = DB::connection('mysql_second')->table('users')->count();
         $activeUsersCurrent = $this->getActiveUsersCount($thirtyDaysAgo);
 
@@ -76,13 +79,14 @@ class UserStatsOverview extends Widget
             ->count();
         $activeUsersPrevious = $this->getActiveUsersCount($oneWeekAgo);
 
+        // Calculate inactive users
         $inactiveUsersCurrent = $totalUsersCurrent - $activeUsersCurrent;
         $inactiveUsersPrevious = $totalUsersPrevious - $activeUsersPrevious;
 
         $this->updateStat('inactive', $inactiveUsersCurrent, $inactiveUsersPrevious);
     }
 
-    // Calculate the number of churned users
+    // Calculate the number of churn users
     private function calculateChurnUsers(Carbon $now): void
     {
         $thirtyDaysAgo = $now->copy()->subDays(30);
@@ -94,7 +98,7 @@ class UserStatsOverview extends Widget
         $this->updateStat('churn', $currentChurn, $previousChurn);
     }
 
-    // Calculate the average value of transactions per day
+    // Calculate the average transaction value per day
     private function calculateAverageValuePerDay(Carbon $now, Carbon $oneWeekAgo): void
     {
         $currentValue = $this->getAverageValuePerDay($now->copy()->subDays(7), $now);
@@ -124,7 +128,7 @@ class UserStatsOverview extends Widget
             ->count();
     }
 
-    // Get the count of churned users by checking if they have not transacted since a specific date
+    // Get the count of churn users who have not been active since a specific date
     private function getChurnUsersCount(Carbon $date): int
     {
         return DB::connection('mysql_second')->table('users')
@@ -137,40 +141,42 @@ class UserStatsOverview extends Widget
             ->count();
     }
 
-    // Calculate the average value of transactions per day over a date range
+    // Calculate the average value of transactions per day
     private function getAverageValuePerDay(Carbon $fromDate, Carbon $toDate): float
     {
-        // Get daily transaction values and counts
-        $dailyValues = DB::connection('mysql_second')->table('tbl_transactions')
-            ->select(DB::raw('DATE(created_at) as transaction_date'), DB::raw('SUM(CAST(sender_amount AS DECIMAL(15, 2))) as daily_value'), DB::raw('COUNT(*) as number_of_transactions'))
+        $totalValue = DB::connection('mysql_second')->table('tbl_transactions')
             ->whereBetween('created_at', [$fromDate, $toDate])
             ->where('status', 3) // Assuming status 3 means successful transaction
-            ->groupBy(DB::raw('DATE(created_at)'))
-            ->get();
+            ->sum(DB::raw('CAST(sender_amount AS DECIMAL(15, 2))'));
 
-        // Calculate total value and number of days
-        $totalValue = $dailyValues->sum('daily_value');
+        $totalTransactions = DB::connection('mysql_second')->table('tbl_transactions')
+            ->whereBetween('created_at', [$fromDate, $toDate])
+            ->where('status', 3)
+            ->count();
+
         $numberOfDays = $toDate->diffInDays($fromDate) + 1; // +1 to include both start and end dates
 
-        return ($numberOfDays > 0) ? ($totalValue / $numberOfDays) : 0;
+        return ($totalTransactions > 0 && $numberOfDays > 0) ? ($totalValue / $totalTransactions) / $numberOfDays : 0;
     }
 
-    // Calculate the average number of transactions per customer over a date range
+    // Calculate the average number of transactions per customer
     private function getAverageTransactionPerCustomer(Carbon $fromDate, Carbon $toDate): float
     {
-        // Get total transactions and unique customers
-        $transactionsData = DB::connection('mysql_second')->table('tbl_transactions')
+        $transactionCount = DB::connection('mysql_second')->table('tbl_transactions')
             ->whereBetween('created_at', [$fromDate, $toDate])
             ->where('status', 3) // Assuming status 3 means completed transaction
-            ->get();
+            ->count();
 
-        $transactionCount = $transactionsData->count();
-        $customerCount = $transactionsData->pluck('sender_phone')->unique()->count();
+        $customerCount = DB::connection('mysql_second')->table('tbl_transactions')
+            ->whereBetween('created_at', [$fromDate, $toDate])
+            ->where('status', 3)
+            ->distinct('sender_phone')
+            ->count('sender_phone');
 
         return $customerCount > 0 ? $transactionCount / $customerCount : 0;
     }
 
-    // Update statistics with current and previous values and calculate percentage change
+    // Update the statistics array with new values and calculate percentage change
     private function updateStat(string $key, $currentValue, $previousValue): void
     {
         $percentageChange = $this->calculatePercentageChange($previousValue, $currentValue);
@@ -181,7 +187,7 @@ class UserStatsOverview extends Widget
         ];
     }
 
-    // Calculate the percentage change between previous and current values
+    // Calculate the percentage change from previous to current value
     private function calculatePercentageChange($previous, $current): float
     {
         if ($previous == 0) {
