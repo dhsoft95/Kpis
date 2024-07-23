@@ -39,7 +39,7 @@
                     <x-heroicon-s-users class="w-5 h-5 mr-2 text-primary-500"/>
                     Gamer Gender Distribution
                 </h2>
-                <div class="relative" style="height: 150px;">
+                <div class="relative" style="height: 200px;">
                     <canvas id="genderChart"></canvas>
                 </div>
             </div>
@@ -58,6 +58,8 @@
                         datasets: [{
                             data: [{{ $maleGamersPercentage }}, {{ $femaleGamersPercentage }}],
                             backgroundColor: ['#3b82f6', '#ec4899'],
+                            borderColor: ['#2563eb', '#db2777'],
+                            borderWidth: 1
                         }]
                     },
                     options: {
@@ -68,7 +70,10 @@
                                 position: 'bottom',
                                 labels: {
                                     boxWidth: 12,
-                                    padding: 15
+                                    padding: 15,
+                                    font: {
+                                        size: 12
+                                    }
                                 }
                             },
                             tooltip: {
@@ -77,8 +82,22 @@
                                         return context.label + ': ' + context.parsed + '%';
                                     }
                                 }
+                            },
+                            doughnutlabel: {
+                                labels: [{
+                                    text: 'Total',
+                                    font: {
+                                        size: '16'
+                                    }
+                                }, {
+                                    text: '100%',
+                                    font: {
+                                        size: '20'
+                                    }
+                                }]
                             }
-                        }
+                        },
+                        cutout: '60%'
                     }
                 });
             });
