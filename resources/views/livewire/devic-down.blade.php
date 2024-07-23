@@ -1,46 +1,99 @@
 <x-filament-widgets::widget>
     <x-filament::section>
-        <!-- Include CDNs -->
         <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
         <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
 
-        <div class="flex justify-between">
-            <!-- Left side: Gender distribution using ApexCharts -->
-            <div class="w-1/2 pr-4">
-                <h2 class="text-lg font-semibold mb-4">Registered Users by Gender</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Gender distribution chart -->
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+                <h2 class="text-lg font-semibold mb-4 text-gray-900 dark:text-white">Registered Users by Gender</h2>
                 <div x-data="{
                     chart: null,
                     init() {
                         this.chart = new ApexCharts($refs.chart, {
                             chart: {
-                                type: 'pie',
-                                height: 200
+                                type: 'donut',
+                                height: 280,
+                                animations: {
+                                    enabled: true,
+                                    easing: 'easeinout',
+                                    speed: 800,
+                                    animateGradually: {
+                                        enabled: true,
+                                        delay: 150
+                                    },
+                                    dynamicAnimation: {
+                                        enabled: true,
+                                        speed: 350
+                                    }
+                                }
                             },
                             series: [60, 40],
                             labels: ['Male', 'Female'],
-                            colors: ['#36A2EB', '#FF6384'],
+                            colors: ['#3b82f6', '#ec4899'],
                             legend: {
                                 position: 'bottom'
-                            }
+                            },
+                            plotOptions: {
+                                pie: {
+                                    donut: {
+                                        size: '70%'
+                                    }
+                                }
+                            },
+                            dataLabels: {
+                                enabled: true,
+                                formatter: function (val) {
+                                    return val.toFixed(1) + '%'
+                                }
+                            },
+                            responsive: [{
+                                breakpoint: 480,
+                                options: {
+                                    chart: {
+                                        width: 200
+                                    },
+                                    legend: {
+                                        position: 'bottom'
+                                    }
+                                }
+                            }]
                         });
                         this.chart.render();
                     }
-                }" x-init="init()">
+                }" x-init="init()" class="mt-4">
                     <div x-ref="chart"></div>
                 </div>
             </div>
 
-            <!-- Right side: Device downloads -->
-            <div class="w-1/2 pl-4">
-                <h2 class="text-lg font-semibold mb-4">Downloads by Platform</h2>
-                <div class="relative w-48 h-48 mx-auto">
-                    <div class="absolute inset-0 flex items-center justify-center">
-                        <div class="w-full h-full bg-primary-500 rounded-full"></div>
-                        <div class="absolute top-0 left-0 w-28 h-48 bg-gray-500 rounded-l-full"></div>
-                    </div>
-                    <div class="absolute inset-0 flex flex-col items-center justify-center">
-                        <span class="font-bold">55% iOS</span>
-                        <span class="font-bold">45% Android</span>
+            <!-- Device downloads -->
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+                <h2 class="text-lg font-semibold mb-4 text-gray-900 dark:text-white">Downloads by Platform</h2>
+                <div class="relative w-64 h-64 mx-auto">
+                    <svg class="w-full h-full" viewBox="0 0 36 36">
+                        <path d="M18 2.0845
+                            a 15.9155 15.9155 0 0 1 0 31.831
+                            a 15.9155 15.9155 0 0 1 0 -31.831"
+                              fill="none"
+                              stroke="#4ade80"
+                              stroke-width="2"
+                              stroke-dasharray="100, 100"
+                        />
+                        <path d="M18 2.0845
+                            a 15.9155 15.9155 0 0 1 0 31.831
+                            a 15.9155 15.9155 0 0 1 0 -31.831"
+                              fill="none"
+                              stroke="#3b82f6"
+                              stroke-width="2"
+                              stroke-dasharray="55, 100"
+                        />
+                        <text x="18" y="20.35" class="text-5xl font-bold text-gray-900 dark:text-white" text-anchor="middle">55%</text>
+                    </svg>
+                    <div class="absolute inset-0 flex flex-col items-center justify-center mt-16">
+                        <span class="text-sm font-medium text-gray-600 dark:text-gray-400">iOS</span>
+                        <span class="text-3xl font-bold text-green-500">55%</span>
+                        <span class="text-sm font-medium text-gray-600 dark:text-gray-400 mt-2">Android</span>
+                        <span class="text-3xl font-bold text-blue-500">45%</span>
                     </div>
                 </div>
             </div>
