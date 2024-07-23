@@ -90,19 +90,19 @@
                 @php
                     // Define card configurations
                     $cards = [
-                        'all' => ['title' => 'All Registered Users', 'icon' => 'fas fa-users', 'color' => 'gray', 'description' => 'Total number of users registered in the system.'],
-                        '1' => ['title' => 'Active Users', 'icon' => 'fas fa-check-circle', 'color' => 'gray', 'description' => 'Users who have logged in within the last 30 days.'],
-                        '0' => ['title' => 'Inactive Users', 'icon' => 'fas fa-user-slash', 'color' => 'gray', 'description' => 'Users who haven\'t logged in for more than 30 days.'],
-                        'churn' => ['title' => 'Churn Users', 'icon' => 'fas fa-exclamation-triangle', 'color' => 'gray', 'description' => 'Users who have stopped using the service.'],
-                        'avgValuePerDay' => ['title' => 'Avg Trans Value/Day', 'icon' => 'fas fa-dollar-sign', 'color' => 'gray', 'description' => 'Average monetary value of transactions per day.'],
-                        'avgTransactionPerCustomer' => ['title' => 'Avg Trans/Customer', 'icon' => 'fas fa-user-friends', 'color' => 'gray', 'description' => 'Average number of transactions per customer.'],
+                        'all' => ['title' => 'All Registered Users', 'icon' => 'fas fa-users', 'bgColor' => 'bg-blue-500 bg-opacity-20', 'color' => 'blue', 'description' => 'Total number of users registered in the system.'],
+                        '1' => ['title' => 'Active Users', 'icon' => 'fas fa-check-circle', 'bgColor' => 'bg-green-500 bg-opacity-20', 'color' => 'green', 'description' => 'Users who have logged in within the last 30 days.'],
+                        '0' => ['title' => 'Inactive Users', 'icon' => 'fas fa-user-slash', 'bgColor' => 'bg-red-500 bg-opacity-20', 'color' => 'red', 'description' => 'Users who haven\'t logged in for more than 30 days.'],
+                        'churn' => ['title' => 'Churn Users', 'icon' => 'fas fa-exclamation-triangle', 'bgColor' => 'bg-yellow-500 bg-opacity-20', 'color' => 'yellow', 'description' => 'Users who have stopped using the service.'],
+                        'avgValuePerDay' => ['title' => 'Avg Trans Value/Day', 'icon' => 'fas fa-dollar-sign', 'bgColor' => 'bg-purple-500 bg-opacity-20', 'color' => 'purple', 'description' => 'Average monetary value of transactions per day.'],
+                        'avgTransactionPerCustomer' => ['title' => 'Avg Trans/Customer', 'icon' => 'fas fa-user-friends', 'bgColor' => 'bg-pink-500 bg-opacity-20', 'color' => 'pink', 'description' => 'Average number of transactions per customer.'],
                     ];
                 @endphp
 
                 @foreach ($cards as $key => $card)
                     <div class="w-full sm:w-1/2 md:w-1/3 px-2 mb-3">
                         <div class="card-container relative">
-                            <div class="bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white rounded-lg shadow-lg p-4 h-28 flex flex-col relative">
+                            <div class="{{ $card['bgColor'] }} text-gray-900 dark:text-white rounded-lg shadow-lg p-4 h-28 flex flex-col relative">
                                 <!-- Card icon in the top right corner -->
                                 <div class="absolute top-1 right-1 text-3xl opacity-20">
                                     <i class="{{ $card['icon'] }}"></i>
