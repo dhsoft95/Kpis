@@ -4,7 +4,7 @@ namespace App\Livewire;
 
 use Leandrocfe\FilamentApexCharts\Widgets\ApexChartWidget;
 
-class UserGenders extends ApexChartWidget
+class UserGanders extends ApexChartWidget
 {
     /**
      * Chart Id
