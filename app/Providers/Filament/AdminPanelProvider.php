@@ -54,7 +54,7 @@ class AdminPanelProvider extends PanelProvider
             ->login()  ->collapsibleNavigationGroups(true)->sidebarCollapsibleOnDesktop()
             ->brandLogo(asset('asset/images/logo.svg'))->brandLogoHeight('2rem')
             ->favicon(asset('asset/images/favicon.svg')) ->topbar(true)
-            ->plugin(FilamentSpatieLaravelHealthPlugin::make())
+//            ->plugin(FilamentSpatieLaravelHealthPlugin::make())
             ->colors([
                 'primary' => '#fcbb29',
                 'secondary' => '#fcbb29',
