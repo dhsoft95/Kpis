@@ -85,8 +85,8 @@
         }
 
         function animateGenderRatio() {
-            const male = 3000; // Dummy data
-            const female = 2000; // Dummy data
+            const male = 3000;  // Dummy data for male
+            const female = 2000;  // Dummy data for female
             const total = male + female;
             if (total === 0) {
                 console.error('Total is zero, cannot calculate ratio.');
