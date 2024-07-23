@@ -14,7 +14,7 @@
                                 <span class="text-base font-semibold text-gray-900 dark:text-white">{{ number_format($iosDownloads) }}</span>
                                 <p class="text-xs text-blue-600 dark:text-blue-400">iOS</p>
                             </div>
-                        </div>
+                        </div>ss
                     </div>
                     <div class="bg-green-50 dark:bg-gray-800 rounded-lg p-4"> <!-- Changed p-2 to p-4 -->
                         <div class="flex items-center space-x-2">
