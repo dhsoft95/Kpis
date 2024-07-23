@@ -95,7 +95,7 @@
                         '0' => ['title' => 'Inactive Users', 'icon' => 'fas fa-user-slash', 'bgGradient' => 'from-red-700 to-red-400', 'color' => 'red', 'description' => 'Users who haven\'t logged in for more than 30 days.'],
                         'churn' => ['title' => 'Churn Users', 'icon' => 'fas fa-exclamation-triangle', 'bgGradient' => 'from-yellow-700 to-yellow-400', 'color' => 'yellow', 'description' => 'Users who have stopped using the service.'],
                         'avgValuePerDay' => ['title' => 'Avg Trans Value/Day', 'icon' => 'fas fa-dollar-sign', 'bgGradient' => 'from-purple-700 to-purple-400', 'color' => 'purple', 'description' => 'Average monetary value of transactions per day.'],
-                        'avgTransactionPerCustomer' => ['title' => 'Avg Trans Per Customer', 'icon' => 'fas fa-user-friends', 'bgGradient' => 'from-pink-700 to-pink-400', 'color' => 'pink', 'description' => 'Average number of transactions per customer.'],
+                        'avgTransactionPerCustomer' => ['title' => 'Avg Trans/Customer', 'icon' => 'fas fa-user-friends', 'bgGradient' => 'from-pink-700 to-pink-400', 'color' => 'pink', 'description' => 'Average number of transactions per customer.'],
                     ];
                 @endphp
 
