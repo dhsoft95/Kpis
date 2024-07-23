@@ -163,43 +163,62 @@ class userStatsOverview extends Widget
 
     private function calculateAverageTransactionPerCustomer(): array
     {
+        // Calculate the date range for the last 30 days
+        $last30DaysStart = Carbon::now()->subDays(30);
+        $last30DaysEnd = Carbon::now();
+
+        // Calculate the date range for the current and previous weeks
         $currentWeekStart = Carbon::now()->startOfWeek();
         $currentWeekEnd = Carbon::now()->endOfWeek();
         $previousWeekStart = Carbon::now()->subWeek()->startOfWeek();
         $previousWeekEnd = Carbon::now()->subWeek()->endOfWeek();
 
-        $currentValue = DB::connection('mysql_second')->table(DB::raw('(
-            SELECT receiver_phone, COUNT(*) AS transaction_count
-            FROM tbl_transactions
-            WHERE created_at BETWEEN ? AND ?
-            AND status = 3
-            GROUP BY receiver_phone
-        ) AS weekly_transactions'))
+        // Last 30 days' average transactions
+        $averageValue = DB::connection('mysql_second')->table(DB::raw('(
+        SELECT receiver_phone, COUNT(*) AS transaction_count
+        FROM tbl_transactions
+        WHERE created_at BETWEEN ? AND ?
+        AND status = 3
+        GROUP BY receiver_phone
+    ) AS monthly_transactions'))
+            ->setBindings([$last30DaysStart, $last30DaysEnd])
+            ->avg('transaction_count');
+
+        // Current week's average transactions
+        $currentWeekValue = DB::connection('mysql_second')->table(DB::raw('(
+        SELECT receiver_phone, COUNT(*) AS transaction_count
+        FROM tbl_transactions
+        WHERE created_at BETWEEN ? AND ?
+        AND status = 3
+        GROUP BY receiver_phone
+    ) AS weekly_transactions'))
             ->setBindings([$currentWeekStart, $currentWeekEnd])
             ->avg('transaction_count');
 
-        $previousValue = DB::connection('mysql_second')->table(DB::raw('(
-            SELECT receiver_phone, COUNT(*) AS transaction_count
-            FROM tbl_transactions
-            WHERE created_at BETWEEN ? AND ?
-            AND status = 3
-            GROUP BY receiver_phone
-        ) AS weekly_transactions'))
+        // Previous week's average transactions
+        $previousWeekValue = DB::connection('mysql_second')->table(DB::raw('(
+        SELECT receiver_phone, COUNT(*) AS transaction_count
+        FROM tbl_transactions
+        WHERE created_at BETWEEN ? AND ?
+        AND status = 3
+        GROUP BY receiver_phone
+    ) AS weekly_transactions'))
             ->setBindings([$previousWeekStart, $previousWeekEnd])
             ->avg('transaction_count');
 
-        $difference = $currentValue - $previousValue;
-        $percentageChange = $this->calculatePercentageChange($previousValue, $currentValue);
+        // Calculate the percentage change week-over-week
+        $percentageChange = $this->calculatePercentageChange($previousWeekValue, $currentWeekValue);
 
-        Log::info("Avg Transaction Per Customer: Current: $currentValue, Previous: $previousValue, Difference: $difference, Change: $percentageChange%");
+        // Log the results
+        Log::info("Avg Transaction Per Customer: Last 30 Days: $averageValue, Current Week: $currentWeekValue, Previous Week: $previousWeekValue, Change: $percentageChange%");
 
+        // Return the results
         return [
-            'value' => $currentValue,
+            'value' => $averageValue,
             'percentageChange' => $percentageChange,
             'isGrowth' => $percentageChange >= 0,
         ];
     }
-
     public function calculatePercentageChange($previousValue, $currentValue): float
     {
         if ($previousValue == 0) {
