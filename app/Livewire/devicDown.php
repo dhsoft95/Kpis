@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use App\Models\AppUser;
 use Filament\Widgets\Widget;
 
 class devicDown extends Widget
@@ -19,12 +20,17 @@ class devicDown extends Widget
 
     public function getUserStats()
     {
-        // Replace with actual data fetching logic
+        // Fetch user statistics using the User model
+        $maleCount = AppUser::where('gender', 'male')->count();
+        $femaleCount = AppUser::where('gender', 'female')->count();
+
+        // Return the results
         return [
-            'male' => 3520,
-            'female' => 6184,
+            'male' => $maleCount,
+            'female' => $femaleCount,
         ];
     }
+
 
     protected static string $view = 'livewire.devic-down';
 }
