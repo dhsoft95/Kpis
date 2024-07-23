@@ -101,25 +101,18 @@ class RegisterdUsersChart extends ApexChartWidget
                 'tickAmount' => 5,
             ],
             'fill' => [
-                'type' => 'gradient',
-                'gradient' => [
-                    'shade' => 'dark',
-                    'type' => 'vertical',
-                    'shadeIntensity' => 0.5,
-                    'gradientToColors' => ['#d97706', '#c2410c'],
-                    'opacityFrom' => 1,
-                    'opacityTo' => 1,
-                    'stops' => [0, 100],
-                ],
+                'type' => 'solid',
+                'opacity' => 0.7,
             ],
             'stroke' => [
                 'curve' => 'smooth',
                 'width' => 1,
                 'lineCap' => 'round',
             ],
-            'colors' => ['#f59e0b', '#ea580c'],
+            'colors' => ['#4a5568', '#718096'],
         ];
     }
+
 
 
     /**
