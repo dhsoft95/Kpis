@@ -109,7 +109,7 @@
                                 </div>
                                 <div class="pt-4 flex-grow">
                                     <!-- Card title -->
-                                    <h5 class="text-xs font-semibold mb-1 {{ $key === 'avgValuePerDay' ? 'text-sm' : '' }}">{{ $card['title'] }}</h5>
+                                    <h5 class="text-xs font-semibold mb-1 {{ $key === 'avgValuePerDay' ? 'text-xxs' : '' }}">{{ $card['title'] }}</h5>
                                     <div class="flex items-center mb-1">
                                         <div class="w-2/3">
                                             <!-- Card count or value -->
