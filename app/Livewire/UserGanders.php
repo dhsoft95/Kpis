@@ -4,21 +4,21 @@ namespace App\Livewire;
 
 use Leandrocfe\FilamentApexCharts\Widgets\ApexChartWidget;
 
-class UserGanders extends ApexChartWidget
+class UserGenders extends ApexChartWidget
 {
     /**
      * Chart Id
      *
      * @var string
      */
-    protected static ?string $chartId = 'userGanders';
+    protected static ?string $chartId = 'userGenders';
 
     /**
      * Widget Title
      *
      * @var string|null
      */
-    protected static ?string $heading = 'UserGanders';
+    protected static ?string $heading = 'User Genders';
 
     /**
      * Chart options (series, labels, types, size, animations...)
@@ -28,13 +28,17 @@ class UserGanders extends ApexChartWidget
      */
     protected function getOptions(): array
     {
+        // Dummy data
+        $maleCount = 65;
+        $femaleCount = 35;
+
         return [
             'chart' => [
                 'type' => 'pie',
-                'height' => 300,
+                'height' => 200,
             ],
-            'series' => [2, 4, 6, 10, 14],
-            'labels' => ['Jan', 'Feb', 'Mar', 'Apr', 'May'],
+            'series' => [$maleCount, $femaleCount],
+            'labels' => ['Male', 'Female'],
             'legend' => [
                 'labels' => [
                     'fontFamily' => 'inherit',
