@@ -1,41 +1,32 @@
 <x-filament-widgets::widget>
     <x-filament::section>
+        <!-- Include CDNs -->
+        <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+        <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+
         <div class="flex justify-between">
-            <!-- Left side: Gender distribution using Chart.js -->
+            <!-- Left side: Gender distribution using ApexCharts -->
             <div class="w-1/2 pr-4">
                 <h2 class="text-lg font-semibold mb-4">Registered Users by Gender</h2>
-                <div x-data="{}" x-init="
-                    new Chart($refs.genderChart, {
-                        type: 'pie',
-                        data: {
+                <div x-data="{
+                    chart: null,
+                    init() {
+                        this.chart = new ApexCharts($refs.chart, {
+                            chart: {
+                                type: 'pie',
+                                height: 200
+                            },
+                            series: [60, 40],
                             labels: ['Male', 'Female'],
-                            datasets: [{
-                                data: [60, 40],
-                                backgroundColor: [
-                                    'rgba(54, 162, 235, 0.8)',
-                                    'rgba(255, 99, 132, 0.8)'
-                                ],
-                                borderColor: [
-                                    'rgba(54, 162, 235, 1)',
-                                    'rgba(255, 99, 132, 1)'
-                                ],
-                                borderWidth: 1
-                            }]
-                        },
-                        options: {
-                            responsive: true,
-                            plugins: {
-                                legend: {
-                                    position: 'bottom',
-                                },
-                                title: {
-                                    display: false,
-                                }
+                            colors: ['#36A2EB', '#FF6384'],
+                            legend: {
+                                position: 'bottom'
                             }
-                        }
-                    })
-                ">
-                    <canvas x-ref="genderChart" width="200" height="200"></canvas>
+                        });
+                        this.chart.render();
+                    }
+                }" x-init="init()">
+                    <div x-ref="chart"></div>
                 </div>
             </div>
 
