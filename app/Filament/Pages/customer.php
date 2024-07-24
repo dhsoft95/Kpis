@@ -9,6 +9,7 @@ use App\Filament\Widgets\userStatsOverview;
 use App\Livewire\CustStatsOverview;
 use App\Livewire\CustvalueChart;
 use App\Livewire\testw;
+use App\Livewire\testWidget;
 use App\Livewire\TransvalueChart;
 use Filament\Forms\Components\Tabs\Tab;
 use Filament\Pages\Page;
@@ -22,7 +23,7 @@ class customer extends Page
         return [
             CustStatsOverview::class,
             CustvalueChart::class,
-            testw::class,
+            testWidget::class,
             TransvalueChart::class,
         ];
     }
