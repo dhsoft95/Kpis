@@ -20,41 +20,41 @@
                 bottom: 0;
                 left: 0;
                 right: 0;
-                height: 4px;
+                height: 3px;
                 background: #3b82f6; /* Tailwind blue-500 */
             }
             .icon-bg {
-                width: 40px;
-                height: 40px;
-                border-radius: 8px;
+                width: 32px;
+                height: 32px;
+                border-radius: 6px;
                 display: flex;
                 align-items: center;
                 justify-content: center;
             }
             .percentage-badge {
-                padding: 2px 8px;
-                border-radius: 12px;
-                font-size: 0.75rem;
+                padding: 1px 6px;
+                border-radius: 10px;
+                font-size: 0.65rem;
                 font-weight: 500;
             }
             .card-title {
                 color: #6b7280; /* Tailwind gray-500 */
-                font-size: 0.875rem;
+                font-size: 0.7rem;
                 font-weight: 500;
             }
             .card-value {
-                font-size: 1.5rem;
+                font-size: 1.25rem;
                 font-weight: 700;
                 color: #1f2937; /* Tailwind gray-800 */
             }
             .time-period {
                 color: #9ca3af; /* Tailwind gray-400 */
-                font-size: 0.75rem;
+                font-size: 0.65rem;
             }
         </style>
 
         <div class="container mx-auto p-4" wire:poll.4s="calculateStats">
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 @php
                     $cards = [
                         'registered' => [
@@ -69,21 +69,50 @@
                             'iconBgColor' => 'bg-blue-100',
                             'iconColor' => 'text-blue-600',
                         ],
-                        // ... (other cards)
+                        'inactive' => [
+                            'title' => 'INACTIVE CUSTOMERS',
+                            'icon' => 'fas fa-user-slash',
+                            'iconBgColor' => 'bg-red-100',
+                            'iconColor' => 'text-red-600',
+                        ],
+                        'churn' => [
+                            'title' => 'CHURN CUSTOMERS',
+                            'icon' => 'fas fa-user-minus',
+                            'iconBgColor' => 'bg-orange-100',
+                            'iconColor' => 'text-orange-600',
+                        ],
+                        'avgValuePerDay' => [
+                            'title' => 'AVG TRANS VALUE/DAY',
+                            'icon' => 'fas fa-dollar-sign',
+                            'iconBgColor' => 'bg-green-100',
+                            'iconColor' => 'text-green-600',
+                        ],
+                        'avgTransactionPerCustomer' => [
+                            'title' => 'AVG TRANS/CUSTOMER',
+                            'icon' => 'fas fa-exchange-alt',
+                            'iconBgColor' => 'bg-purple-100',
+                            'iconColor' => 'text-purple-600',
+                        ],
                     ];
                 @endphp
 
                 @foreach ($cards as $key => $card)
-                    <div class="card p-6">
-                        <div class="flex justify-between items-start mb-4">
+                    <div class="card p-4">
+                        <div class="flex justify-between items-start mb-3">
                             <div>
-                                <h5 class="card-title mb-2">{{ $card['title'] }}</h5>
+                                <h5 class="card-title mb-1">{{ $card['title'] }}</h5>
                                 <h2 class="card-value" wire:key="count-{{ $key }}">
-                                    {{ number_format($stats[$key]['count'] ?? 0, 0) }}
+                                    @if ($key === 'avgValuePerDay')
+                                        TSH {{ number_format($stats[$key]['value'] ?? 0, 0) }}
+                                    @elseif ($key === 'avgTransactionPerCustomer')
+                                        {{ number_format($stats[$key]['value'] ?? 0, 2) }}
+                                    @else
+                                        {{ number_format($stats[$key]['count'] ?? 0, 0) }}
+                                    @endif
                                 </h2>
                             </div>
                             <div class="icon-bg {{ $card['iconBgColor'] }}">
-                                <i class="{{ $card['icon'] }} {{ $card['iconColor'] }}"></i>
+                                <i class="{{ $card['icon'] }} {{ $card['iconColor'] }} text-sm"></i>
                             </div>
                         </div>
                         <div class="flex items-center">
@@ -96,7 +125,7 @@
                             <span class="percentage-badge {{ $changeColor }} mr-2">
                                 {{ $isGrowth ? '+' : '-' }}{{ $formattedPercentage }}%
                             </span>
-                            <span class="time-period">From the last week</span>
+                            <span class="time-period">From the last month</span>
                         </div>
                     </div>
                 @endforeach
