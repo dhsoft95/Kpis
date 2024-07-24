@@ -79,55 +79,6 @@
                 background-color: #7f1d1d;
                 color: #f87171;
             }
-
-            /* Tooltip styles */
-            .card-container {
-                position: relative;
-                cursor: pointer;
-            }
-            .card-tooltip {
-                visibility: hidden;
-                width: 240px;
-                background-color: #ffffff;
-                color: #333333;
-                text-align: left;
-                border-radius: 6px;
-                padding: 10px;
-                position: absolute;
-                z-index: 1;
-                bottom: 125%;
-                left: 50%;
-                margin-left: -120px;
-                opacity: 0;
-                transition: opacity 0.3s, transform 0.3s;
-                box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-                font-size: 0.75rem;
-                line-height: 1.4;
-                transform: translateY(10px);
-            }
-            .card-container:hover .card-tooltip {
-                visibility: visible;
-                opacity: 1;
-                transform: translateY(0);
-            }
-            .card-tooltip::after {
-                content: "";
-                position: absolute;
-                top: 100%;
-                left: 50%;
-                margin-left: -10px;
-                border-width: 10px;
-                border-style: solid;
-                border-color: #ffffff transparent transparent transparent;
-            }
-            .tooltip-title {
-                font-weight: 500;
-                margin-bottom: 5px;
-                color: #4a5568;
-            }
-            .tooltip-description {
-                color: #718096;
-            }
         </style>
 
         <div class="container mx-auto p-4" wire:poll.4s="calculateStats">
@@ -168,40 +119,33 @@
                 @endphp
 
                 @foreach ($cards as $key => $card)
-                    <div class="card-container">
-                        <div class="card">
-                            <div class="card-icon">
-                                <i class="{{ $card['icon'] }}"></i>
-                            </div>
-                            <h5 class="card-title">{{ strtoupper($card['title']) }}</h5>
-                            <div class="card-value">
-                                @if ($key === 'avgValuePerDay')
-                                    TSH {{ number_format($stats[$key]['value'] ?? 0, 0) }}
-                                @elseif ($key === 'avgTransactionPerCustomer')
-                                    {{ number_format($stats[$key]['value'] ?? 0, 2) }}
-                                @else
-                                    {{ number_format($stats[$key]['count'] ?? 0, 0) }}
-                                @endif
-                            </div>
-                            <div class="card-change">
-                                @php
-                                    $percentageChange = $stats[$key]['percentageChange'] ?? 0;
-                                    $formattedPercentage = number_format(abs($percentageChange), 2);
-                                    $isGrowth = $stats[$key]['isGrowth'] ?? false;
-                                @endphp
-                                <span class="change-indicator {{ $isGrowth ? 'change-positive' : 'change-negative' }}">
-                                    {{ $isGrowth ? '+' : '-' }}{{ $formattedPercentage }}%
-                                </span>
-                                <span class="text-gray-500 dark:text-gray-400">From last week</span>
-                            </div>
-                            <div class="text-sm text-gray-600 dark:text-gray-400 mt-2">
-                                {{ $card['description'] }}
-                            </div>
+                    <div class="card">
+                        <div class="card-icon">
+                            <i class="{{ $card['icon'] }}"></i>
                         </div>
-                        <!-- Tooltip -->
-                        <div class="card-tooltip">
-                            <div class="tooltip-title">{{ $card['title'] }}</div>
-                            <div class="tooltip-description">{{ $card['description'] }}</div>
+                        <h5 class="card-title">{{ strtoupper($card['title']) }}</h5>
+                        <div class="card-value">
+                            @if ($key === 'avgValuePerDay')
+                                TSH {{ number_format($stats[$key]['value'] ?? 0, 0) }}
+                            @elseif ($key === 'avgTransactionPerCustomer')
+                                {{ number_format($stats[$key]['value'] ?? 0, 2) }}
+                            @else
+                                {{ number_format($stats[$key]['count'] ?? 0, 0) }}
+                            @endif
+                        </div>
+                        <div class="card-change">
+                            @php
+                                $percentageChange = $stats[$key]['percentageChange'] ?? 0;
+                                $formattedPercentage = number_format(abs($percentageChange), 2);
+                                $isGrowth = $stats[$key]['isGrowth'] ?? false;
+                            @endphp
+                            <span class="change-indicator {{ $isGrowth ? 'change-positive' : 'change-negative' }}">
+                                {{ $isGrowth ? '+' : '-' }}{{ $formattedPercentage }}%
+                            </span>
+                            <span class="text-gray-500 dark:text-gray-400">From last week</span>
+                        </div>
+                        <div class="text-sm text-gray-600 dark:text-gray-400 mt-2">
+                            {{ $card['description'] }}
                         </div>
                     </div>
                 @endforeach
