@@ -14,6 +14,7 @@ use App\Filament\Widgets\CustStatsOverview;
 use App\Filament\Widgets\RegisterdUsersChart;
 use App\Filament\Widgets\RegisteredChart;
 use App\Filament\Widgets\TestOverview;
+use App\Filament\Widgets\testWidget;
 use App\Filament\Widgets\UserPerformance;
 use App\Filament\Widgets\userStatsOverview;
 use App\Livewire\devicDown;
@@ -73,6 +74,7 @@ class AdminPanelProvider extends PanelProvider
                 devicDown::class,
                 RegisterdUsersChart::class,
                 ActiveChart::class,
+                testWidget::class,
                 ChurnChart::class,
 
 
