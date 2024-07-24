@@ -136,10 +136,10 @@ class ChurnChart extends ChartWidget
 
     private function formatLabel(string $date, string $groupBy): string
     {
-        $carbon = Carbon::createFromIsoFormat($this->getIsoFormat($groupBy), $date);
+        $carbon = $this->createCarbonFromFormat($date, $groupBy);
 
         return match ($groupBy) {
-            'week' => 'Week ' . $carbon->weekOfYear . ', ' . $carbon->year,
+            'week' => 'Week ' . $carbon->isoWeek . ', ' . $carbon->year,
             'month' => $carbon->format('M Y'),
             'quarter' => 'Q' . $carbon->quarter . ' ' . $carbon->year,
             'year' => $carbon->format('M Y'),
@@ -147,12 +147,12 @@ class ChurnChart extends ChartWidget
         };
     }
 
-    private function getIsoFormat(string $groupBy): string
+    private function createCarbonFromFormat(string $date, string $groupBy): Carbon
     {
         return match ($groupBy) {
-            'week' => 'GGGG-WW',  // ISO year and week number
-            'month' => 'YYYY-MM',
-            default => 'YYYY-MM-DD',
+            'week' => Carbon::createFromFormat('o-W', $date),
+            'month' => Carbon::createFromFormat('Y-m', $date),
+            default => Carbon::createFromFormat('Y-m-d', $date),
         };
     }
 
