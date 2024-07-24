@@ -74,7 +74,6 @@ class AdminPanelProvider extends PanelProvider
                 devicDown::class,
                 RegisterdUsersChart::class,
                 ActiveChart::class,
-                testWidget::class,
                 ChurnChart::class,
 
 
