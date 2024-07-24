@@ -177,7 +177,7 @@
                                 <span class="percentage-badge {{ $changeColor }} mr-2">
                                     {{ $isGrowth ? '+' : '-' }}{{ $formattedPercentage }}%
                                 </span>
-                                <span class="time-period">From the last month</span>
+                                <span class="time-period">WoW</span>
                             </div>
                         </div>
                         <div class="card-tooltip">
