@@ -13,7 +13,7 @@
         }
 
         :is(.dark .fi-sidebar) {
-            background-color: #fafafa !important;
+            background-color: rgba(var(--gray-900), var(--tw-bg-opacity)) !important
         }
     }
 }
