@@ -56,8 +56,8 @@
             .card-tooltip {
                 visibility: hidden;
                 width: 200px;
-                background-color: #ffffff;
-                color: #333333;
+                background-color: #333333;
+                color: #ffffff;
                 text-align: left;
                 border-radius: 6px;
                 padding: 8px;
