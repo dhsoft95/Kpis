@@ -7,25 +7,24 @@
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" />
 
         <style>
-            /* Enhanced tooltip styles */
             .card-tooltip {
                 visibility: hidden;
-                width: 240px;
-                background-color: #ffffff;
-                color: #333333;
+                width: 220px;
+                background-color: var(--tooltip-bg);
+                color: var(--tooltip-text);
                 text-align: left;
-                border-radius: 6px;
-                padding: 10px;
+                border-radius: 4px;
+                padding: 8px;
                 position: absolute;
                 z-index: 1;
                 bottom: 125%;
                 left: 50%;
-                margin-left: -120px;
+                margin-left: -110px;
                 opacity: 0;
                 transition: opacity 0.3s, transform 0.3s;
-                box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-                font-size: 0.75rem;
-                line-height: 1.4;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+                font-size: 0.7rem;
+                line-height: 1.3;
                 transform: translateY(10px);
             }
 
@@ -34,10 +33,10 @@
                 position: absolute;
                 top: 100%;
                 left: 50%;
-                margin-left: -10px;
-                border-width: 10px;
+                margin-left: -5px;
+                border-width: 5px;
                 border-style: solid;
-                border-color: #ffffff transparent transparent transparent;
+                border-color: var(--tooltip-bg) transparent transparent transparent;
             }
 
             .card-container:hover .card-tooltip {
@@ -48,77 +47,81 @@
 
             .tooltip-title {
                 font-weight: 500;
-                margin-bottom: 5px;
-                color: #4a5568;
+                margin-bottom: 3px;
             }
 
-            .tooltip-description {
-                color: #718096;
+            .dark .card {
+                background-color: #1f2937;
+                color: #f3f4f6;
+            }
+
+            .dark .card-title {
+                color: #d1d5db;
+            }
+
+            .dark .card-subtitle {
+                color: #9ca3af;
             }
         </style>
 
-        <div class="container mx-auto p-4" wire:poll.4s="calculateStats">
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div class="container mx-auto p-2" x-data="{ darkMode: false }" x-init="darkMode = document.documentElement.classList.contains('dark')" wire:poll.4s="calculateStats">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                 @php
-                    // Define card configurations
                     $cards = [
                         'registered' => [
                             'title' => 'Total Customers',
                             'icon' => 'fas fa-users',
-                            'iconBgColor' => 'bg-yellow-100',
-                            'iconColor' => 'text-yellow-500',
-                            'description' => 'Total number of users who have registered on the Simba Money platform.'
+                            'iconBgColor' => 'bg-yellow-100 dark:bg-yellow-900',
+                            'iconColor' => 'text-yellow-500 dark:text-yellow-300',
+                            'description' => 'Total number of registered users on the Simba Money platform.'
                         ],
                         'active' => [
                             'title' => 'Active Customers',
                             'icon' => 'fas fa-user-check',
-                            'iconBgColor' => 'bg-blue-100',
-                            'iconColor' => 'text-blue-500',
-                            'description' => 'Users who have engaged in any revenue-generating activity within the last 30 days.'
+                            'iconBgColor' => 'bg-blue-100 dark:bg-blue-900',
+                            'iconColor' => 'text-blue-500 dark:text-blue-300',
+                            'description' => 'Users with revenue-generating activity in the last 30 days.'
                         ],
                         'inactive' => [
                             'title' => 'Inactive Customers',
                             'icon' => 'fas fa-user-slash',
-                            'iconBgColor' => 'bg-red-100',
-                            'iconColor' => 'text-red-500',
-                            'description' => 'Users who have not engaged in any revenue-generating activities for more than 30 days.'
+                            'iconBgColor' => 'bg-red-100 dark:bg-red-900',
+                            'iconColor' => 'text-red-500 dark:text-red-300',
+                            'description' => 'Users without revenue-generating activities for over 30 days.'
                         ],
                         'churn' => [
                             'title' => 'Churn Customers',
                             'icon' => 'fas fa-user-minus',
-                            'iconBgColor' => 'bg-orange-100',
-                            'iconColor' => 'text-orange-500',
-                            'description' => 'Users who have stopped using the platform and whose last activity was more than 30 days ago.'
+                            'iconBgColor' => 'bg-orange-100 dark:bg-orange-900',
+                            'iconColor' => 'text-orange-500 dark:text-orange-300',
+                            'description' => 'Users who stopped platform usage over 30 days ago.'
                         ],
                         'avgValuePerDay' => [
-                            'title' => 'Avg Transaction Value/Day',
+                            'title' => 'Avg Trans Value/Day',
                             'icon' => 'fas fa-dollar-sign',
-                            'iconBgColor' => 'bg-green-100',
-                            'iconColor' => 'text-green-500',
-                            'description' => 'Average monetary value of all transactions processed per day.'
+                            'iconBgColor' => 'bg-green-100 dark:bg-green-900',
+                            'iconColor' => 'text-green-500 dark:text-green-300',
+                            'description' => 'Average daily transaction value on the platform.'
                         ],
                         'avgTransactionPerCustomer' => [
-                            'title' => 'Avg Transactions/Customer',
+                            'title' => 'Avg Trans/Customer',
                             'icon' => 'fas fa-exchange-alt',
-                            'iconBgColor' => 'bg-purple-100',
-                            'iconColor' => 'text-purple-500',
-                            'description' => 'Average number of transactions made by each customer.'
+                            'iconBgColor' => 'bg-purple-100 dark:bg-purple-900',
+                            'iconColor' => 'text-purple-500 dark:text-purple-300',
+                            'description' => 'Average number of transactions per customer.'
                         ],
                     ];
                 @endphp
 
                 @foreach ($cards as $key => $card)
                     <div class="card-container relative">
-                        <div class="bg-white rounded-lg shadow-sm p-4 h-32 flex flex-col relative">
-                            <!-- Icon in the top right corner -->
-                            <div class="absolute top-3 right-3 p-2 rounded-lg {{ $card['iconBgColor'] }}">
-                                <i class="{{ $card['icon'] }} text-lg {{ $card['iconColor'] }}"></i>
+                        <div class="card bg-white dark:bg-gray-800 rounded-lg shadow-sm p-3 h-28 flex flex-col relative">
+                            <div class="absolute top-2 right-2 p-1.5 rounded-lg {{ $card['iconBgColor'] }}">
+                                <i class="{{ $card['icon'] }} text-base {{ $card['iconColor'] }}"></i>
                             </div>
                             <div class="flex-grow">
-                                <!-- Card title -->
-                                <h5 class="text-gray-500 text-sm font-medium mb-2">{{ $card['title'] }}</h5>
-                                <!-- Card count or value -->
-                                <h2 class="text-2xl font-bold mb-2" wire:key="count-{{ $key }}">
+                                <h5 class="card-title text-gray-600 dark:text-gray-300 text-xs font-medium mb-1">{{ $card['title'] }}</h5>
+                                <h2 class="text-xl font-bold mb-1 dark:text-white" wire:key="count-{{ $key }}">
                                     @if ($key === 'avgValuePerDay')
                                         TSH {{ number_format($stats[$key]['value'] ?? 0, 0) }}
                                     @elseif ($key === 'avgTransactionPerCustomer')
@@ -127,22 +130,20 @@
                                         {{ number_format($stats[$key]['count'] ?? 0, 0) }}
                                     @endif
                                 </h2>
-                                <!-- Percentage change -->
                                 <div class="flex items-center">
                                     @php
                                         $percentageChange = $stats[$key]['percentageChange'] ?? 0;
                                         $formattedPercentage = number_format(abs($percentageChange), 0);
                                         $isGrowth = $stats[$key]['isGrowth'] ?? false;
-                                        $changeColor = $isGrowth ? 'text-green-500 bg-green-100' : 'text-red-500 bg-red-100';
+                                        $changeColor = $isGrowth ? 'text-green-600 bg-green-100 dark:text-green-400 dark:bg-green-900' : 'text-red-600 bg-red-100 dark:text-red-400 dark:bg-red-900';
                                     @endphp
-                                    <span class="text-xs font-medium {{ $changeColor }} rounded px-2 py-1 mr-2">
+                                    <span class="text-xs font-medium {{ $changeColor }} rounded px-1.5 py-0.5 mr-1.5">
                                         {{ $isGrowth ? '+' : '-' }}{{ $formattedPercentage }}%
                                     </span>
-                                    <span class="text-gray-500 text-xs">From the last month</span>
+                                    <span class="card-subtitle text-gray-500 dark:text-gray-400 text-2xs">From last month</span>
                                 </div>
                             </div>
-                            <!-- Tooltip -->
-                            <div class="card-tooltip">
+                            <div class="card-tooltip" :style="{ '--tooltip-bg': darkMode ? '#374151' : '#ffffff', '--tooltip-text': darkMode ? '#f3f4f6' : '#1f2937' }">
                                 <div class="tooltip-title">{{ $card['title'] }}</div>
                                 <div class="tooltip-description">{{ $card['description'] }}</div>
                             </div>
