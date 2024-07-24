@@ -16,12 +16,14 @@ class ChurnChart extends ChartWidget
     protected function getData(): array
     {
         // Define the date ranges for the current week and the previous week
-        $currentWeekStart = Carbon::now()->startOfWeek();
-        $currentWeekEnd = Carbon::now()->endOfWeek();
+        $today = Carbon::now()->startOfDay();
+        $currentWeekStart = $today->copy()->startOfWeek();
+        $currentWeekEnd = $today->copy()->endOfWeek();
         $previousWeekStart = $currentWeekStart->copy()->subWeek();
         $previousWeekEnd = $currentWeekEnd->copy()->subWeek();
 
-        $currentWeekChurn = $this->getChurnCount($currentWeekStart, $currentWeekEnd);
+        // Fetch churn users count for current and previous week
+        $currentWeekChurn = $this->getChurnCount($currentWeekStart, $today);
         $previousWeekChurn = $this->getChurnCount($previousWeekStart, $previousWeekEnd);
 
         return [
@@ -34,7 +36,7 @@ class ChurnChart extends ChartWidget
             ],
             'labels' => [
                 $previousWeekStart->format('M d') . ' - ' . $previousWeekEnd->format('M d'),
-                $currentWeekStart->format('M d') . ' - ' . $currentWeekEnd->format('M d'),
+                $currentWeekStart->format('M d') . ' - ' . $today->format('M d'),
             ],
         ];
     }
@@ -76,12 +78,13 @@ class ChurnChart extends ChartWidget
 
     protected function getFooterWidgets(): array
     {
-        $currentWeekStart = Carbon::now()->startOfWeek();
-        $currentWeekEnd = Carbon::now()->endOfWeek();
+        $today = Carbon::now()->startOfDay();
+        $currentWeekStart = $today->copy()->startOfWeek();
+        $currentWeekEnd = $today->copy()->endOfWeek();
         $previousWeekStart = $currentWeekStart->copy()->subWeek();
         $previousWeekEnd = $currentWeekEnd->copy()->subWeek();
 
-        $currentWeekChurn = $this->getChurnCount($currentWeekStart, $currentWeekEnd);
+        $currentWeekChurn = $this->getChurnCount($currentWeekStart, $today);
         $previousWeekChurn = $this->getChurnCount($previousWeekStart, $previousWeekEnd);
 
         $percentageChange = $this->calculatePercentageChange($previousWeekChurn, $currentWeekChurn);
