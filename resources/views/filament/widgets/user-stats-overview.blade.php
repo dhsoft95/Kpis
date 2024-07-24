@@ -25,7 +25,7 @@
                 left: 0;
                 right: 0;
                 height: 3px;
-                background: #3b82f6; /* Tailwind blue-500 */
+                background: #172554; /* Tailwind blue-500 */
             }
             .dark .card::after {
                 background: #60a5fa; /* Tailwind blue-400 for dark mode */
@@ -120,7 +120,7 @@
             }
         </style>
 
-        <div class="container mx-auto p-4" wire:poll.3s="calculateStats">
+        <div class="container mx-auto p-4" wire:poll.2s="calculateStats">
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 @php
                     $cards = [
