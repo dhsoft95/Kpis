@@ -14,7 +14,7 @@ class ChurnChart extends ChartWidget
     protected static ?string $maxHeight = '300px';
 
     // Default filter value
-    protected string $filter = 'four_weeks';
+    public ?string $filter = 'four_weeks';
 
     protected function getData(): array
     {
@@ -102,6 +102,19 @@ class ChurnChart extends ChartWidget
         return $weeks;
     }
 
+    private function calculatePercentageChange($oldValue, $newValue): float
+    {
+        if ($oldValue == 0) {
+            return $newValue > 0 ? 100 : 0;
+        }
+        return round((($newValue - $oldValue) / $oldValue) * 100, 2);
+    }
+
+    protected function getType(): string
+    {
+        return 'bar';
+    }
+
     protected function getFilters(): ?array
     {
         return [
@@ -149,18 +162,10 @@ class ChurnChart extends ChartWidget
             ],
             'scales' => [
                 'x' => [
-                    'stacked' => true,
-                    'title' => [
-                        'display' => true,
-                        'text' => 'Weeks'
-                    ]
+                    'stacked' => false,
                 ],
                 'y' => [
                     'beginAtZero' => true,
-                    'title' => [
-                        'display' => true,
-                        'text' => 'Churn Users'
-                    ],
                     'ticks' => [
                         'precision' => 0,
                     ],
