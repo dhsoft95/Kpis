@@ -7,187 +7,105 @@
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" />
 
         <style>
-            /* Progress bar styles and animations */
-            .progress-bar {
-                width: 0;
-                height: 100%;
-                transition: width 0.6s ease;
-                background-color: rgba(255, 255, 255, 0.2);
-                position: relative;
-                display: flex;
-                align-items: center;
-                justify-content: center;
+            .card {
+                @apply bg-white dark:bg-gray-800 rounded-lg shadow-md p-4 relative overflow-hidden;
             }
-            .progress-bar-animate {
-                animation: progress-animation 0.6s ease forwards;
+            .card-title {
+                @apply text-sm font-medium text-gray-600 dark:text-gray-300 mb-2;
             }
-            @keyframes progress-animation {
-                from { width: 0; }
-                to { width: var(--progress-width); }
+            .card-value {
+                @apply text-2xl font-bold text-gray-800 dark:text-white mb-2;
             }
-
-            .progress-text {
-                position: absolute;
-                color: white;
-                font-size: 0.65rem;
-                font-weight: 500;
-                z-index: 1;
+            .card-change {
+                @apply text-xs font-medium;
             }
-
-            /* Enhanced tooltip styles */
-            .card-tooltip {
-                visibility: hidden;
-                width: 240px;
-                background-color: #ffffff;
-                color: #333333;
-                text-align: left;
-                border-radius: 6px;
-                padding: 10px;
-                position: absolute;
-                z-index: 1;
-                bottom: 125%;
-                left: 50%;
-                margin-left: -120px;
-                opacity: 0;
-                transition: opacity 0.3s, transform 0.3s;
-                box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-                font-size: 0.75rem;
-                line-height: 1.4;
-                transform: translateY(10px);
+            .card-change-positive {
+                @apply text-green-500 dark:text-green-400 bg-green-100 dark:bg-green-800 bg-opacity-50 rounded px-2 py-1;
             }
-
-            .card-tooltip::after {
-                content: "";
-                position: absolute;
-                top: 100%;
-                left: 50%;
-                margin-left: -10px;
-                border-width: 10px;
-                border-style: solid;
-                border-color: #ffffff transparent transparent transparent;
+            .card-change-negative {
+                @apply text-red-500 dark:text-red-400 bg-red-100 dark:bg-red-800 bg-opacity-50 rounded px-2 py-1;
             }
-
-            .card-container:hover .card-tooltip {
-                visibility: visible;
-                opacity: 1;
-                transform: translateY(0);
+            .card-subtitle {
+                @apply text-xs text-gray-500 dark:text-gray-400 mt-1;
             }
-
-            .tooltip-title {
-                font-weight: 500;
-                margin-bottom: 5px;
-                color: #4a5568;
+            .card-icon {
+                @apply absolute top-4 right-4 text-3xl opacity-20;
             }
-
-            .tooltip-description {
-                color: #718096;
+            .tooltip {
+                @apply invisible absolute z-10 py-2 px-3 text-sm font-medium text-white bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700;
+                transition: opacity 0.3s ease-in-out;
+            }
+            .card:hover .tooltip {
+                @apply visible opacity-100;
             }
         </style>
 
         <div class="container mx-auto p-2" wire:poll.4s="calculateStats">
-            <div class="flex flex-wrap -mx-2">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 @php
-                    // Define card configurations
                     $cards = [
                         'registered' => [
-                            'title' => 'All Registered Users',
+                            'title' => 'Total Customers',
                             'icon' => 'fas fa-users',
-                            'bgColor' => 'bg-blue-500 bg-opacity-20',
-                            'color' => 'blue',
-                            'description' => 'Total number of users who have registered on the Simba Money platform. This includes all users regardless of their activity status.'
+                            'iconBg' => 'text-blue-500 dark:text-blue-400',
+                            'description' => 'Total number of users registered on the Simba Money platform.'
                         ],
                         'active' => [
-                            'title' => 'Active Users',
+                            'title' => 'Active Customers',
                             'icon' => 'fas fa-check-circle',
-                            'bgColor' => 'bg-green-500 bg-opacity-20',
-                            'color' => 'green',
-                            'description' => 'Users who have engaged in any revenue-generating activity on the Simba Money platform within the last 30 days. This includes transactions such as sending money or savings.'
+                            'iconBg' => 'text-green-500 dark:text-green-400',
+                            'description' => 'Users who have engaged in activity within the last 30 days.'
                         ],
                         'inactive' => [
                             'title' => 'Inactive Users',
                             'icon' => 'fas fa-user-slash',
-                            'bgColor' => 'bg-red-500 bg-opacity-20',
-                            'color' => 'red',
-                            'description' => 'Users who have not engaged in any revenue-generating activities on the Simba Money platform for more than 30 days since their registration.'
+                            'iconBg' => 'text-red-500 dark:text-red-400',
+                            'description' => 'Users who have not engaged in activities for more than 30 days.'
                         ],
                         'churn' => [
                             'title' => 'Churn Users',
                             'icon' => 'fas fa-exclamation-triangle',
-                            'bgColor' => 'bg-yellow-500 bg-opacity-20',
-                            'color' => 'yellow',
-                            'description' => 'Users who have stopped using the Simba Money platform and whose last revenue-generating activity occurred more than 30 days ago.'
+                            'iconBg' => 'text-yellow-500 dark:text-yellow-400',
+                            'description' => 'Users who have stopped using the platform.'
                         ],
                         'avgValuePerDay' => [
                             'title' => 'Avg Trans Value/Day',
                             'icon' => 'fas fa-dollar-sign',
-                            'bgColor' => 'bg-purple-500 bg-opacity-20',
-                            'color' => 'purple',
-                            'description' => 'Average monetary value of all transactions processed per day on the Simba Money platform.'
+                            'iconBg' => 'text-purple-500 dark:text-purple-400',
+                            'description' => 'Average monetary value of all transactions processed per day.'
                         ],
                         'avgTransactionPerCustomer' => [
                             'title' => 'Avg Trans/Customer',
-                            'icon' => 'fas fa-user-friends',
-                            'bgColor' => 'bg-pink-500 bg-opacity-20',
-                            'color' => 'pink',
-                            'description' => 'Average number of transactions made by each customer on the Simba Money platform.'
+                            'icon' => 'fas fa-exchange-alt',
+                            'iconBg' => 'text-pink-500 dark:text-pink-400',
+                            'description' => 'Average number of transactions made by each customer.'
                         ],
                     ];
                 @endphp
 
-
                 @foreach ($cards as $key => $card)
-                    <div class="w-full sm:w-1/2 md:w-1/3 px-2 mb-3">
-                        <div class="card-container relative">
-                            <div class="{{ $card['bgColor'] }} text-gray-900 dark:text-white rounded-lg shadow-lg p-2 h-28 flex flex-col relative">
-                                <!-- Card icon in the top right corner -->
-                                <div class="absolute top-1 right-1 text-2xl opacity-20">
-                                    <i class="{{ $card['icon'] }}"></i>
-                                </div>
-                                <div class="pt-4 flex-grow">
-                                    <!-- Card title -->
-                                    <h5 class="text-xs font-medium mb-1 {{ $key === 'avgValuePerDay' ? 'text-xxs' : '' }}">{{ $card['title'] }}</h5>
-                                    <div class="flex items-center mb-1">
-                                        <div class="w-2/3">
-                                            <!-- Card count or value -->
-                                            <h2 class="text-sm font-medium mb-0" wire:key="count-{{ $key }}">
-                                                @if ($key === 'avgValuePerDay')
-                                                    TSH {{ number_format($stats[$key]['value'] ?? 0, 0) }}
-                                                @elseif ($key === 'avgTransactionPerCustomer')
-                                                    {{ number_format($stats[$key]['value'] ?? 0, 2) }}
-                                                @else
-                                                    {{ number_format($stats[$key]['count'] ?? 0, 0) }}
-                                                @endif
-                                            </h2>
-                                        </div>
-                                        <div class="w-1/3 text-right">
-                                            <!-- Percentage change and growth icon -->
-                                            <span class="text-gray-900 dark:text-white text-xs">
-                                                @php
-                                                    $percentageChange = $stats[$key]['percentageChange'] ?? 0;
-                                                    $formattedPercentage = number_format(abs($percentageChange), 2);
-                                                    $isGrowth = $stats[$key]['isGrowth'] ?? false;
-                                                @endphp
-                                                {{ $isGrowth ? '+' : '-' }}{{ $formattedPercentage }}%
-                                                <i class="fa fa-arrow-{{ $isGrowth ? 'up' : 'down' }} ml-1"></i>
-                                            </span>
-                                            <span class="text-xs block">(WoW)</span>
-                                        </div>
-                                    </div>
-                                    <!-- Progress bar -->
-                                    <div class="relative pt-1">
-                                        <div class="w-full bg-gray-300 dark:bg-gray-700 rounded-full h-1">
-                                            <div class="bg-{{ $card['color'] }}-500 h-1 rounded-full progress-bar progress-bar-animate"
-                                                 wire:key="progress-{{ $key }}"
-                                                 style="--progress-width: {{ min(100, abs($percentageChange)) }}%;"></div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <!-- Enhanced Tooltip -->
-                                <div class="card-tooltip">
-                                    <div class="tooltip-title">{{ $card['title'] }}</div>
-                                    <div class="tooltip-description">{{ $card['description'] }}</div>
-                                </div>
-                            </div>
+                    <div class="card">
+                        <div class="card-icon {{ $card['iconBg'] }}">
+                            <i class="{{ $card['icon'] }}"></i>
+                        </div>
+                        <h5 class="card-title">{{ $card['title'] }}</h5>
+                        <div class="card-value" wire:key="count-{{ $key }}">
+                            @if ($key === 'avgValuePerDay')
+                                TSH {{ number_format($stats[$key]['value'] ?? 0, 0) }}
+                            @elseif ($key === 'avgTransactionPerCustomer')
+                                {{ number_format($stats[$key]['value'] ?? 0, 2) }}
+                            @else
+                                {{ number_format($stats[$key]['count'] ?? 0, 0) }}
+                            @endif
+                        </div>
+                        <div class="flex items-center">
+                            <span class="card-change {{ $stats[$key]['isGrowth'] ?? false ? 'card-change-positive' : 'card-change-negative' }}">
+                                {{ ($stats[$key]['isGrowth'] ?? false) ? '+' : '-' }}{{ number_format(abs($stats[$key]['percentageChange'] ?? 0), 2) }}%
+                            </span>
+                            <span class="card-subtitle ml-2">From the last month</span>
+                        </div>
+                        <div class="tooltip">
+                            {{ $card['description'] }}
                         </div>
                     </div>
                 @endforeach
