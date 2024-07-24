@@ -85,10 +85,10 @@ class ActiveChart extends ChartWidget
 
             // Active Users
             $activeCount = DB::connection('mysql_second')
-                ->table('tbl_transaction')
+                ->table('tbl_transactions')
                 ->select('sender_phone')
                 ->whereBetween('created_at', [$periodStart, $periodEnd])
-                ->where('status', 1)
+                ->where('status', 3)
                 ->whereNotNull('sender_amount')
                 ->distinct()
                 ->count();
