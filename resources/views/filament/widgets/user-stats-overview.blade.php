@@ -8,6 +8,7 @@
 
         <style>
             .card {
+                background-color: white;
                 border-radius: 12px;
                 box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
                 position: relative;
@@ -37,6 +38,7 @@
                 font-weight: 500;
             }
             .card-title {
+                color: #6b7280; /* Tailwind gray-500 */
                 font-size: 0.4rem;
                 font-weight: 500;
                 text-transform: uppercase;
@@ -45,13 +47,17 @@
             .card-value {
                 font-size: 1.1rem;
                 font-weight: 700;
+                color: #1f2937; /* Tailwind gray-800 */
             }
             .time-period {
+                color: #9ca3af; /* Tailwind gray-400 */
                 font-size: 0.6rem;
             }
             .card-tooltip {
                 visibility: hidden;
                 width: 200px;
+                background-color: #333333;
+                color: #ffffff;
                 text-align: left;
                 border-radius: 6px;
                 padding: 8px;
@@ -75,6 +81,7 @@
                 margin-left: -5px;
                 border-width: 5px;
                 border-style: solid;
+                border-color: #ffffff transparent transparent transparent;
             }
             .card-container:hover .card-tooltip {
                 visibility: visible;
@@ -84,75 +91,14 @@
             .tooltip-title {
                 font-weight: 500;
                 margin-bottom: 3px;
+                color: #4a5568;
             }
-
-            /* Light theme styles */
-            .light-theme .card {
-                background-color: white;
-            }
-            .light-theme .card-title {
-                color: #6b7280; /* Tailwind gray-500 */
-            }
-            .light-theme .card-value {
-                color: #1f2937; /* Tailwind gray-800 */
-            }
-            .light-theme .time-period {
-                color: #9ca3af; /* Tailwind gray-400 */
-            }
-            .light-theme .card-tooltip {
-                background-color: #333333;
-                color: #ffffff;
-            }
-            .light-theme .card-tooltip::after {
-                border-color: #333333 transparent transparent transparent;
-            }
-            .light-theme .tooltip-title {
-                color: #f3f4f6; /* Tailwind gray-100 */
-            }
-            .light-theme .tooltip-description {
-                color: #d1d5db; /* Tailwind gray-300 */
-            }
-
-            /* Dark theme styles */
-            .dark-theme .card {
-                background-color: #27272a; /* Updated dark background color */
-                border: 1px solid #3f3f46; /* Add border for visibility */
-            }
-            .dark-theme .card-title {
-                color: #d4d4d8; /* Lighter color for better visibility */
-            }
-            .dark-theme .card-value {
-                color: #ffffff; /* White for maximum contrast */
-            }
-            .dark-theme .time-period {
-                color: #a1a1aa; /* Lighter color for better visibility */
-            }
-            .dark-theme .card-tooltip {
-                background-color: #f3f4f6; /* Light background */
-                color: #1f2937; /* Dark text */
-                box-shadow: 0 4px 6px -1px rgba(255, 255, 255, 0.1), 0 2px 4px -1px rgba(255, 255, 255, 0.06);
-            }
-            .dark-theme .card-tooltip::after {
-                border-color: #f3f4f6 transparent transparent transparent;
-            }
-            .dark-theme .tooltip-title {
-                color: #1f2937; /* Dark color for contrast */
-            }
-            .dark-theme .tooltip-description {
-                color: #4b5563; /* Slightly lighter for readability */
-            }
-
-            /* Enhance tooltip visibility */
-            .card-container {
-                position: relative;
-            }
-            .card-container:hover .card-tooltip {
-                visibility: visible;
-                opacity: 1;
-                transform: translateY(-5px);
+            .tooltip-description {
+                color: #718096;
             }
         </style>
-        <div class="container mx-auto p-4" wire:poll.4s="calculateStats" id="theme-container">
+
+        <div class="container mx-auto p-4" wire:poll.4s="calculateStats">
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 @php
                     $cards = [
@@ -242,6 +188,5 @@
                 @endforeach
             </div>
         </div>
-        
     </x-filament::section>
 </x-filament-widgets::widget>
