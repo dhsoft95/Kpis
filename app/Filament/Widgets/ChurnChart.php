@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\DB;
 
 class ChurnChart extends ChartWidget
 {
+
     protected static ?string $heading = 'Weekly Churn Users';
     protected static ?int $sort = 2;
     protected static ?string $maxHeight = '300px';
@@ -80,8 +81,8 @@ class ChurnChart extends ChartWidget
     private function getSqlDateFormat(string $groupBy): string
     {
         return match ($groupBy) {
-            'week' => '%X-%V',  // ISO year and week number
-            'month' => '%Y-%m-01',
+            'week' => '%x-%v',  // ISO year and week number (lowercase)
+            'month' => '%Y-%m',
             default => '%Y-%m-%d',
         };
     }
@@ -90,7 +91,7 @@ class ChurnChart extends ChartWidget
     {
         return match ($groupBy) {
             'week' => 'o-W',  // ISO year and week number
-            'month' => 'Y-m-01',
+            'month' => 'Y-m',
             default => 'Y-m-d',
         };
     }
@@ -135,14 +136,24 @@ class ChurnChart extends ChartWidget
 
     private function formatLabel(string $date, string $groupBy): string
     {
-        $carbon = Carbon::createFromFormat($this->getPhpDateFormat($groupBy), $date);
+        $carbon = Carbon::createFromIsoFormat($this->getIsoFormat($groupBy), $date);
 
         return match ($groupBy) {
-            'week' => 'Week ' . $carbon->weekOfYear,
-            'month' => $carbon->format('M y'),
+            'week' => 'Week ' . $carbon->weekOfYear . ', ' . $carbon->year,
+            'month' => $carbon->format('M Y'),
             'quarter' => 'Q' . $carbon->quarter . ' ' . $carbon->year,
-            'year' => $carbon->format('M y'),
-            default => $carbon->format('d M'),
+            'year' => $carbon->format('M Y'),
+            default => $carbon->format('d M Y'),
         };
     }
+
+    private function getIsoFormat(string $groupBy): string
+    {
+        return match ($groupBy) {
+            'week' => 'GGGG-WW',  // ISO year and week number
+            'month' => 'YYYY-MM',
+            default => 'YYYY-MM-DD',
+        };
+    }
+
 }
