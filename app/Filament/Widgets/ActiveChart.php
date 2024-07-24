@@ -81,7 +81,7 @@ class ActiveChart extends ChartWidget
 
             // Active Users
             $activeCount = DB::connection('mysql_second')
-                ->table('tbl_transaction')
+                ->table('tbl_transactions')
                 ->select('sender_phone')
                 ->whereBetween('created_at', [$weekStart, $weekEnd])
                 ->where('status', 1) // Assuming status 1 is for successful transactions
