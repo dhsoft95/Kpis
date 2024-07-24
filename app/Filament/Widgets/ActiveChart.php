@@ -51,13 +51,13 @@ class ActiveChart extends ChartWidget
 
     protected function getDateRange(): array
     {
-        $end = now()->endOfWeek();
+        $end = now()->endOfDay();
         $start = match ($this->filter) {
-            'week' => $end->copy()->subWeeks(4)->startOfWeek(),
+            'week' => $end->copy()->subWeeks(4)->startOfDay(),
             'month' => $end->copy()->subMonths(2)->startOfMonth(),
             'quarter' => $end->copy()->subMonths(3)->startOfQuarter(),
             'year' => $end->copy()->subYear()->startOfYear(),
-            default => $end->copy()->subWeeks(4)->startOfWeek(),
+            default => $end->copy()->subWeeks(4)->startOfDay(),
         };
 
         return [
@@ -74,18 +74,18 @@ class ActiveChart extends ChartWidget
         $wowActivePercentages = [];
         $wowInactivePercentages = [];
 
-        $period = CarbonPeriod::create($startDate, '1 week', $endDate);
+        $period = CarbonPeriod::create($endDate->copy()->subWeeks(4), '1 week', $endDate)->reverse();
 
-        foreach ($period as $weekStart) {
-            $weekEnd = $weekStart->copy()->endOfWeek();
+        foreach ($period as $weekEnd) {
+            $weekStart = $weekEnd->copy()->startOfWeek();
 
             // Active Users
             $activeCount = DB::connection('mysql_second')
-                ->table('tbl_transactions')
+                ->table('tbl_transaction')
                 ->select('sender_phone')
                 ->whereBetween('created_at', [$weekStart, $weekEnd])
-                ->where('status', 3) // Assuming status 1 is for successful transactions
-                ->whereNotNull('sender_amount') // Ensure there's an amount for the transaction
+                ->where('status', 1)
+                ->whereNotNull('sender_amount')
                 ->distinct()
                 ->count();
 
@@ -115,6 +115,13 @@ class ActiveChart extends ChartWidget
             }
         }
 
+        // Reverse the arrays to show oldest data first
+        $activeCounts = array_reverse($activeCounts);
+        $inactiveCounts = array_reverse($inactiveCounts);
+        $labels = array_reverse($labels);
+        $wowActivePercentages = array_reverse($wowActivePercentages);
+        $wowInactivePercentages = array_reverse($wowInactivePercentages);
+
         return [
             'activeCounts' => $activeCounts,
             'inactiveCounts' => $inactiveCounts,
@@ -123,7 +130,6 @@ class ActiveChart extends ChartWidget
             'wowInactivePercentages' => $wowInactivePercentages,
         ];
     }
-
     protected function calculatePercentageChange($oldValue, $newValue)
     {
         if ($oldValue == 0) {
