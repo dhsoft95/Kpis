@@ -39,11 +39,15 @@ class ChurnChart extends ChartWidget
                     'label' => 'Previous Week',
                     'data' => $previousWeekChurn,
                     'backgroundColor' => '#4A58EC', // Simple color
+                    'borderColor' => null, // Remove border color
+                    'borderWidth' => 0, // Remove border width
                 ],
                 [
                     'label' => 'Current Week',
                     'data' => $currentWeekChurn,
                     'backgroundColor' => '#48D3FF', // Simple color
+                    'borderColor' => null, // Remove border color
+                    'borderWidth' => 0, // Remove border width
                 ],
             ],
             'labels' => $labels,
