@@ -100,7 +100,7 @@
                     <div class="card p-4">
                         <div class="flex justify-between items-start mb-3">
                             <div>
-                                <h5 class="card-title mb-1">{{ $card['title'] }}</h5>
+                                <h5 class="card-title text-sm mb-1">{{ $card['title'] }}</h5>
                                 <h2 class="card-value" wire:key="count-{{ $key }}">
                                     @if ($key === 'avgValuePerDay')
                                         TSH {{ number_format($stats[$key]['value'] ?? 0, 0) }}
