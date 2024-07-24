@@ -81,20 +81,22 @@ class ChurnChart extends ChartWidget
     private function getSqlDateFormat(string $groupBy): string
     {
         return match ($groupBy) {
-            'week' => '%x-%v',  // ISO year and week number (lowercase)
+            'week' => '%Y-%m-%d',  // Changed to full date
             'month' => '%Y-%m',
             default => '%Y-%m-%d',
         };
     }
 
+
     private function getPhpDateFormat(string $groupBy): string
     {
         return match ($groupBy) {
-            'week' => 'o-W',  // ISO year and week number
+            'week' => 'Y-m-d',  // Changed to full date
             'month' => 'Y-m',
             default => 'Y-m-d',
         };
     }
+
 
     private function fillMissingDates(array $data, Carbon $start, Carbon $end, string $groupBy): array
     {
@@ -108,6 +110,7 @@ class ChurnChart extends ChartWidget
             $formattedData[$this->formatLabel($date, $groupBy)] = $count;
         }
 
+        ksort($formattedData);
         return $formattedData;
     }
 
@@ -118,7 +121,11 @@ class ChurnChart extends ChartWidget
         $dateFormat = $this->getPhpDateFormat($groupBy);
 
         while ($current <= $end) {
-            $dates[] = $current->format($dateFormat);
+            if ($groupBy === 'week') {
+                $dates[] = $current->startOfWeek()->format($dateFormat);
+            } else {
+                $dates[] = $current->format($dateFormat);
+            }
             $current->add($this->getDateInterval($groupBy));
         }
 
@@ -136,16 +143,17 @@ class ChurnChart extends ChartWidget
 
     private function formatLabel(string $date, string $groupBy): string
     {
-        $carbon = $this->createCarbonFromFormat($date, $groupBy);
+        $carbon = Carbon::createFromFormat($this->getPhpDateFormat($groupBy), $date);
 
         return match ($groupBy) {
-            'week' => 'Week ' . $carbon->isoWeek . ', ' . $carbon->year,
+            'week' => 'Week ' . $carbon->weekOfYear . ', ' . $carbon->year,
             'month' => $carbon->format('M Y'),
             'quarter' => 'Q' . $carbon->quarter . ' ' . $carbon->year,
             'year' => $carbon->format('M Y'),
             default => $carbon->format('d M Y'),
         };
     }
+
 
     private function createCarbonFromFormat(string $date, string $groupBy): Carbon
     {
