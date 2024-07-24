@@ -9,66 +9,43 @@ use Filament\Widgets\StatsOverviewWidget\Stat;
 
 class ChurnChart extends ChartWidget
 {
-    protected static ?string $heading = 'Churn Users Comparison';
+    protected static ?string $heading = 'Week-on-Week Churn Users';
     protected static ?int $sort = 2;
     protected static ?string $maxHeight = '300px';
 
     // Default filter value
-    public ?string $filter = 'four_weeks';
+    protected string $filter = 'four_weeks';
 
     protected function getData(): array
     {
         $filter = $this->filter;
         $today = Carbon::now()->startOfDay();
+        $weeks = $this->getWeekPeriods($filter, $today);
 
-        switch ($filter) {
-            case 'month':
-                $currentPeriodStart = $today->copy()->startOfMonth();
-                $currentPeriodEnd = $today->copy()->endOfMonth();
-                $previousPeriodStart = $currentPeriodStart->copy()->subMonth();
-                $previousPeriodEnd = $currentPeriodEnd->copy()->subMonth();
-                break;
-            case 'quarter':
-                $currentPeriodStart = $today->copy()->startOfQuarter();
-                $currentPeriodEnd = $today->copy()->endOfQuarter();
-                $previousPeriodStart = $currentPeriodStart->copy()->subQuarter();
-                $previousPeriodEnd = $currentPeriodEnd->copy()->subQuarter();
-                break;
-            case 'year':
-                $currentPeriodStart = $today->copy()->startOfYear();
-                $currentPeriodEnd = $today->copy()->endOfYear();
-                $previousPeriodStart = $currentPeriodStart->copy()->subYear();
-                $previousPeriodEnd = $currentPeriodEnd->copy()->subYear();
-                break;
-            case 'four_weeks':
-            default:
-                $currentPeriodStart = $today->copy()->startOfWeek()->subWeeks(3);
-                $currentPeriodEnd = $today->copy()->endOfWeek();
-                $previousPeriodStart = $currentPeriodStart->copy()->subWeeks(4);
-                $previousPeriodEnd = $currentPeriodEnd->copy()->subWeeks(4);
-                break;
+        $currentWeekChurn = [];
+        $previousWeekChurn = [];
+
+        foreach ($weeks as $week) {
+            $currentWeekChurn[] = $this->getChurnCount($week['currentStart'], $week['currentEnd']);
+            $previousWeekChurn[] = $this->getChurnCount($week['previousStart'], $week['previousEnd']);
         }
-
-        $currentPeriodChurn = $this->getChurnCount($currentPeriodStart, $currentPeriodEnd);
-        $previousPeriodChurn = $this->getChurnCount($previousPeriodStart, $previousPeriodEnd);
 
         return [
             'datasets' => [
                 [
-                    'label' => 'Previous Period',
-                    'data' => [$previousPeriodChurn],
+                    'label' => 'Previous Week',
+                    'data' => $previousWeekChurn,
                     'backgroundColor' => '#007bff', // Simple color
                 ],
                 [
-                    'label' => 'Current Period',
-                    'data' => [$currentPeriodChurn],
+                    'label' => 'Current Week',
+                    'data' => $currentWeekChurn,
                     'backgroundColor' => '#28a745', // Simple color
                 ],
             ],
-            'labels' => [
-                $previousPeriodStart->format('M d') . ' - ' . $previousPeriodEnd->format('M d'),
-                $currentPeriodStart->format('M d') . ' - ' . $currentPeriodEnd->format('M d'),
-            ],
+            'labels' => array_map(function ($week) {
+                return $week['currentStart']->format('M d') . ' - ' . $week['currentEnd']->format('M d');
+            }, $weeks),
         ];
     }
 
@@ -82,6 +59,47 @@ class ChurnChart extends ChartWidget
             })
             ->where('users.created_at', '<=', $end)
             ->count();
+    }
+
+    private function getWeekPeriods(string $filter, Carbon $today): array
+    {
+        $weeks = [];
+        switch ($filter) {
+            case 'month':
+                $startDate = $today->copy()->startOfMonth();
+                $endDate = $today->copy()->endOfMonth();
+                break;
+            case 'quarter':
+                $startDate = $today->copy()->startOfQuarter();
+                $endDate = $today->copy()->endOfQuarter();
+                break;
+            case 'year':
+                $startDate = $today->copy()->startOfYear();
+                $endDate = $today->copy()->endOfYear();
+                break;
+            case 'four_weeks':
+            default:
+                $startDate = $today->copy()->startOfWeek()->subWeeks(3);
+                $endDate = $today->copy()->endOfWeek();
+                break;
+        }
+
+        // Generate weekly periods
+        for ($i = 0; $i < 4; $i++) {
+            $currentStart = $startDate->copy()->addWeeks($i);
+            $currentEnd = $currentStart->copy()->endOfWeek();
+            $previousStart = $currentStart->copy()->subWeek();
+            $previousEnd = $previousStart->copy()->endOfWeek();
+
+            $weeks[] = [
+                'currentStart' => $currentStart,
+                'currentEnd' => $currentEnd,
+                'previousStart' => $previousStart,
+                'previousEnd' => $previousEnd,
+            ];
+        }
+
+        return $weeks;
     }
 
     private function calculatePercentageChange($oldValue, $newValue): float
@@ -111,48 +129,26 @@ class ChurnChart extends ChartWidget
     {
         $filter = $this->filter;
         $today = Carbon::now()->startOfDay();
+        $weeks = $this->getWeekPeriods($filter, $today);
 
-        switch ($filter) {
-            case 'month':
-                $currentPeriodStart = $today->copy()->startOfMonth();
-                $currentPeriodEnd = $today->copy()->endOfMonth();
-                $previousPeriodStart = $currentPeriodStart->copy()->subMonth();
-                $previousPeriodEnd = $currentPeriodEnd->copy()->subMonth();
-                break;
-            case 'quarter':
-                $currentPeriodStart = $today->copy()->startOfQuarter();
-                $currentPeriodEnd = $today->copy()->endOfQuarter();
-                $previousPeriodStart = $currentPeriodStart->copy()->subQuarter();
-                $previousPeriodEnd = $currentPeriodEnd->copy()->subQuarter();
-                break;
-            case 'year':
-                $currentPeriodStart = $today->copy()->startOfYear();
-                $currentPeriodEnd = $today->copy()->endOfYear();
-                $previousPeriodStart = $currentPeriodStart->copy()->subYear();
-                $previousPeriodEnd = $currentPeriodEnd->copy()->subYear();
-                break;
-            case 'four_weeks':
-            default:
-                $currentPeriodStart = $today->copy()->startOfWeek()->subWeeks(3);
-                $currentPeriodEnd = $today->copy()->endOfWeek();
-                $previousPeriodStart = $currentPeriodStart->copy()->subWeeks(4);
-                $previousPeriodEnd = $currentPeriodEnd->copy()->subWeeks(4);
-                break;
+        $currentWeekChurn = [];
+        $previousWeekChurn = [];
+
+        foreach ($weeks as $week) {
+            $currentWeekChurn[] = $this->getChurnCount($week['currentStart'], $week['currentEnd']);
+            $previousWeekChurn[] = $this->getChurnCount($week['previousStart'], $week['previousEnd']);
         }
 
-        $currentPeriodChurn = $this->getChurnCount($currentPeriodStart, $currentPeriodEnd);
-        $previousPeriodChurn = $this->getChurnCount($previousPeriodStart, $previousPeriodEnd);
-
-        $percentageChange = $this->calculatePercentageChange($previousPeriodChurn, $currentPeriodChurn);
+        $percentageChanges = [];
+        foreach ($currentWeekChurn as $index => $currentChurn) {
+            $percentageChanges[] = $this->calculatePercentageChange($previousWeekChurn[$index], $currentChurn);
+        }
 
         return [
-            Stat::make('Period-on-Period Change', $percentageChange . '%')
-                ->description($percentageChange >= 0 ? 'Increase in churn' : 'Decrease in churn')
-                ->color($percentageChange >= 0 ? 'danger' : 'success')
-                ->chart([
-                    $previousPeriodChurn,
-                    $currentPeriodChurn,
-                ])
+            Stat::make('Week-on-Week Change', round(array_sum($percentageChanges) / count($percentageChanges), 2) . '%')
+                ->description($percentageChanges[0] >= 0 ? 'Increase in churn' : 'Decrease in churn')
+                ->color($percentageChanges[0] >= 0 ? 'danger' : 'success')
+                ->chart(array_merge($previousWeekChurn, $currentWeekChurn))
         ];
     }
 
