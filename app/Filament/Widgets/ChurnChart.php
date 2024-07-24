@@ -29,9 +29,14 @@ class ChurnChart extends ChartWidget
         return [
             'datasets' => [
                 [
-                    'label' => 'Churn Users',
-                    'data' => [$previousWeekChurn, $currentWeekChurn],
-                    'backgroundColor' => ['#007bff', '#28a745'], // Simple colors
+                    'label' => 'Previous Week',
+                    'data' => [$previousWeekChurn],
+                    'backgroundColor' => '#007bff', // Simple color
+                ],
+                [
+                    'label' => 'Current Week',
+                    'data' => [$currentWeekChurn],
+                    'backgroundColor' => '#28a745', // Simple color
                 ],
             ],
             'labels' => [
@@ -105,10 +110,13 @@ class ChurnChart extends ChartWidget
         return [
             'plugins' => [
                 'legend' => [
-                    'display' => false,
+                    'display' => true,
                 ],
             ],
             'scales' => [
+                'x' => [
+                    'stacked' => true,
+                ],
                 'y' => [
                     'beginAtZero' => true,
                     'ticks' => [
