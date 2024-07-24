@@ -74,22 +74,21 @@ class ActiveChart extends ChartWidget
         $wowActivePercentages = [];
         $wowInactivePercentages = [];
 
-        $weekEnd = $endDate->copy();
+        $interval = $this->getIntervalFromFilter();
+        $periodEnd = $endDate->copy();
 
-        for ($i = 0; $i < 5; $i++) {
-            $weekStart = $weekEnd->copy()->startOfWeek();
-
-            // Ensure we don't go before the start date
-            if ($weekStart->lt($startDate)) {
-                $weekStart = $startDate->copy();
+        while ($periodEnd->gte($startDate)) {
+            $periodStart = $periodEnd->copy()->sub($interval)->addDay();
+            if ($periodStart->lt($startDate)) {
+                $periodStart = $startDate->copy();
             }
 
             // Active Users
             $activeCount = DB::connection('mysql_second')
-                ->table('tbl_transactions')
+                ->table('tbl_transaction')
                 ->select('sender_phone')
-                ->whereBetween('created_at', [$weekStart, $weekEnd])
-                ->where('status', 3)
+                ->whereBetween('created_at', [$periodStart, $periodEnd])
+                ->where('status', 1)
                 ->whereNotNull('sender_amount')
                 ->distinct()
                 ->count();
@@ -97,7 +96,7 @@ class ActiveChart extends ChartWidget
             // Total Registered Users
             $totalRegisteredUsers = DB::connection('mysql_second')
                 ->table('users')
-                ->where('created_at', '<=', $weekEnd)
+                ->where('created_at', '<=', $periodEnd)
                 ->count();
 
             // Inactive Users
@@ -105,10 +104,9 @@ class ActiveChart extends ChartWidget
 
             array_unshift($activeCounts, $activeCount);
             array_unshift($inactiveCounts, $inactiveCount);
-            array_unshift($labels, $weekStart->format('M d') . ' - ' . $weekEnd->format('M d'));
+            array_unshift($labels, $periodStart->format('M d') . ' - ' . $periodEnd->format('M d'));
 
-            // Move to the previous week
-            $weekEnd = $weekStart->subDay();
+            $periodEnd = $periodStart->subDay();
         }
 
         // Calculate WoW percentages
@@ -125,10 +123,22 @@ class ActiveChart extends ChartWidget
             'wowInactivePercentages' => $wowInactivePercentages,
         ];
     }
+
+    protected function getIntervalFromFilter(): \DateInterval
+    {
+        return match ($this->filter) {
+            'week' => new \DateInterval('P1W'),
+            'month' => new \DateInterval('P1M'),
+            'quarter' => new \DateInterval('P3M'),
+            'year' => new \DateInterval('P1Y'),
+            default => new \DateInterval('P1W'),
+        };
+    }
+
     protected function calculatePercentageChange($oldValue, $newValue)
     {
         if ($oldValue == 0) {
-            return $newValue > 0 ? 100 : 0; // 100% increase if new value is positive, 0% if it's also 0
+            return $newValue > 0 ? 100 : 0;
         }
         return (($newValue - $oldValue) / $oldValue) * 100;
     }
