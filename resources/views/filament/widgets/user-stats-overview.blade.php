@@ -125,7 +125,7 @@
                         ],
                         'churn' => [
                             'title' => 'Churn Customers',
-                            'icon' => 'fas fa-user-minus',
+                            'icon' => 'fas fa-user-slash',
                             'iconBgColor' => 'bg-orange-100',
                             'iconColor' => 'text-orange-600',
                             'description' => 'Users who have stopped using the platform and whose last activity was more than 30 days ago.'
