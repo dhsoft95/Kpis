@@ -115,7 +115,7 @@
 
             /* Dark theme styles */
             .dark-theme .card {
-                background-color: #27272a; /* Updated dark background color */
+                background-color: #33333a; /* Updated dark background color */
             }
             .dark-theme .card-title {
                 color: #9ca3af; /* Tailwind gray-400 */
@@ -132,7 +132,7 @@
                 box-shadow: 0 4px 6px -1px rgba(255, 255, 255, 0.1), 0 2px 4px -1px rgba(255, 255, 255, 0.06);
             }
             .dark-theme .card-tooltip::after {
-                border-color: #f3f4f6 transparent transparent transparent;
+                border-color: #f3f4f6;
             }
             .dark-theme .tooltip-title {
                 color: #1f2937; /* Tailwind gray-800 */
