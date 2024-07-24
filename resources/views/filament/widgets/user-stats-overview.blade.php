@@ -24,8 +24,8 @@
                 background: #3b82f6; /* Tailwind blue-500 */
             }
             .icon-bg {
-                width: 32px;
-                height: 32px;
+                width: 28px;
+                height: 28px;
                 border-radius: 6px;
                 display: flex;
                 align-items: center;
@@ -34,22 +34,24 @@
             .percentage-badge {
                 padding: 1px 6px;
                 border-radius: 10px;
-                font-size: 0.65rem;
+                font-size: 0.6rem;
                 font-weight: 500;
             }
             .card-title {
                 color: #6b7280; /* Tailwind gray-500 */
-                font-size: 0.7rem;
+                font-size: 0.6rem;
                 font-weight: 500;
+                text-transform: uppercase;
+                letter-spacing: 0.05em;
             }
             .card-value {
-                font-size: 1.25rem;
+                font-size: 1.1rem;
                 font-weight: 700;
                 color: #1f2937; /* Tailwind gray-800 */
             }
             .time-period {
                 color: #9ca3af; /* Tailwind gray-400 */
-                font-size: 0.65rem;
+                font-size: 0.6rem;
             }
         </style>
 
@@ -58,37 +60,37 @@
                 @php
                     $cards = [
                         'registered' => [
-                            'title' => 'TOTAL CUSTOMERS',
+                            'title' => 'Total Customers',
                             'icon' => 'fas fa-users',
                             'iconBgColor' => 'bg-yellow-100',
                             'iconColor' => 'text-yellow-600',
                         ],
                         'active' => [
-                            'title' => 'ACTIVE CUSTOMERS',
+                            'title' => 'Active Customers',
                             'icon' => 'fas fa-user-check',
                             'iconBgColor' => 'bg-blue-100',
                             'iconColor' => 'text-blue-600',
                         ],
                         'inactive' => [
-                            'title' => 'INACTIVE CUSTOMERS',
+                            'title' => 'Inactive Customers',
                             'icon' => 'fas fa-user-slash',
                             'iconBgColor' => 'bg-red-100',
                             'iconColor' => 'text-red-600',
                         ],
                         'churn' => [
-                            'title' => 'CHURN CUSTOMERS',
+                            'title' => 'Churn Customers',
                             'icon' => 'fas fa-user-minus',
                             'iconBgColor' => 'bg-orange-100',
                             'iconColor' => 'text-orange-600',
                         ],
                         'avgValuePerDay' => [
-                            'title' => 'AVG TRANS VALUE/DAY',
+                            'title' => 'Avg Trans Value/Day',
                             'icon' => 'fas fa-dollar-sign',
                             'iconBgColor' => 'bg-green-100',
                             'iconColor' => 'text-green-600',
                         ],
                         'avgTransactionPerCustomer' => [
-                            'title' => 'AVG TRANS/CUSTOMER',
+                            'title' => 'Avg Trans/Customer',
                             'icon' => 'fas fa-exchange-alt',
                             'iconBgColor' => 'bg-purple-100',
                             'iconColor' => 'text-purple-600',
@@ -97,10 +99,10 @@
                 @endphp
 
                 @foreach ($cards as $key => $card)
-                    <div class="card p-4">
-                        <div class="flex justify-between items-start mb-3">
+                    <div class="card p-3">
+                        <div class="flex justify-between items-start mb-2">
                             <div>
-                                <h5 class="card-title text-sm mb-1">{{ $card['title'] }}</h5>
+                                <h5 class="card-title mb-1">{{ $card['title'] }}</h5>
                                 <h2 class="card-value" wire:key="count-{{ $key }}">
                                     @if ($key === 'avgValuePerDay')
                                         TSH {{ number_format($stats[$key]['value'] ?? 0, 0) }}
@@ -112,7 +114,7 @@
                                 </h2>
                             </div>
                             <div class="icon-bg {{ $card['iconBgColor'] }}">
-                                <i class="{{ $card['icon'] }} {{ $card['iconColor'] }} text-sm"></i>
+                                <i class="{{ $card['icon'] }} {{ $card['iconColor'] }} text-xs"></i>
                             </div>
                         </div>
                         <div class="flex items-center">
