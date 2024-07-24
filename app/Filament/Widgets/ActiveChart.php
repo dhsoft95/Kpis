@@ -2,6 +2,8 @@
 
 namespace App\Filament\Widgets;
 
+use DateInterval;
+use DatePeriod;
 use Filament\Widgets\ChartWidget;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
@@ -12,9 +14,22 @@ class ActiveChart extends ChartWidget
     protected static ?string $maxHeight = '300px';
     protected static ?string $pollingInterval = '3600s'; // Update every hour
 
+    public ?string $filter = 'week';
+
+    protected function getFilters(): ?array
+    {
+        return [
+            'day' => 'Last 24 Hours',
+            'week' => 'Last 7 Days',
+            'month' => 'Last 30 Days',
+            'year' => 'Last 365 Days',
+        ];
+    }
+
     protected function getData(): array
     {
-        $data = $this->getUserCounts();
+        $dateRange = $this->getDateRange();
+        $data = $this->getUserCounts($dateRange['start'], $dateRange['end']);
 
         return [
             'datasets' => [
@@ -33,7 +48,24 @@ class ActiveChart extends ChartWidget
         ];
     }
 
-    protected function getUserCounts(): array
+    protected function getDateRange(): array
+    {
+        $end = now();
+        $start = match ($this->filter) {
+            'day' => $end->copy()->subDay(),
+            'week' => $end->copy()->subWeek(),
+            'month' => $end->copy()->subMonth(),
+            'year' => $end->copy()->subYear(),
+            default => $end->copy()->subWeek(),
+        };
+
+        return [
+            'start' => $start,
+            'end' => $end,
+        ];
+    }
+
+    protected function getUserCounts(Carbon $startDate, Carbon $endDate): array
     {
         $activeCounts = [];
         $inactiveCounts = [];
@@ -41,15 +73,18 @@ class ActiveChart extends ChartWidget
         $wowActivePercentages = [];
         $wowInactivePercentages = [];
 
-        for ($i = 4; $i >= 0; $i--) {
-            $startDate = Carbon::now()->subWeeks($i)->startOfWeek();
-            $endDate = Carbon::now()->subWeeks($i)->endOfWeek();
+        $period = new DatePeriod(
+            $startDate,
+            new DateInterval('P1D'),
+            $endDate
+        );
 
+        foreach ($period as $date) {
             // Active Users
             $activeCount = DB::connection('mysql_second')
-                ->table('tbl_transactions')
+                ->table('transactions')
                 ->select('sender_phone')
-                ->whereBetween('created_at', [$startDate, $endDate])
+                ->whereDate('created_at', $date)
                 ->where('status', 3) // Assuming status 1 is for successful transactions
                 ->whereNotNull('sender_amount') // Ensure there's an amount for the transaction
                 ->distinct()
@@ -58,7 +93,7 @@ class ActiveChart extends ChartWidget
             // Total Registered Users
             $totalRegisteredUsers = DB::connection('mysql_second')
                 ->table('users')
-                ->where('created_at', '<=', $endDate)
+                ->where('created_at', '<=', $date)
                 ->count();
 
             // Inactive Users
@@ -66,12 +101,18 @@ class ActiveChart extends ChartWidget
 
             $activeCounts[] = $activeCount;
             $inactiveCounts[] = $inactiveCount;
-            $labels[] = $startDate->format('M d') . ' - ' . $endDate->format('M d');
+            $labels[] = $date->format('M d');
 
             // Calculate WoW percentages
-            if ($i < 4) {
-                $wowActivePercentages[] = $this->calculatePercentageChange($activeCounts[4-$i], $activeCounts[3-$i]);
-                $wowInactivePercentages[] = $this->calculatePercentageChange($inactiveCounts[4-$i], $inactiveCounts[3-$i]);
+            if (count($activeCounts) > 1) {
+                $wowActivePercentages[] = $this->calculatePercentageChange(
+                    $activeCounts[count($activeCounts) - 2],
+                    $activeCounts[count($activeCounts) - 1]
+                );
+                $wowInactivePercentages[] = $this->calculatePercentageChange(
+                    $inactiveCounts[count($inactiveCounts) - 2],
+                    $inactiveCounts[count($inactiveCounts) - 1]
+                );
             }
         }
 
@@ -84,7 +125,7 @@ class ActiveChart extends ChartWidget
         ];
     }
 
-    protected function calculatePercentageChange($oldValue, $newValue)
+    protected function calculatePercentageChange($oldValue, $newValue): float|int
     {
         if ($oldValue == 0) {
             return $newValue > 0 ? 100 : 0; // 100% increase if new value is positive, 0% if it's also 0
