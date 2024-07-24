@@ -15,7 +15,7 @@
                 overflow: hidden;
             }
             .dark .card {
-                background-color: #1f2937; /* Tailwind gray-800 for dark mode */
+                background-color: #27272a; /* Tailwind gray-800 for dark mode */
                 box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.6), 0 2px 4px -1px rgba(0, 0, 0, 0.4);
             }
             .card::after {
@@ -73,7 +73,7 @@
                 visibility: hidden;
                 width: 200px;
                 background-color: #27272a;
-                color: #ffffff;
+                color: #ffffff !important;
                 text-align: left;
                 border-radius: 6px;
                 padding: 8px;
@@ -110,7 +110,7 @@
                 color: #4a5568;
             }
             .dark .tooltip-title {
-                color: #a1a1aa; /* Tailwind gray-500 for dark mode */
+                color: #a1a1aa;!important; /* Tailwind gray-500 for dark mode */
             }
             .tooltip-description {
                 color: #718096;
@@ -120,7 +120,7 @@
             }
         </style>
 
-        <div class="container mx-auto p-4" wire:poll.4s="calculateStats">
+        <div class="container mx-auto p-4" wire:poll.3s="calculateStats">
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 @php
                     $cards = [
