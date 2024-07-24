@@ -5,10 +5,10 @@ namespace App\Filament\Pages;
 
 use App\Filament\Widgets\ActiveChartAp;
 use App\Filament\Widgets\Custvalue;
-use App\Filament\Widgets\testWidget;
 use App\Filament\Widgets\userStatsOverview;
 use App\Livewire\CustStatsOverview;
 use App\Livewire\CustvalueChart;
+use App\Livewire\testw;
 use App\Livewire\TransvalueChart;
 use Filament\Forms\Components\Tabs\Tab;
 use Filament\Pages\Page;
@@ -22,7 +22,7 @@ class customer extends Page
         return [
             CustStatsOverview::class,
             CustvalueChart::class,
-            testWidget::class,
+//            testw::class,
             TransvalueChart::class,
         ];
     }
