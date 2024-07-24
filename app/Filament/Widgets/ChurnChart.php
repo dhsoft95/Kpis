@@ -63,11 +63,12 @@ class ChurnChart extends ChartWidget
 
     protected function getType(): string
     {
-        return 'bar';
+        return 'line';
     }
 
     protected function getFooterWidgets(): array
     {
+
         $currentWeekEnd = Carbon::now()->endOfWeek();
         $currentWeekStart = $currentWeekEnd->copy()->startOfWeek();
         $previousWeekStart = $currentWeekStart->copy()->subWeek();
