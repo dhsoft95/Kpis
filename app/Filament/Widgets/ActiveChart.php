@@ -84,7 +84,7 @@ class ActiveChart extends ChartWidget
                 ->table('tbl_transactions')
                 ->select('sender_phone')
                 ->whereBetween('created_at', [$weekStart, $weekEnd])
-                ->where('status', 1) // Assuming status 1 is for successful transactions
+                ->where('status', 3) // Assuming status 1 is for successful transactions
                 ->whereNotNull('sender_amount') // Ensure there's an amount for the transaction
                 ->distinct()
                 ->count();
