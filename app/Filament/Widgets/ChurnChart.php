@@ -38,12 +38,12 @@ class ChurnChart extends ChartWidget
                 [
                     'label' => 'Previous Week',
                     'data' => $previousWeekChurn,
-                    'backgroundColor' => '#007bff', // Simple color
+                    'backgroundColor' => '#718096', // Simple color
                 ],
                 [
                     'label' => 'Current Week',
                     'data' => $currentWeekChurn,
-                    'backgroundColor' => '#28a745', // Simple color
+                    'backgroundColor' => '#4a5568', // Simple color
                 ],
             ],
             'labels' => $labels,
@@ -156,30 +156,30 @@ class ChurnChart extends ChartWidget
         ];
     }
 
-//    protected function getOptions(): array
-//    {
-//        return [
-//            'plugins' => [
-//                'legend' => [
-//                    'display' => true,
-//                ],
-//            ],
-//            'scales' => [
-//                'x' => [
-//                    'stacked' => false,
-//                    'ticks' => [
-//                        'autoSkip' => false,
-////                        'maxRotation' => 90,
-////                        'minRotation' => 90,
-//                    ],
-//                ],
-//                'y' => [
-//                    'beginAtZero' => true,
-//                    'ticks' => [
-//                        'precision' => 0,
-//                    ],
-//                ],
-//            ],
-//        ];
-//    }
+    protected function getOptions(): array
+    {
+        return [
+            'plugins' => [
+                'legend' => [
+                    'display' => true,
+                ],
+            ],
+            'scales' => [
+                'x' => [
+                    'stacked' => false,
+                    'ticks' => [
+                        'autoSkip' => false,
+//                        'maxRotation' => 90,
+//                        'minRotation' => 90,
+                    ],
+                ],
+                'y' => [
+                    'beginAtZero' => true,
+                    'ticks' => [
+                        'precision' => 0,
+                    ],
+                ],
+            ],
+        ];
+    }
 }
