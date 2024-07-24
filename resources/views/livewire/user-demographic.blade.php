@@ -8,7 +8,7 @@
                 <div class="w-full p-4">
                     <!-- SVG World Map -->
                     <div class="bg-gray-800 h-96 flex items-center justify-center">
-                        <img src="{{ asset('world-map.svg') }}" alt="World Map" class="w-full h-auto">
+                        <img src="{{ asset('world.svg') }}" alt="World Map" class="w-full h-auto">
                     </div>
                 </div>
             </div>
