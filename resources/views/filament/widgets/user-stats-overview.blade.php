@@ -8,70 +8,40 @@
 
         <style>
             .card {
-                background-color: white;
-                border-radius: 12px;
-                box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-                position: relative;
-                overflow: hidden;
+                @apply bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden relative;
             }
             .card::after {
+                @apply bg-blue-500;
                 content: '';
                 position: absolute;
                 bottom: 0;
                 left: 0;
                 right: 0;
                 height: 3px;
-                background: #3b82f6; /* Tailwind blue-500 */
             }
             .icon-bg {
+                @apply flex items-center justify-center rounded-lg;
                 width: 28px;
                 height: 28px;
-                border-radius: 6px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
             }
             .percentage-badge {
-                padding: 1px 6px;
-                border-radius: 10px;
-                font-size: 0.6rem;
-                font-weight: 500;
+                @apply py-1 px-2 rounded-full text-xs font-medium;
             }
             .card-title {
-                color: #6b7280; /* Tailwind gray-500 */
-                font-size: 0.4rem;
-                font-weight: 500;
-                text-transform: uppercase;
-                letter-spacing: 0.05em;
+                @apply text-gray-500 dark:text-gray-400 text-xs font-medium uppercase tracking-wider mb-1;
             }
             .card-value {
-                font-size: 1.1rem;
-                font-weight: 700;
-                color: #1f2937; /* Tailwind gray-800 */
+                @apply text-gray-800 dark:text-gray-100 text-lg font-bold;
             }
             .time-period {
-                color: #9ca3af; /* Tailwind gray-400 */
-                font-size: 0.6rem;
+                @apply text-gray-400 dark:text-gray-500 text-xs;
             }
             .card-tooltip {
-                visibility: hidden;
-                width: 200px;
-                background-color: #333333;
-                color: #ffffff;
-                text-align: left;
-                border-radius: 6px;
-                padding: 8px;
-                position: absolute;
-                z-index: 1;
+                @apply invisible bg-gray-900 text-white text-left rounded-lg p-2 absolute z-10 shadow-lg text-xs leading-tight opacity-0 transition-opacity duration-300 transform translate-y-2;
                 bottom: 125%;
                 left: 50%;
+                width: 200px;
                 margin-left: -100px;
-                opacity: 0;
-                transition: opacity 0.3s, transform 0.3s;
-                box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-                font-size: 0.65rem;
-                line-height: 1.3;
-                transform: translateY(10px);
             }
             .card-tooltip::after {
                 content: "";
@@ -81,20 +51,16 @@
                 margin-left: -5px;
                 border-width: 5px;
                 border-style: solid;
-                border-color: #ffffff transparent transparent transparent;
+                border-color: #333333 transparent transparent transparent;
             }
             .card-container:hover .card-tooltip {
-                visibility: visible;
-                opacity: 1;
-                transform: translateY(0);
+                @apply visible opacity-100 translate-y-0;
             }
             .tooltip-title {
-                font-weight: 500;
-                margin-bottom: 3px;
-                color: #4a5568;
+                @apply font-medium mb-1 text-gray-300;
             }
             .tooltip-description {
-                color: #718096;
+                @apply text-gray-400;
             }
         </style>
 
@@ -105,43 +71,43 @@
                         'registered' => [
                             'title' => 'Total Customers',
                             'icon' => 'fas fa-users',
-                            'iconBgColor' => 'bg-yellow-100',
-                            'iconColor' => 'text-yellow-600',
+                            'iconBgColor' => 'bg-yellow-100 dark:bg-yellow-600',
+                            'iconColor' => 'text-yellow-600 dark:text-yellow-100',
                             'description' => 'Total number of users who have registered on the Simba Money platform.'
                         ],
                         'active' => [
                             'title' => 'Active Customers',
                             'icon' => 'fas fa-user-check',
-                            'iconBgColor' => 'bg-blue-100',
-                            'iconColor' => 'text-blue-600',
+                            'iconBgColor' => 'bg-blue-100 dark:bg-blue-600',
+                            'iconColor' => 'text-blue-600 dark:text-blue-100',
                             'description' => 'Users who have engaged in any revenue-generating activity within the last 30 days.'
                         ],
                         'inactive' => [
                             'title' => 'Inactive Customers',
                             'icon' => 'fas fa-user-slash',
-                            'iconBgColor' => 'bg-red-100',
-                            'iconColor' => 'text-red-600',
+                            'iconBgColor' => 'bg-red-100 dark:bg-red-600',
+                            'iconColor' => 'text-red-600 dark:text-red-100',
                             'description' => 'Users who have not engaged in any revenue-generating activities for more than 30 days.'
                         ],
                         'churn' => [
                             'title' => 'Churn Customers',
                             'icon' => 'fas fa-user-slash',
-                            'iconBgColor' => 'bg-orange-100',
-                            'iconColor' => 'text-orange-600',
+                            'iconBgColor' => 'bg-orange-100 dark:bg-orange-600',
+                            'iconColor' => 'text-orange-600 dark:text-orange-100',
                             'description' => 'Users who have stopped using the platform and whose last activity was more than 30 days ago.'
                         ],
                         'avgValuePerDay' => [
                             'title' => 'Avg Trans Value/Day',
                             'icon' => 'fas fa-dollar-sign',
-                            'iconBgColor' => 'bg-green-100',
-                            'iconColor' => 'text-green-600',
+                            'iconBgColor' => 'bg-green-100 dark:bg-green-600',
+                            'iconColor' => 'text-green-600 dark:text-green-100',
                             'description' => 'Average monetary value of all transactions processed per day on the platform.'
                         ],
                         'avgTransactionPerCustomer' => [
                             'title' => 'Avg Trans/Customer',
                             'icon' => 'fas fa-exchange-alt',
-                            'iconBgColor' => 'bg-purple-100',
-                            'iconColor' => 'text-purple-600',
+                            'iconBgColor' => 'bg-purple-100 dark:bg-purple-600',
+                            'iconColor' => 'text-purple-600 dark:text-purple-100',
                             'description' => 'Average number of transactions made by each customer on the platform.'
                         ],
                     ];
@@ -152,7 +118,7 @@
                         <div class="card p-3">
                             <div class="flex justify-between items-start mb-2">
                                 <div>
-                                    <h5 class="card-title mb-1">{{ $card['title'] }}</h5>
+                                    <h5 class="card-title">{{ $card['title'] }}</h5>
                                     <h2 class="card-value" wire:key="count-{{ $key }}">
                                         @if ($key === 'avgValuePerDay')
                                             TSH {{ number_format($stats[$key]['value'] ?? 0, 0) }}
@@ -172,7 +138,7 @@
                                     $percentageChange = $stats[$key]['percentageChange'] ?? 0;
                                     $formattedPercentage = number_format(abs($percentageChange), 0);
                                     $isGrowth = $stats[$key]['isGrowth'] ?? false;
-                                    $changeColor = $isGrowth ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800';
+                                    $changeColor = $isGrowth ? 'bg-green-100 dark:bg-green-600 text-green-800 dark:text-green-100' : 'bg-red-100 dark:bg-red-600 text-red-800 dark:text-red-100';
                                 @endphp
                                 <span class="percentage-badge {{ $changeColor }} mr-2">
                                     {{ $isGrowth ? '+' : '-' }}{{ $formattedPercentage }}%
