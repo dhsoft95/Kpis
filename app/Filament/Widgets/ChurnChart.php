@@ -169,8 +169,8 @@ class ChurnChart extends ChartWidget
                     'stacked' => false,
                     'ticks' => [
                         'autoSkip' => false,
-                        'maxRotation' => 90,
-                        'minRotation' => 90,
+//                        'maxRotation' => 90,
+//                        'minRotation' => 90,
                     ],
                 ],
                 'y' => [
