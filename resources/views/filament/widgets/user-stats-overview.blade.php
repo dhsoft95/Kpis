@@ -15,8 +15,8 @@
                 overflow: hidden;
             }
             .dark .card {
-                background-color: #27272a; /* Tailwind gray-800 for dark mode */
-                box-shadow: 0 4px 6px -1px rgba(17, 17, 77, 0.6), 0 2px 4px -1px rgba(0, 0, 0, 0.4);
+                background-color: #1f2937; /* Tailwind gray-800 for dark mode */
+                box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.6), 0 2px 4px -1px rgba(0, 0, 0, 0.4);
             }
             .card::after {
                 content: '';
