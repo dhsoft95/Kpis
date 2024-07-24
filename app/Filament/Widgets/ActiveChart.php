@@ -37,14 +37,16 @@ class ActiveChart extends ChartWidget
                 [
                     'label' => 'Active Users',
                     'data' => $data['activeCounts'],
-                    'backgroundColor' => '#7265F9',
-//                    'borderColor' => '#4A58EC',
+                    'backgroundColor' => '#4A58EC', // Simple color
+                    'borderColor' => null, // Remove border color
+                    'borderWidth' => 0, // Remove border width
                 ],
                 [
                     'label' => 'Inactive Users',
                     'data' => $data['inactiveCounts'],
-                    'backgroundColor' => '#48D3FF',
-//                    'borderColor' => '#e52f42',
+                    'backgroundColor' => '#48D3FF', // Simple color
+                    'borderColor' => null, // Remove border color
+                    'borderWidth' => 0, // Remove border width
                 ],
             ],
             'labels' => $data['labels'],
