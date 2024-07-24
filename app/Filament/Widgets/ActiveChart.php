@@ -19,10 +19,10 @@ class ActiveChart extends ChartWidget
     protected function getFilters(): ?array
     {
         return [
-            'day' => 'Last 24 Hours',
-            'week' => 'Last 7 Days',
-            'month' => 'Last 30 Days',
-            'year' => 'Last 365 Days',
+            'week' => 'Last 5 Weeks',
+            'month' => 'Last 3 Months',
+            'quarter' => 'Last Quarter',
+            'year' => 'Last Year',
         ];
     }
 
@@ -50,13 +50,13 @@ class ActiveChart extends ChartWidget
 
     protected function getDateRange(): array
     {
-        $end = now();
+        $end = now()->endOfWeek();
         $start = match ($this->filter) {
-            'day' => $end->copy()->subDay(),
-            'week' => $end->copy()->subWeek(),
-            'month' => $end->copy()->subMonth(),
-            'year' => $end->copy()->subYear(),
-            default => $end->copy()->subWeek(),
+            'week' => $end->copy()->subWeeks(4)->startOfWeek(),
+            'month' => $end->copy()->subMonths(2)->startOfMonth(),
+            'quarter' => $end->copy()->subMonths(3)->startOfQuarter(),
+            'year' => $end->copy()->subYear()->startOfYear(),
+            default => $end->copy()->subWeeks(4)->startOfWeek(),
         };
 
         return [
@@ -73,19 +73,17 @@ class ActiveChart extends ChartWidget
         $wowActivePercentages = [];
         $wowInactivePercentages = [];
 
-        $period = new DatePeriod(
-            $startDate,
-            new DateInterval('P1D'),
-            $endDate
-        );
+        $period = CarbonPeriod::create($startDate, '1 week', $endDate);
 
-        foreach ($period as $date) {
+        foreach ($period as $weekStart) {
+            $weekEnd = $weekStart->copy()->endOfWeek();
+
             // Active Users
             $activeCount = DB::connection('mysql_second')
-                ->table('tbl_transactions')
+                ->table('tbl_transaction')
                 ->select('sender_phone')
-                ->whereDate('created_at', $date)
-                ->where('status', 3) // Assuming status 1 is for successful transactions
+                ->whereBetween('created_at', [$weekStart, $weekEnd])
+                ->where('status', 1) // Assuming status 1 is for successful transactions
                 ->whereNotNull('sender_amount') // Ensure there's an amount for the transaction
                 ->distinct()
                 ->count();
@@ -93,7 +91,7 @@ class ActiveChart extends ChartWidget
             // Total Registered Users
             $totalRegisteredUsers = DB::connection('mysql_second')
                 ->table('users')
-                ->where('created_at', '<=', $date)
+                ->where('created_at', '<=', $weekEnd)
                 ->count();
 
             // Inactive Users
@@ -101,7 +99,7 @@ class ActiveChart extends ChartWidget
 
             $activeCounts[] = $activeCount;
             $inactiveCounts[] = $inactiveCount;
-            $labels[] = $date->format('M d');
+            $labels[] = $weekStart->format('M d') . ' - ' . $weekEnd->format('M d');
 
             // Calculate WoW percentages
             if (count($activeCounts) > 1) {
@@ -125,7 +123,7 @@ class ActiveChart extends ChartWidget
         ];
     }
 
-    protected function calculatePercentageChange($oldValue, $newValue): float|int
+    protected function calculatePercentageChange($oldValue, $newValue)
     {
         if ($oldValue == 0) {
             return $newValue > 0 ? 100 : 0; // 100% increase if new value is positive, 0% if it's also 0
