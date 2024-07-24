@@ -1,11 +1,11 @@
 <x-filament::widget>
     <x-filament::card>
-        <div class="space-y-4 p-2"> <!-- Adjusted padding -->
+        <div class="space-y-4 p-1"> <!-- Adjusted padding -->
             <!-- Device Downloads Section -->
             <div>
                 <h3 class="text-xs font-medium text-gray-900 dark:text-white mb-2">Device Downloads</h3> <!-- Adjusted font size -->
                 <div class="grid grid-cols-2 gap-3">
-                    <div class="bg-blue-50 dark:bg-gray-800 rounded-lg p-3"> <!-- Adjusted padding -->
+                    <div class="bg-blue-50 dark:bg-gray-800 rounded-lg p-2"> <!-- Adjusted padding -->
                         <div class="flex items-center space-x-2">
                             <div class="bg-blue-500 rounded-full p-1.5">
                                 <x-heroicon-s-device-phone-mobile class="w-4 h-4 text-white"/>
@@ -33,7 +33,7 @@
             <!-- User Gender Stats Section -->
             <div>
                 <h3 class="text-xs font-medium text-gray-900 dark:text-white mb-2">User Gender Stats</h3> <!-- Adjusted font size -->
-                <div class="bg-purple-50 dark:bg-gray-800 rounded-lg p-3">
+                <div class="bg-purple-50 dark:bg-gray-800 rounded-lg p-2">
                     <div class="flex justify-between items-center mb-2">
                         <div class="flex items-center space-x-2">
                             <div class="bg-blue-500 rounded-full p-1.5">
