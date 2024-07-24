@@ -14,7 +14,7 @@ class ChurnChart extends ChartWidget
     protected static ?string $maxHeight = '300px';
 
     // Default filter value
-    protected string $filter = 'four_weeks';
+    public ?string $filter = 'four_weeks';
 
     protected function getData(): array
     {
