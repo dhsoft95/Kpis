@@ -115,33 +115,43 @@
 
             /* Dark theme styles */
             .dark-theme .card {
-                background-color: #33333a; /* Updated dark background color */
+                background-color: #27272a; /* Updated dark background color */
+                border: 1px solid #3f3f46; /* Add border for visibility */
             }
             .dark-theme .card-title {
-                color: #9ca3af; /* Tailwind gray-400 */
+                color: #d4d4d8; /* Lighter color for better visibility */
             }
             .dark-theme .card-value {
-                color: #f3f4f6; /* Tailwind gray-100 */
+                color: #ffffff; /* White for maximum contrast */
             }
             .dark-theme .time-period {
-                color: #6b7280; /* Tailwind gray-500 */
+                color: #a1a1aa; /* Lighter color for better visibility */
             }
             .dark-theme .card-tooltip {
-                background-color: #f3f4f6; /* Tailwind gray-100 */
-                color: #1f2937; /* Tailwind gray-800 */
+                background-color: #f3f4f6; /* Light background */
+                color: #1f2937; /* Dark text */
                 box-shadow: 0 4px 6px -1px rgba(255, 255, 255, 0.1), 0 2px 4px -1px rgba(255, 255, 255, 0.06);
             }
             .dark-theme .card-tooltip::after {
-                border-color: #f3f4f6;
+                border-color: #f3f4f6 transparent transparent transparent;
             }
             .dark-theme .tooltip-title {
-                color: #1f2937; /* Tailwind gray-800 */
+                color: #1f2937; /* Dark color for contrast */
             }
             .dark-theme .tooltip-description {
-                color: #4b5563; /* Tailwind gray-600 */
+                color: #4b5563; /* Slightly lighter for readability */
+            }
+
+            /* Enhance tooltip visibility */
+            .card-container {
+                position: relative;
+            }
+            .card-container:hover .card-tooltip {
+                visibility: visible;
+                opacity: 1;
+                transform: translateY(-5px);
             }
         </style>
-
         <div class="container mx-auto p-4" wire:poll.4s="calculateStats" id="theme-container">
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 @php
