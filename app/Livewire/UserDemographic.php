@@ -9,11 +9,11 @@ class UserDemographic extends Widget
     public function getCountryData()
     {
         return [
-            ['name' => 'United States', 'percentage' => 35, 'color' => 'blue'],
-            ['name' => 'Canada', 'percentage' => 26, 'color' => 'red'],
-            ['name' => 'France', 'percentage' => 18, 'color' => 'green'],
-            ['name' => 'Germany', 'percentage' => 14, 'color' => 'yellow'],
-            ['name' => 'Australia', 'percentage' => 7, 'color' => 'purple'],
+            'US' => ['name' => 'United States', 'percentage' => 35, 'color' => 'blue'],
+            'CA' => ['name' => 'Canada', 'percentage' => 26, 'color' => 'red'],
+            'FR' => ['name' => 'France', 'percentage' => 18, 'color' => 'green'],
+            'DE' => ['name' => 'Germany', 'percentage' => 14, 'color' => 'yellow'],
+            'AU' => ['name' => 'Australia', 'percentage' => 7, 'color' => 'purple'],
         ];
     }
 
