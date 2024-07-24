@@ -45,6 +45,7 @@
                 padding: 4px 8px;
                 border-radius: 16px;
                 margin-right: 8px;
+                display: inline-block;
             }
             .change-positive {
                 background-color: #dcfce7;
@@ -58,6 +59,17 @@
 
         <div class="container mx-auto p-2" wire:poll.4s="calculateStats">
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                @php
+                    $cards = [
+                        'registered' => ['title' => 'All Registered Users', 'icon' => 'fas fa-users'],
+                        'active' => ['title' => 'Active Users', 'icon' => 'fas fa-check-circle'],
+                        'inactive' => ['title' => 'Inactive Users', 'icon' => 'fas fa-user-slash'],
+                        'churn' => ['title' => 'Churn Users', 'icon' => 'fas fa-exclamation-triangle'],
+                        'avgValuePerDay' => ['title' => 'Avg Trans Value/Day', 'icon' => 'fas fa-dollar-sign'],
+                        'avgTransactionPerCustomer' => ['title' => 'Avg Trans/Customer', 'icon' => 'fas fa-user-friends'],
+                    ];
+                @endphp
+
                 @foreach ($cards as $key => $card)
                     <div class="card">
                         <div class="card-icon">
