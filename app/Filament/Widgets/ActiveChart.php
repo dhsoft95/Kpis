@@ -21,8 +21,6 @@ class ActiveChart extends ChartWidget
                 [
                     'label' => 'Active Users',
                     'data' => $data['activeCounts'],
-//                    'backgroundColor' => '#33d096',
-//                    'borderColor' => '#33d096',
                 ],
                 [
                     'label' => 'Inactive Users',
@@ -34,35 +32,55 @@ class ActiveChart extends ChartWidget
             'labels' => $data['labels'],
         ];
     }
+
     protected function getUserCounts(): array
     {
         $activeCounts = [];
         $inactiveCounts = [];
         $labels = [];
+        $wowActivePercentages = [];
+        $wowInactivePercentages = [];
 
-        for ($i = 7; $i >= 0; $i--) {
+        for ($i = 4; $i >= 0; $i--) {
             $startDate = Carbon::now()->subWeeks($i)->startOfWeek();
             $endDate = Carbon::now()->subWeeks($i)->endOfWeek();
 
-            $activeCount = DB::table('live.users')
-                ->where('is_active', '1')
+            // Active Users
+            $activeCount = DB::connection('mysql_second')
+                ->table('transactions')
+                ->select('sender_phone')
                 ->whereBetween('created_at', [$startDate, $endDate])
+                ->where('status', 1) // Assuming status 1 is for successful transactions
+                ->whereNotNull('sender_amount') // Ensure there's an amount for the transaction
+                ->distinct()
                 ->count();
 
-            $inactiveCount = DB::table('live.users')
-                ->where('is_active', '0')
-                ->whereBetween('created_at', [$startDate, $endDate])
+            // Total Registered Users
+            $totalRegisteredUsers = DB::connection('mysql_second')
+                ->table('users')
+                ->where('created_at', '<=', $endDate)
                 ->count();
+
+            // Inactive Users
+            $inactiveCount = $totalRegisteredUsers - $activeCount;
 
             $activeCounts[] = $activeCount;
             $inactiveCounts[] = $inactiveCount;
             $labels[] = $startDate->format('M d') . ' - ' . $endDate->format('M d');
+
+            // Calculate WoW percentages
+            if ($i < 4) {
+                $wowActivePercentages[] = ($activeCounts[3-$i] - $activeCounts[4-$i]) / $activeCounts[4-$i] * 100;
+                $wowInactivePercentages[] = ($inactiveCounts[3-$i] - $inactiveCounts[4-$i]) / $inactiveCounts[4-$i] * 100;
+            }
         }
 
         return [
             'activeCounts' => $activeCounts,
             'inactiveCounts' => $inactiveCounts,
             'labels' => $labels,
+            'wowActivePercentages' => $wowActivePercentages,
+            'wowInactivePercentages' => $wowInactivePercentages,
         ];
     }
 
@@ -70,4 +88,5 @@ class ActiveChart extends ChartWidget
     {
         return 'bar';
     }
+
 }
