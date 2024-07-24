@@ -9,56 +9,79 @@
         <style>
             .card {
                 background-color: white;
-                border-radius: 16px;
-                padding: 20px;
-                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                border-radius: 12px;
+                padding: 16px;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
                 position: relative;
                 border: 1px solid #e0e0e0;
-                margin-bottom: 16px;
+                margin-bottom: 12px;
+            }
+            .dark .card {
+                background-color: #1f2937;
+                border-color: #374151;
             }
             .card-icon {
                 position: absolute;
-                top: 20px;
-                right: 20px;
+                top: 12px;
+                right: 12px;
                 background-color: #e8eeff;
-                border-radius: 8px;
-                padding: 8px;
+                border-radius: 6px;
+                padding: 6px;
                 color: #4070f4;
+                font-size: 14px;
+            }
+            .dark .card-icon {
+                background-color: #374151;
+                color: #60a5fa;
             }
             .card-title {
-                font-size: 14px;
+                font-size: 12px;
                 color: #6b7280;
                 font-weight: 500;
-                margin-bottom: 8px;
+                margin-bottom: 6px;
+            }
+            .dark .card-title {
+                color: #9ca3af;
             }
             .card-value {
-                font-size: 28px;
+                font-size: 22px;
                 font-weight: 700;
                 color: #111827;
-                margin-bottom: 16px;
+                margin-bottom: 12px;
+            }
+            .dark .card-value {
+                color: #f3f4f6;
             }
             .card-change {
-                font-size: 14px;
+                font-size: 12px;
                 font-weight: 500;
             }
             .change-indicator {
-                padding: 4px 8px;
-                border-radius: 16px;
-                margin-right: 8px;
+                padding: 2px 6px;
+                border-radius: 12px;
+                margin-right: 6px;
                 display: inline-block;
             }
             .change-positive {
                 background-color: #dcfce7;
                 color: #22c55e;
             }
+            .dark .change-positive {
+                background-color: #065f46;
+                color: #4ade80;
+            }
             .change-negative {
                 background-color: #fee2e2;
                 color: #ef4444;
             }
+            .dark .change-negative {
+                background-color: #7f1d1d;
+                color: #f87171;
+            }
         </style>
 
         <div class="container mx-auto p-2" wire:poll.4s="calculateStats">
-            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                 @php
                     $cards = [
                         'registered' => ['title' => 'All Registered Users', 'icon' => 'fas fa-users'],
@@ -94,7 +117,7 @@
                             <span class="change-indicator {{ $isGrowth ? 'change-positive' : 'change-negative' }}">
                                 {{ $isGrowth ? '+' : '-' }}{{ $formattedPercentage }}%
                             </span>
-                            <span class="text-gray-500">From last week</span>
+                            <span class="text-gray-500 dark:text-gray-400">From last week</span>
                         </div>
                     </div>
                 @endforeach
