@@ -11,9 +11,9 @@ use Carbon\Carbon;
 
 class ActiveChart extends ChartWidget
 {
-    protected static ?string $heading = 'Active Vs Inactive Users (WoW)';
+    protected static ?string $heading = 'Weekly Churn Users';
+    protected static ?int $sort = 2;
     protected static ?string $maxHeight = '300px';
-    protected static ?string $pollingInterval = '3600s'; // Update every hour
 
     public ?string $filter = 'week';
 
@@ -30,19 +30,13 @@ class ActiveChart extends ChartWidget
     protected function getData(): array
     {
         $dateRange = $this->getDateRange();
-        $data = $this->getUserCounts($dateRange['start'], $dateRange['end']);
+        $data = $this->getChurnData($dateRange['start'], $dateRange['end']);
 
         return [
             'datasets' => [
                 [
-                    'label' => 'Active Users',
-                    'data' => $data['activeCounts'],
-                ],
-                [
-                    'label' => 'Inactive Users',
-                    'data' => $data['inactiveCounts'],
-                    'backgroundColor' => '#e52f42',
-                    'borderColor' => '#e52f42',
+                    'label' => 'Churn Users',
+                    'data' => $data['churnCounts'],
                 ],
             ],
             'labels' => $data['labels'],
@@ -66,13 +60,11 @@ class ActiveChart extends ChartWidget
         ];
     }
 
-    protected function getUserCounts(Carbon $startDate, Carbon $endDate): array
+    protected function getChurnData(Carbon $startDate, Carbon $endDate): array
     {
-        $activeCounts = [];
-        $inactiveCounts = [];
+        $churnCounts = [];
         $labels = [];
-        $wowActivePercentages = [];
-        $wowInactivePercentages = [];
+        $wowPercentages = [];
 
         $interval = $this->getIntervalFromFilter();
         $periodEnd = $endDate->copy();
@@ -83,44 +75,30 @@ class ActiveChart extends ChartWidget
                 $periodStart = $startDate->copy();
             }
 
-            // Active Users
-            $activeCount = DB::connection('mysql_second')
-                ->table('tbl_transactions')
-                ->select('sender_phone')
-                ->whereBetween('created_at', [$periodStart, $periodEnd])
-                ->where('status', 3)
-                ->whereNotNull('sender_amount')
-                ->distinct()
+            $churnCount = DB::connection('mysql_second')->table('users')
+                ->leftJoin('tbl_transactions', function ($join) use ($periodEnd) {
+                    $join->on('users.phone_number', '=', 'tbl_transactions.sender_phone')
+                        ->where('tbl_transactions.created_at', '>', DB::raw("DATE_SUB('{$periodEnd}', INTERVAL 30 DAY)"));
+                })
+                ->whereNull('tbl_transactions.sender_phone')
+                ->where('users.created_at', '<=', $periodEnd)
                 ->count();
 
-            // Total Registered Users
-            $totalRegisteredUsers = DB::connection('mysql_second')
-                ->table('users')
-                ->where('created_at', '<=', $periodEnd)
-                ->count();
-
-            // Inactive Users
-            $inactiveCount = $totalRegisteredUsers - $activeCount;
-
-            array_unshift($activeCounts, $activeCount);
-            array_unshift($inactiveCounts, $inactiveCount);
+            array_unshift($churnCounts, $churnCount);
             array_unshift($labels, $periodStart->format('M d') . ' - ' . $periodEnd->format('M d'));
 
             $periodEnd = $periodStart->subDay();
         }
 
         // Calculate WoW percentages
-        for ($i = 1; $i < count($activeCounts); $i++) {
-            $wowActivePercentages[] = $this->calculatePercentageChange($activeCounts[$i-1], $activeCounts[$i]);
-            $wowInactivePercentages[] = $this->calculatePercentageChange($inactiveCounts[$i-1], $inactiveCounts[$i]);
+        for ($i = 1; $i < count($churnCounts); $i++) {
+            $wowPercentages[] = $this->calculatePercentageChange($churnCounts[$i-1], $churnCounts[$i]);
         }
 
         return [
-            'activeCounts' => $activeCounts,
-            'inactiveCounts' => $inactiveCounts,
+            'churnCounts' => $churnCounts,
             'labels' => $labels,
-            'wowActivePercentages' => $wowActivePercentages,
-            'wowInactivePercentages' => $wowInactivePercentages,
+            'wowPercentages' => $wowPercentages,
         ];
     }
 
@@ -140,7 +118,7 @@ class ActiveChart extends ChartWidget
         if ($oldValue == 0) {
             return $newValue > 0 ? 100 : 0;
         }
-        return (($newValue - $oldValue) / $oldValue) * 100;
+        return round((($newValue - $oldValue) / $oldValue) * 100, 2);
     }
 
     protected function getType(): string
