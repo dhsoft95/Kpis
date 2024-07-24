@@ -38,12 +38,12 @@ class ChurnChart extends ChartWidget
                 [
                     'label' => 'Previous Week',
                     'data' => $previousWeekChurn,
-                    'backgroundColor' => '#718096', // Simple color
+                    'backgroundColor' => '#4A58EC', // Simple color
                 ],
                 [
                     'label' => 'Current Week',
                     'data' => $currentWeekChurn,
-                    'backgroundColor' => '#4a5568', // Simple color
+                    'backgroundColor' => '#48D3FF', // Simple color
                 ],
             ],
             'labels' => $labels,

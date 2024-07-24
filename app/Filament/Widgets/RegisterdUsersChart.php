@@ -109,7 +109,7 @@ class RegisterdUsersChart extends ApexChartWidget
                 'width' => 1,
                 'lineCap' => 'round',
             ],
-            'colors' => ['#4a5568', '#718096'],
+            'colors' => ['#48D3FF', '#48D3FF'],
         ];
     }
 
