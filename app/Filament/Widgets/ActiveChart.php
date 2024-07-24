@@ -2,6 +2,7 @@
 
 namespace App\Filament\Widgets;
 
+use Carbon\CarbonPeriod;
 use DateInterval;
 use DatePeriod;
 use Filament\Widgets\ChartWidget;
