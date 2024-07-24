@@ -17,10 +17,11 @@ class ChurnChart extends ChartWidget
     {
         $currentWeekEnd = Carbon::now()->endOfWeek();
         $currentWeekStart = $currentWeekEnd->copy()->startOfWeek();
-        $previousWeekStart = $currentWeekStart->copy()->subWeek();
+        $previousWeekEnd = $currentWeekStart->copy()->subDay();
+        $previousWeekStart = $previousWeekEnd->copy()->startOfWeek();
 
         $currentWeekChurn = $this->getChurnCount($currentWeekStart, $currentWeekEnd);
-        $previousWeekChurn = $this->getChurnCount($previousWeekStart, $currentWeekStart->subDay());
+        $previousWeekChurn = $this->getChurnCount($previousWeekStart, $previousWeekEnd);
 
         $percentageChange = $this->calculatePercentageChange($previousWeekChurn, $currentWeekChurn);
 
@@ -33,8 +34,8 @@ class ChurnChart extends ChartWidget
                 ],
             ],
             'labels' => [
-                $previousWeekStart->format('M d') . ' - ' . $currentWeekStart->subDay()->format('M d'),
-                $currentWeekStart->addDay()->format('M d') . ' - ' . $currentWeekEnd->format('M d'),
+                $previousWeekStart->format('M d') . ' - ' . $previousWeekEnd->format('M d'),
+                $currentWeekStart->format('M d') . ' - ' . $currentWeekEnd->format('M d'),
             ],
         ];
     }
@@ -68,10 +69,11 @@ class ChurnChart extends ChartWidget
     {
         $currentWeekEnd = Carbon::now()->endOfWeek();
         $currentWeekStart = $currentWeekEnd->copy()->startOfWeek();
-        $previousWeekStart = $currentWeekStart->copy()->subWeek();
+        $previousWeekEnd = $currentWeekStart->copy()->subDay();
+        $previousWeekStart = $previousWeekEnd->copy()->startOfWeek();
 
         $currentWeekChurn = $this->getChurnCount($currentWeekStart, $currentWeekEnd);
-        $previousWeekChurn = $this->getChurnCount($previousWeekStart, $currentWeekStart->subDay());
+        $previousWeekChurn = $this->getChurnCount($previousWeekStart, $previousWeekEnd);
 
         $percentageChange = $this->calculatePercentageChange($previousWeekChurn, $currentWeekChurn);
 
