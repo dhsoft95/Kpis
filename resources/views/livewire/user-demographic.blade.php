@@ -1,21 +1,15 @@
 <x-filament-widgets::widget>
+
+    <!-- Include Tailwind CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/flowbite@2.4.1/dist/flowbite.min.css" rel="stylesheet" />
+    <!-- Include ApexCharts -->
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/flowbite@2.4.1/dist/flowbite.min.js"></script>
+
     <x-filament::section>
 
-        <!DOCTYPE html>
-        <html lang="en">
-        <head>
-            <meta charset="UTF-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>Chart Card</title>
-            <!-- Include Tailwind CSS -->
-            <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-            <link href="https://cdn.jsdelivr.net/npm/flowbite@2.4.1/dist/flowbite.min.css" rel="stylesheet" />
-            <!-- Include ApexCharts -->
-            <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
-
-            <script src="https://cdn.jsdelivr.net/npm/flowbite@2.4.1/dist/flowbite.min.js"></script>
-        </head>
-        <body class="bg-gray-100 dark:bg-gray-900">
 
         <div class="max-w-sm w-full bg-white rounded-lg shadow dark:bg-gray-800 p-4 md:p-6 mx-auto mt-10">
             <div class="flex justify-between pb-4 mb-4 border-b border-gray-200 dark:border-gray-700">
@@ -91,117 +85,6 @@
         </div>
 
         <!-- ApexCharts Configuration -->
-        <script>
-            const options = {
-                colors: ["#1A56DB", "#FDBA8C"],
-                series: [
-                    {
-                        name: "Organic",
-                        color: "#1A56DB",
-                        data: [
-                            { x: "Mon", y: 231 },
-                            { x: "Tue", y: 122 },
-                            { x: "Wed", y: 63 },
-                            { x: "Thu", y: 421 },
-                            { x: "Fri", y: 122 },
-                            { x: "Sat", y: 323 },
-                            { x: "Sun", y: 111 },
-                        ],
-                    },
-                    {
-                        name: "Social media",
-                        color: "#FDBA8C",
-                        data: [
-                            { x: "Mon", y: 232 },
-                            { x: "Tue", y: 113 },
-                            { x: "Wed", y: 341 },
-                            { x: "Thu", y: 224 },
-                            { x: "Fri", y: 522 },
-                            { x: "Sat", y: 411 },
-                            { x: "Sun", y: 243 },
-                        ],
-                    },
-                ],
-                chart: {
-                    type: "bar",
-                    height: "320px",
-                    fontFamily: "Inter, sans-serif",
-                    toolbar: {
-                        show: false,
-                    },
-                },
-                plotOptions: {
-                    bar: {
-                        horizontal: false,
-                        columnWidth: "70%",
-                        borderRadiusApplication: "end",
-                        borderRadius: 8,
-                    },
-                },
-                tooltip: {
-                    shared: true,
-                    intersect: false,
-                    style: {
-                        fontFamily: "Inter, sans-serif",
-                    },
-                },
-                states: {
-                    hover: {
-                        filter: {
-                            type: "darken",
-                            value: 1,
-                        },
-                    },
-                },
-                stroke: {
-                    show: true,
-                    width: 0,
-                    colors: ["transparent"],
-                },
-                grid: {
-                    show: false,
-                    strokeDashArray: 4,
-                    padding: {
-                        left: 2,
-                        right: 2,
-                        top: -14
-                    },
-                },
-                dataLabels: {
-                    enabled: false,
-                },
-                legend: {
-                    show: false,
-                },
-                xaxis: {
-                    floating: false,
-                    labels: {
-                        show: true,
-                        style: {
-                            fontFamily: "Inter, sans-serif",
-                            cssClass: 'text-xs font-normal fill-gray-500 dark:fill-gray-400'
-                        }
-                    },
-                    axisBorder: {
-                        show: false,
-                    },
-                    axisTicks: {
-                        show: false,
-                    },
-                },
-                yaxis: {
-                    show: false,
-                },
-                fill: {
-                    opacity: 1,
-                },
-            }
-
-            if(document.getElementById("column-chart") && typeof ApexCharts !== 'undefined') {
-                const chart = new ApexCharts(document.getElementById("column-chart"), options);
-                chart.render();
-            }
-        </script>
         </body>
         </html>
 
@@ -210,7 +93,6 @@
     </x-filament::section>
 
     <script>
-
         const options = {
             colors: ["#1A56DB", "#FDBA8C"],
             series: [
@@ -320,6 +202,5 @@
             const chart = new ApexCharts(document.getElementById("column-chart"), options);
             chart.render();
         }
-
     </script>
 </x-filament-widgets::widget>
