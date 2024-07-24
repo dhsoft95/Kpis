@@ -1,120 +1,169 @@
 <x-filament-widgets::widget>
     <x-filament::section>
 
+        <div id="hs-users-datamap"></div>
 
+        <script>
+            // Map
+            (function () {
+                const dataSet = {
+                    BRA: {
+                        active: {
+                            value: '5,101',
+                            percent: '42.2',
+                            isGrown: false
+                        },
+                        new: {
+                            value: '444',
+                            percent: '41.2',
+                            isGrown: false
+                        },
+                        fillKey: 'MAJOR',
+                        short: 'br'
+                    },
+                    CHN: {
+                        active: {
+                            value: '10,101',
+                            percent: '13.7',
+                            isGrown: true
+                        },
+                        new: {
+                            value: '509',
+                            percent: '0.1',
+                            isGrown: false
+                        },
+                        fillKey: 'MAJOR',
+                        short: 'cn'
+                    },
+                    DEU: {
+                        active: {
+                            value: '8,408',
+                            percent: '5.4',
+                            isGrown: false
+                        },
+                        new: {
+                            value: '1001',
+                            percent: '5.1',
+                            isGrown: true
+                        },
+                        fillKey: 'MAJOR',
+                        short: 'de'
+                    },
+                    GBR: {
+                        active: {
+                            value: '4,889',
+                            percent: '9.1',
+                            isGrown: false
+                        },
+                        new: {
+                            value: '2,001',
+                            percent: '3.2',
+                            isGrown: true
+                        },
+                        fillKey: 'MAJOR',
+                        short: 'gb'
+                    },
+                    IND: {
+                        active: {
+                            value: '1,408',
+                            percent: '19.2',
+                            isGrown: true
+                        },
+                        new: {
+                            value: '392',
+                            percent: '11.1',
+                            isGrown: true
+                        },
+                        fillKey: 'MAJOR',
+                        short: 'in'
+                    },
+                    USA: {
+                        active: {
+                            value: '392',
+                            percent: '0.9',
+                            isGrown: true
+                        },
+                        new: {
+                            value: '1,408',
+                            percent: '2.2',
+                            isGrown: true
+                        },
+                        fillKey: 'MAJOR',
+                        short: 'us',
+                        customName: 'United States'
+                    }
+                };
+                const dataMap = new Datamap({
+                    element: document.querySelector('#hs-users-datamap'),
+                    projection: 'mercator',
+                    responsive: true,
+                    fills: {
+                        defaultFill: '#d1d5db',
+                        MAJOR: '#9ca3af'
+                    },
+                    data: dataSet,
+                    geographyConfig: {
+                        borderColor: 'rgba(0, 0, 0, .09)',
+                        highlightFillColor: '#3b82f6',
+                        highlightBorderColor: '#3b82f6',
+                        popupTemplate: function (geo, data) {
+                            const growUp = `<svg class="size-4 text-teal-500" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
+          </svg>`;
+                            const growDown = `<svg class="size-4 text-red-500" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 17 13.5 8.5 8.5 13.5 2 7"/><polyline points="16 17 22 17 22 11"/></svg>
+          </svg>`;
+
+                            return `<div class="bg-white rounded-xl shadow-[0_10px_40px_10px_rgba(0,0,0,0.08)] w-[150px] p-3">
+            <div class="flex mb-1">
+              <div class="me-2">
+                <div class="size-4 rounded-full bg-no-repeat bg-center bg-cover" style="background-image: url('../node_modules/svg-country-flags/svg/${data.short}.svg')"></div>
+              </div>
+              <span class="text-sm font-medium">${data.customName || geo.properties.name}</span>
+            </div>
+            <div class="flex items-center">
+              <span class="text-sm text-gray-500">Active:</span>
+               <span class="text-sm font-medium ${data.active.value}</span>
+               <span class="text-sm ${data.active.isGrown ? 'text-teal-500' : 'text-red-500'}'>${data.active.percent}</span>
+               ${data.active.isGrown ? growUp : growDown}
+            </div>
+            <div class="flex items-center">
+              <span class="text-sm text-gray-500">New:</span>
+               <span class="text-sm font-medium ${data.new.value}</span>
+               <span class="text-sm ${data.active.isGrown ? 'text-teal-500' : 'text-red-500'}'>${data.new.percent}</span>
+               ${data.new.isGrown ? growUp : growDown}
+            </div>
+          </div>`;
+                        }
+                    }
+                });
+                dataMap.addPlugin('update', function (_, mode) {
+                    this.options.fills = (mode === 'dark') ? {
+                        defaultFill: '#374151',
+                        MAJOR: '#6b7280'
+                    } : {
+                        defaultFill: '#d1d5db',
+                        MAJOR: '#9ca3af'
+                    };
+
+                    this.updateChoropleth(dataSet, {reset: true});
+                });
+
+                dataMap.update(localStorage.getItem('hs_theme'));
+
+                window.addEventListener('on-hs-appearance-change', (evt) => {
+                    dataMap.update(evt.detail);
+                });
+
+                window.addEventListener('resize', function () {
+                    dataMap.resize();
+                });
+            })();
+        </script>
     </x-filament::section>
 
-    <script>
-
-        const options = {
-            colors: ["#1A56DB", "#FDBA8C"],
-            series: [
-                {
-                    name: "Organic",
-                    color: "#1A56DB",
-                    data: [
-                        { x: "Mon", y: 231 },
-                        { x: "Tue", y: 122 },
-                        { x: "Wed", y: 63 },
-                        { x: "Thu", y: 421 },
-                        { x: "Fri", y: 122 },
-                        { x: "Sat", y: 323 },
-                        { x: "Sun", y: 111 },
-                    ],
-                },
-                {
-                    name: "Social media",
-                    color: "#FDBA8C",
-                    data: [
-                        { x: "Mon", y: 232 },
-                        { x: "Tue", y: 113 },
-                        { x: "Wed", y: 341 },
-                        { x: "Thu", y: 224 },
-                        { x: "Fri", y: 522 },
-                        { x: "Sat", y: 411 },
-                        { x: "Sun", y: 243 },
-                    ],
-                },
-            ],
-            chart: {
-                type: "bar",
-                height: "320px",
-                fontFamily: "Inter, sans-serif",
-                toolbar: {
-                    show: false,
-                },
-            },
-            plotOptions: {
-                bar: {
-                    horizontal: false,
-                    columnWidth: "70%",
-                    borderRadiusApplication: "end",
-                    borderRadius: 8,
-                },
-            },
-            tooltip: {
-                shared: true,
-                intersect: false,
-                style: {
-                    fontFamily: "Inter, sans-serif",
-                },
-            },
-            states: {
-                hover: {
-                    filter: {
-                        type: "darken",
-                        value: 1,
-                    },
-                },
-            },
-            stroke: {
-                show: true,
-                width: 0,
-                colors: ["transparent"],
-            },
-            grid: {
-                show: false,
-                strokeDashArray: 4,
-                padding: {
-                    left: 2,
-                    right: 2,
-                    top: -14
-                },
-            },
-            dataLabels: {
-                enabled: false,
-            },
-            legend: {
-                show: false,
-            },
-            xaxis: {
-                floating: false,
-                labels: {
-                    show: true,
-                    style: {
-                        fontFamily: "Inter, sans-serif",
-                        cssClass: 'text-xs font-normal fill-gray-500 dark:fill-gray-400'
-                    }
-                },
-                axisBorder: {
-                    show: false,
-                },
-                axisTicks: {
-                    show: false,
-                },
-            },
-            yaxis: {
-                show: false,
-            },
-            fill: {
-                opacity: 1,
-            },
-        }
-
-        if(document.getElementById("column-chart") && typeof ApexCharts !== 'undefined') {
-            const chart = new ApexCharts(document.getElementById("column-chart"), options);
-            chart.render();
-        }
-
-    </script>
 </x-filament-widgets::widget>
+
+<script>
+    <script src="./assets/vendor/d3/d3.min.js"></script>
+<script src="./assets/vendor/topojson/build/topojson.min.js"></script>
+<script src="./assets/vendor/datamaps/dist/datamaps.world.min.js"></script>
+</script>
