@@ -156,30 +156,30 @@ class ChurnChart extends ChartWidget
         ];
     }
 
-    protected function getOptions(): array
-    {
-        return [
-            'plugins' => [
-                'legend' => [
-                    'display' => true,
-                ],
-            ],
-            'scales' => [
-                'x' => [
-                    'stacked' => false,
-                    'ticks' => [
-                        'autoSkip' => false,
-//                        'maxRotation' => 90,
-//                        'minRotation' => 90,
-                    ],
-                ],
-                'y' => [
-                    'beginAtZero' => true,
-                    'ticks' => [
-                        'precision' => 0,
-                    ],
-                ],
-            ],
-        ];
-    }
+//    protected function getOptions(): array
+//    {
+//        return [
+//            'plugins' => [
+//                'legend' => [
+//                    'display' => true,
+//                ],
+//            ],
+//            'scales' => [
+//                'x' => [
+//                    'stacked' => false,
+//                    'ticks' => [
+//                        'autoSkip' => false,
+////                        'maxRotation' => 90,
+////                        'minRotation' => 90,
+//                    ],
+//                ],
+//                'y' => [
+//                    'beginAtZero' => true,
+//                    'ticks' => [
+//                        'precision' => 0,
+//                    ],
+//                ],
+//            ],
+//        ];
+//    }
 }
