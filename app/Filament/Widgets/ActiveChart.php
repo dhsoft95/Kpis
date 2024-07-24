@@ -74,17 +74,22 @@ class ActiveChart extends ChartWidget
         $wowActivePercentages = [];
         $wowInactivePercentages = [];
 
-        $period = CarbonPeriod::create($endDate->copy()->subWeeks(4), '1 week', $endDate)->reverse();
+        $weekEnd = $endDate->copy();
 
-        foreach ($period as $weekEnd) {
+        for ($i = 0; $i < 5; $i++) {
             $weekStart = $weekEnd->copy()->startOfWeek();
+
+            // Ensure we don't go before the start date
+            if ($weekStart->lt($startDate)) {
+                $weekStart = $startDate->copy();
+            }
 
             // Active Users
             $activeCount = DB::connection('mysql_second')
-                ->table('tbl_transaction')
+                ->table('tbl_transactions')
                 ->select('sender_phone')
                 ->whereBetween('created_at', [$weekStart, $weekEnd])
-                ->where('status', 1)
+                ->where('status', 3)
                 ->whereNotNull('sender_amount')
                 ->distinct()
                 ->count();
@@ -98,29 +103,19 @@ class ActiveChart extends ChartWidget
             // Inactive Users
             $inactiveCount = $totalRegisteredUsers - $activeCount;
 
-            $activeCounts[] = $activeCount;
-            $inactiveCounts[] = $inactiveCount;
-            $labels[] = $weekStart->format('M d') . ' - ' . $weekEnd->format('M d');
+            array_unshift($activeCounts, $activeCount);
+            array_unshift($inactiveCounts, $inactiveCount);
+            array_unshift($labels, $weekStart->format('M d') . ' - ' . $weekEnd->format('M d'));
 
-            // Calculate WoW percentages
-            if (count($activeCounts) > 1) {
-                $wowActivePercentages[] = $this->calculatePercentageChange(
-                    $activeCounts[count($activeCounts) - 2],
-                    $activeCounts[count($activeCounts) - 1]
-                );
-                $wowInactivePercentages[] = $this->calculatePercentageChange(
-                    $inactiveCounts[count($inactiveCounts) - 2],
-                    $inactiveCounts[count($inactiveCounts) - 1]
-                );
-            }
+            // Move to the previous week
+            $weekEnd = $weekStart->subDay();
         }
 
-        // Reverse the arrays to show oldest data first
-        $activeCounts = array_reverse($activeCounts);
-        $inactiveCounts = array_reverse($inactiveCounts);
-        $labels = array_reverse($labels);
-        $wowActivePercentages = array_reverse($wowActivePercentages);
-        $wowInactivePercentages = array_reverse($wowInactivePercentages);
+        // Calculate WoW percentages
+        for ($i = 1; $i < count($activeCounts); $i++) {
+            $wowActivePercentages[] = $this->calculatePercentageChange($activeCounts[$i-1], $activeCounts[$i]);
+            $wowInactivePercentages[] = $this->calculatePercentageChange($inactiveCounts[$i-1], $inactiveCounts[$i]);
+        }
 
         return [
             'activeCounts' => $activeCounts,
