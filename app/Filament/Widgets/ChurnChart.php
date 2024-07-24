@@ -21,6 +21,7 @@ class ChurnChart extends ChartWidget
         $filter = $this->filter;
         $today = Carbon::now()->startOfDay();
 
+        // Calculate the week periods
         $weeks = $this->getWeekPeriods($filter, $today);
 
         $currentWeekChurn = [];
@@ -68,18 +69,16 @@ class ChurnChart extends ChartWidget
         $weeks = [];
         $endDate = $today->copy()->endOfWeek();
 
+        // Adjust start date based on filter
         switch ($filter) {
             case 'month':
                 $startDate = $today->copy()->startOfMonth();
-                $endDate = $today->copy()->endOfMonth();
                 break;
             case 'quarter':
                 $startDate = $today->copy()->startOfQuarter();
-                $endDate = $today->copy()->endOfQuarter();
                 break;
             case 'year':
                 $startDate = $today->copy()->startOfYear();
-                $endDate = $today->copy()->endOfYear();
                 break;
             case 'four_weeks':
             default:
@@ -89,10 +88,15 @@ class ChurnChart extends ChartWidget
 
         // Generate weekly periods for the defined range
         for ($i = 0; $i < 4; $i++) {
-            $currentStart = $startDate->copy()->addWeeks($i);
+            $currentStart = $startDate->copy()->addWeeks($i)->startOfWeek();
             $currentEnd = $currentStart->copy()->endOfWeek();
             $previousStart = $currentStart->copy()->subWeek();
             $previousEnd = $previousStart->copy()->endOfWeek();
+
+            // Skip if the current period is beyond today's date
+            if ($currentEnd->isAfter($today)) {
+                $currentEnd = $today;
+            }
 
             $weeks[] = [
                 'currentStart' => $currentStart,
@@ -165,7 +169,7 @@ class ChurnChart extends ChartWidget
             ],
             'scales' => [
                 'x' => [
-                    'stacked' => true,
+                    'stacked' => false,
                 ],
                 'y' => [
                     'beginAtZero' => true,
