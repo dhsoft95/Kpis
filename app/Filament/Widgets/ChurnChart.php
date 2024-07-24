@@ -8,17 +8,17 @@ use Illuminate\Support\Facades\DB;
 
 class ChurnChart extends ChartWidget
 {
-    protected static ?string $heading = 'Churn Users Trend';
+    protected static ?string $heading = 'Weekly Churn Users';
     protected static ?int $sort = 2;
     protected static ?string $maxHeight = '300px';
 
     protected function getFilters(): ?array
     {
         return [
-            'today' => 'Today',
-            'week' => 'Last 7 days',
-            'month' => 'Last 30 days',
-            'year' => 'Last 12 months',
+            'week' => 'Last 5 Weeks',
+            'month' => 'Last 3 Months',
+            'quarter' => 'Last Quarter',
+            'year' => 'Last Year',
         ];
     }
 
@@ -27,17 +27,17 @@ class ChurnChart extends ChartWidget
         $filter = $this->filter ?? 'week';
 
         $data = match ($filter) {
-            'today' => $this->getChurnDataByHour(),
-            'week' => $this->getChurnDataByDay(),
-            'month' => $this->getChurnDataByDay(30),
-            'year' => $this->getChurnDataByMonth(),
+            'week' => $this->getChurnData(5),
+            'month' => $this->getChurnData(13),  // 13 weeks ~= 3 months
+            'quarter' => $this->getChurnData(13),
+            'year' => $this->getChurnData(52),
             default => [],
         };
 
         return [
             'datasets' => [
                 [
-                    'label' => 'Churned users',
+                    'label' => 'Churn Users',
                     'data' => array_values($data),
                 ],
             ],
@@ -47,36 +47,26 @@ class ChurnChart extends ChartWidget
 
     protected function getType(): string
     {
-        return 'line';
+        return 'bar';
     }
 
-    private function getChurnDataByHour(): array
+    private function getChurnData(int $weeks): array
     {
-        $start = Carbon::today();
-        $end = Carbon::now();
-        return $this->getChurnData($start, $end, 'hour');
+        $end = Carbon::now()->endOfWeek();
+        $start = $end->copy()->subWeeks($weeks - 1)->startOfWeek();
+
+        return $this->fetchChurnData($start, $end, 'week');
     }
 
-    private function getChurnDataByDay(int $days = 7): array
-    {
-        $start = Carbon::now()->subDays($days - 1)->startOfDay();
-        $end = Carbon::now()->endOfDay();
-        return $this->getChurnData($start, $end, 'day');
-    }
-
-    private function getChurnDataByMonth(): array
-    {
-        $start = Carbon::now()->subMonths(11)->startOfMonth();
-        $end = Carbon::now()->endOfMonth();
-        return $this->getChurnData($start, $end, 'month');
-    }
-
-    private function getChurnData(Carbon $start, Carbon $end, string $groupBy): array
+    private function fetchChurnData(Carbon $start, Carbon $end, string $groupBy): array
     {
         $dateFormat = $this->getSqlDateFormat($groupBy);
 
         $data = DB::connection('mysql_second')->table('users')
-            ->leftJoin('tbl_transactions', 'users.phone_number', '=', 'tbl_transactions.sender_phone')
+            ->leftJoin('tbl_transactions', function ($join) {
+                $join->on('users.phone_number', '=', 'tbl_transactions.sender_phone')
+                    ->where('tbl_transactions.created_at', '>', DB::raw('DATE_SUB(CURDATE(), INTERVAL 30 DAY)'));
+            })
             ->whereNull('tbl_transactions.sender_phone')
             ->whereBetween('users.created_at', [$start, $end])
             ->groupBy(DB::raw("DATE_FORMAT(users.created_at, '{$dateFormat}')"))
@@ -87,12 +77,10 @@ class ChurnChart extends ChartWidget
         return $this->fillMissingDates($data, $start, $end, $groupBy);
     }
 
-
     private function getSqlDateFormat(string $groupBy): string
     {
         return match ($groupBy) {
-            'hour' => '%Y-%m-%d %H:00:00',
-            'day' => '%Y-%m-%d',
+            'week' => '%X-%V',  // ISO year and week number
             'month' => '%Y-%m-01',
             default => '%Y-%m-%d',
         };
@@ -101,8 +89,7 @@ class ChurnChart extends ChartWidget
     private function getPhpDateFormat(string $groupBy): string
     {
         return match ($groupBy) {
-            'hour' => 'Y-m-d H:00:00',
-            'day' => 'Y-m-d',
+            'week' => 'o-W',  // ISO year and week number
             'month' => 'Y-m-01',
             default => 'Y-m-d',
         };
@@ -140,8 +127,7 @@ class ChurnChart extends ChartWidget
     private function getDateInterval(string $groupBy): \DateInterval
     {
         return match ($groupBy) {
-            'hour' => new \DateInterval('PT1H'),
-            'day' => new \DateInterval('P1D'),
+            'week' => new \DateInterval('P1W'),
             'month' => new \DateInterval('P1M'),
             default => new \DateInterval('P1D'),
         };
@@ -152,9 +138,10 @@ class ChurnChart extends ChartWidget
         $carbon = Carbon::createFromFormat($this->getPhpDateFormat($groupBy), $date);
 
         return match ($groupBy) {
-            'hour' => $carbon->format('H:i'),
-            'day' => $carbon->format('d M'),
+            'week' => 'Week ' . $carbon->weekOfYear,
             'month' => $carbon->format('M y'),
+            'quarter' => 'Q' . $carbon->quarter . ' ' . $carbon->year,
+            'year' => $carbon->format('M y'),
             default => $carbon->format('d M'),
         };
     }
