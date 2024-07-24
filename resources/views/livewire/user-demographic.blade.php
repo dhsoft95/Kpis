@@ -1,70 +1,65 @@
 <x-filament-widgets::widget>
     <x-filament::section>
-        <div class="container mx-auto p-4">
-            <h1 class="text-2xl font-bold mb-4">User Demographic Map</h1>
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Sessions by Country</title>
+            <script src="https://cdn.tailwindcss.com"></script>
+            <style>
+                .country { fill: #374151; }
+                .country:hover { fill: #60A5FA; }
+            </style>
+        </head>
+        <body class="bg-gray-900 text-white p-8">
+        <h1 class="text-2xl font-bold mb-2">Sessions by country</h1>
+        <p class="text-gray-400 mb-4">View website visitors by hovering over the map</p>
 
-            <div class="bg-gray-100 p-4 rounded-lg shadow-md">
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    <!-- Age Group -->
-                    <div class="bg-white p-4 rounded-lg shadow">
-                        <h2 class="text-lg font-semibold mb-2">Age Distribution</h2>
-                        <div class="space-y-2">
-                            <div class="flex justify-between">
-                                <span>18-24</span>
-                                <div class="w-2/3 bg-gray-200 rounded-full h-2.5">
-                                    <div class="bg-blue-600 h-2.5 rounded-full" style="width: 45%"></div>
-                                </div>
-                            </div>
-                            <div class="flex justify-between">
-                                <span>25-34</span>
-                                <div class="w-2/3 bg-gray-200 rounded-full h-2.5">
-                                    <div class="bg-blue-600 h-2.5 rounded-full" style="width: 65%"></div>
-                                </div>
-                            </div>
-                            <!-- Add more age groups as needed -->
-                        </div>
-                    </div>
-
-                    <!-- Gender -->
-                    <div class="bg-white p-4 rounded-lg shadow">
-                        <h2 class="text-lg font-semibold mb-2">Gender</h2>
-                        <div class="flex justify-around">
-                            <div class="text-center">
-                                <div class="inline-block rounded-full bg-pink-500 w-20 h-20 flex items-center justify-center text-white font-bold text-xl">
-                                    52%
-                                </div>
-                                <p class="mt-2">Female</p>
-                            </div>
-                            <div class="text-center">
-                                <div class="inline-block rounded-full bg-blue-500 w-20 h-20 flex items-center justify-center text-white font-bold text-xl">
-                                    48%
-                                </div>
-                                <p class="mt-2">Male</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Location -->
-                    <div class="bg-white p-4 rounded-lg shadow">
-                        <h2 class="text-lg font-semibold mb-2">Top Locations</h2>
-                        <ul class="space-y-2">
-                            <li class="flex justify-between">
-                                <span>New York</span>
-                                <span class="font-semibold">25%</span>
-                            </li>
-                            <li class="flex justify-between">
-                                <span>Los Angeles</span>
-                                <span class="font-semibold">18%</span>
-                            </li>
-                            <li class="flex justify-between">
-                                <span>Chicago</span>
-                                <span class="font-semibold">12%</span>
-                            </li>
-                            <!-- Add more locations as needed -->
-                        </ul>
-                    </div>
-                </div>
-            </div>
+        <div class="w-full h-96 bg-gray-800 rounded-lg mb-4 overflow-hidden">
+            <!-- Simplified world map SVG -->
+            <svg viewBox="0 0 1000 500" class="w-full h-full">
+                <!-- You would need to add path elements for each country here -->
+                <path class="country" d="M200,100 L220,100 L220,110 L200,110 Z" />
+                <!-- More paths... -->
+            </svg>
         </div>
+
+        <div class="flex space-x-2 mb-4">
+            <button class="bg-gray-700 text-white p-2 rounded">+</button>
+            <button class="bg-gray-700 text-white p-2 rounded">-</button>
+        </div>
+
+        <div class="space-y-2">
+            <div class="flex items-center">
+                <span class="w-6 h-4 bg-blue-500 mr-2"></span>
+                <span class="w-24">United States</span>
+                <div class="flex-grow bg-gray-700 rounded-full h-4">
+                    <div class="bg-blue-600 h-4 rounded-full" style="width: 35%"></div>
+                </div>
+                <span class="ml-2">35%</span>
+            </div>
+            <div class="flex items-center">
+                <span class="w-6 h-4 bg-red-500 mr-2"></span>
+                <span class="w-24">Canada</span>
+                <div class="flex-grow bg-gray-700 rounded-full h-4">
+                    <div class="bg-blue-600 h-4 rounded-full" style="width: 26%"></div>
+                </div>
+                <span class="ml-2">26%</span>
+            </div>
+            <!-- Add more countries here -->
+        </div>
+
+        <script>
+            // You would add JavaScript here for interactivity
+            // For example, to handle zoom buttons and country hover effects
+            document.querySelectorAll('.country').forEach(country => {
+                country.addEventListener('mouseover', () => {
+                    // Update info based on country
+                });
+            });
+        </script>
+        </body>
+        </html>
     </x-filament::section>
 </x-filament-widgets::widget>
