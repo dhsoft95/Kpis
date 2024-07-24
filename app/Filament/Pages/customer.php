@@ -22,7 +22,6 @@ class customer extends Page
         return [
             CustStatsOverview::class,
             CustvalueChart::class,
-            testWidget::class,
             TransvalueChart::class,
         ];
     }
