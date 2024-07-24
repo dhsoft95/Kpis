@@ -66,7 +66,6 @@ class ChurnChart extends ChartWidget
     private function getWeekPeriods(string $filter, Carbon $today): array
     {
         $weeks = [];
-        $startDate = $today->copy()->startOfWeek();
         $endDate = $today->copy()->endOfWeek();
 
         switch ($filter) {
@@ -85,7 +84,6 @@ class ChurnChart extends ChartWidget
             case 'four_weeks':
             default:
                 $startDate = $today->copy()->startOfWeek()->subWeeks(3);
-                $endDate = $today->copy()->endOfWeek();
                 break;
         }
 
@@ -167,7 +165,7 @@ class ChurnChart extends ChartWidget
             ],
             'scales' => [
                 'x' => [
-                    'stacked' => false,
+                    'stacked' => true,
                 ],
                 'y' => [
                     'beginAtZero' => true,
