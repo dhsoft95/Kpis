@@ -1,504 +1,87 @@
 <x-filament-widgets::widget>
     <x-filament::section>
-        <div class="xCPtuxM4_gihvpPwv9bX Nu4HUn5EQpnNJ1itNkrd aJF41JQLhtfw_MCGt5Th tVvQ7rZHDN8eqgjOONa2 AWLGIryfLKwkSeUZd4O6">
-            <div class="_wYiJGbRZyFZeCc8y7Sf hD0sTTDgbxakubcHVW2X _Ybd3WwuTVljUT4vEaM3 mveJTCIb2WII7J4sY22F mngKhi_Rv06PF57lblDI _YxZw_O8dWkTljptcO7z SWDELhWFjL8JxEtm91_o _1jTZ8KXRZul60S6czNi a3PhNoZfGyYtBq9oUFmb roTtmJKSiubwdmgJkwrv">
-                <div class="hD0sTTDgbxakubcHVW2X">
-                    <h3 class="TR_P65x9ie7j6uxFo_Cs vyo_A8gnQD1QWDPglr3h IOPhczRgtphv6NdNBDjj __9sbu0yrzdhGIkLWNXl OyABRrnTV_kvHV7dJ0uE">Sessions by country</h3>
-                    <span class="d3C8uAdJKNl1jzfE9ynq _43MO1gcdi2Y0RJW1uHL PeR2JZ9BZHYIH8Ea3F36 XIIs8ZOri3wm8Wnj9N_y">View website visitors by hovering over the map</span>
-                </div>
-                <div id="map" class="HpZzxvgSmWLxwGF95rQK"></div>
-                <!-- List -->
-                <ul class="qDsn8ha5_HppqMcLKJwF" role="list">
-                    <!-- Item 1 -->
-                    <li class="Q_jg_EPdNf9eDMn1mLI2 t6gkcSf0Bt4MLItXvDJ_ rvdRhGyExrNYTA6euxsF">
-                        <!-- Flag -->
-                        <div class="YRrCJSr_j5nopfm4duUc Q_jg_EPdNf9eDMn1mLI2 _hpGev6RXFut0Jm_iRgf tkZo48dB4RhnHSlDXzoe">
-                            <svg class="E9GV5sZJIbfO_GEQ_moc _o2IXcpM0qnG3JPReKus" viewBox="0 0 26 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <rect y="0.529053" width="25.7522" height="17.1429" rx="2" fill="white"></rect>
-                                <mask id="mask0" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="0" y="0" width="26" height="18">
-                                    <rect y="0.529053" width="25.7522" height="17.1429" rx="2" fill="white"></rect>
-                                </mask>
-                                <g mask="url(#mask0)">
-                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M25.7522 0.529053H0V1.67191H25.7522V0.529053ZM25.7522 2.81477H0V3.95763H25.7522V2.81477ZM0 5.10048H25.7522V6.24333H0V5.10048ZM25.7522 7.3862H0V8.52905H25.7522V7.3862ZM0 9.67192H25.7522V10.8148H0V9.67192ZM25.7522 11.9576H0V13.1005H25.7522V11.9576ZM0 14.2433H25.7522V15.3862H0V14.2433ZM25.7522 16.5291H0V17.6719H25.7522V16.5291Z" fill="#D02F44"></path>
-                                    <rect y="0.529053" width="11.0367" height="8" fill="#46467F"></rect>
-                                    <g filter="url(#filter0_d)">
-                                        <path fill-rule="evenodd" clip-rule="evenodd" d="M2.45237 2.2433C2.45237 2.5589 2.17786 2.81473 1.83922 2.81473C1.50059 2.81473 1.22607 2.5589 1.22607 2.2433C1.22607 1.92771 1.50059 1.67188 1.83922 1.67188C2.17786 1.67188 2.45237 1.92771 2.45237 2.2433ZM4.90496 2.2433C4.90496 2.5589 4.63045 2.81473 4.29182 2.81473C3.95318 2.81473 3.67867 2.5589 3.67867 2.2433C3.67867 1.92771 3.95318 1.67188 4.29182 1.67188C4.63045 1.67188 4.90496 1.92771 4.90496 2.2433ZM6.74441 2.81473C7.08304 2.81473 7.35756 2.5589 7.35756 2.2433C7.35756 1.92771 7.08304 1.67188 6.74441 1.67188C6.40578 1.67188 6.13126 1.92771 6.13126 2.2433C6.13126 2.5589 6.40578 2.81473 6.74441 2.81473ZM9.81015 2.2433C9.81015 2.5589 9.53564 2.81473 9.197 2.81473C8.85837 2.81473 8.58386 2.5589 8.58386 2.2433C8.58386 1.92771 8.85837 1.67188 9.197 1.67188C9.53564 1.67188 9.81015 1.92771 9.81015 2.2433ZM3.06552 3.95758C3.40415 3.95758 3.67867 3.70175 3.67867 3.38616C3.67867 3.07056 3.40415 2.81473 3.06552 2.81473C2.72689 2.81473 2.45237 3.07056 2.45237 3.38616C2.45237 3.70175 2.72689 3.95758 3.06552 3.95758ZM6.13126 3.38616C6.13126 3.70175 5.85675 3.95758 5.51811 3.95758C5.17948 3.95758 4.90496 3.70175 4.90496 3.38616C4.90496 3.07056 5.17948 2.81473 5.51811 2.81473C5.85675 2.81473 6.13126 3.07056 6.13126 3.38616ZM7.97071 3.95758C8.30934 3.95758 8.58386 3.70175 8.58386 3.38616C8.58386 3.07056 8.30934 2.81473 7.97071 2.81473C7.63207 2.81473 7.35756 3.07056 7.35756 3.38616C7.35756 3.70175 7.63207 3.95758 7.97071 3.95758ZM9.81015 4.52902C9.81015 4.84462 9.53564 5.10045 9.197 5.10045C8.85837 5.10045 8.58386 4.84462 8.58386 4.52902C8.58386 4.21343 8.85837 3.9576 9.197 3.9576C9.53564 3.9576 9.81015 4.21343 9.81015 4.52902ZM6.74441 5.10045C7.08304 5.10045 7.35756 4.84462 7.35756 4.52902C7.35756 4.21343 7.08304 3.9576 6.74441 3.9576C6.40578 3.9576 6.13126 4.21343 6.13126 4.52902C6.13126 4.84462 6.40578 5.10045 6.74441 5.10045ZM4.90496 4.52902C4.90496 4.84462 4.63045 5.10045 4.29182 5.10045C3.95318 5.10045 3.67867 4.84462 3.67867 4.52902C3.67867 4.21343 3.95318 3.9576 4.29182 3.9576C4.63045 3.9576 4.90496 4.21343 4.90496 4.52902ZM1.83922 5.10045C2.17786 5.10045 2.45237 4.84462 2.45237 4.52902C2.45237 4.21343 2.17786 3.9576 1.83922 3.9576C1.50059 3.9576 1.22607 4.21343 1.22607 4.52902C1.22607 4.84462 1.50059 5.10045 1.83922 5.10045ZM3.67867 5.67188C3.67867 5.98747 3.40415 6.2433 3.06552 6.2433C2.72689 6.2433 2.45237 5.98747 2.45237 5.67188C2.45237 5.35628 2.72689 5.10045 3.06552 5.10045C3.40415 5.10045 3.67867 5.35628 3.67867 5.67188ZM5.51811 6.2433C5.85675 6.2433 6.13126 5.98747 6.13126 5.67188C6.13126 5.35628 5.85675 5.10045 5.51811 5.10045C5.17948 5.10045 4.90496 5.35628 4.90496 5.67188C4.90496 5.98747 5.17948 6.2433 5.51811 6.2433ZM8.58386 5.67188C8.58386 5.98747 8.30934 6.2433 7.97071 6.2433C7.63207 6.2433 7.35756 5.98747 7.35756 5.67188C7.35756 5.35628 7.63207 5.10045 7.97071 5.10045C8.30934 5.10045 8.58386 5.35628 8.58386 5.67188ZM9.197 7.38616C9.53564 7.38616 9.81015 7.13032 9.81015 6.81473C9.81015 6.49914 9.53564 6.2433 9.197 6.2433C8.85837 6.2433 8.58386 6.49914 8.58386 6.81473C8.58386 7.13032 8.85837 7.38616 9.197 7.38616ZM7.35756 6.81473C7.35756 7.13032 7.08304 7.38616 6.74441 7.38616C6.40578 7.38616 6.13126 7.13032 6.13126 6.81473C6.13126 6.49914 6.40578 6.2433 6.74441 6.2433C7.08304 6.2433 7.35756 6.49914 7.35756 6.81473ZM4.29182 7.38616C4.63045 7.38616 4.90496 7.13032 4.90496 6.81473C4.90496 6.49914 4.63045 6.2433 4.29182 6.2433C3.95318 6.2433 3.67867 6.49914 3.67867 6.81473C3.67867 7.13032 3.95318 7.38616 4.29182 7.38616ZM2.45237 6.81473C2.45237 7.13032 2.17786 7.38616 1.83922 7.38616C1.50059 7.38616 1.22607 7.13032 1.22607 6.81473C1.22607 6.49914 1.50059 6.2433 1.83922 6.2433C2.17786 6.2433 2.45237 6.49914 2.45237 6.81473Z" fill="url(#paint0_linear)"></path>
-                                    </g>
-                                </g>
-                                <defs>
-                                    <filter id="filter0_d" x="1.22607" y="1.67188" width="8.58408" height="6.71428" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
-                                        <feFlood flood-opacity="0" result="BackgroundImageFix"></feFlood>
-                                        <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"></feColorMatrix>
-                                        <feOffset dy="1"></feOffset>
-                                        <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.06 0"></feColorMatrix>
-                                        <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow"></feBlend>
-                                        <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow" result="shape"></feBlend>
-                                    </filter>
-                                    <linearGradient id="paint0_linear" x1="1.22607" y1="1.67188" x2="1.22607" y2="7.38616" gradientUnits="userSpaceOnUse">
-                                        <stop stop-color="white"></stop>
-                                        <stop offset="1" stop-color="#F0F0F0"></stop>
-                                    </linearGradient>
-                                </defs>
-                            </svg>
-                            <span class="ZaKHxcG4mQbOvJ4IzRtQ oA7zcT_42jVeFuWTXQnq _07uZcLokMvX7uULfRPY d3C8uAdJKNl1jzfE9ynq ezMFUVl744lvw6ht0lFe __9sbu0yrzdhGIkLWNXl pEjhbiVHG4rn1eIOx9eT OyABRrnTV_kvHV7dJ0uE">United States</span>
-                        </div>
-                        <div class="t6gkcSf0Bt4MLItXvDJ_ rxe6apEJoEk8r75xaVNG WwS1mve_UI16RedcVHEs mveJTCIb2WII7J4sY22F jqg6J89cvxmDiFpnV56r">
-                            <div class="sQaK4IH7BIQSgBTGX8Pe rxe6apEJoEk8r75xaVNG gMXmdpOPfqG_3CKkL0VD IOPhczRgtphv6NdNBDjj wgkxUJNDca22__ptDPRh ijrOHNoSVGATsWYKl4Id W5n_NSFnC6y2nqoHw_5x IR64fXXu8VHPDt6EKlvV g40_g3BQzYCOX5eZADgY" style="width: 35%"> 35%</div>
-                        </div>
-                    </li>
-                    <!-- Item 2 -->
-                    <li class="Q_jg_EPdNf9eDMn1mLI2 t6gkcSf0Bt4MLItXvDJ_ rvdRhGyExrNYTA6euxsF">
-                        <!-- Flag -->
-                        <div class="YRrCJSr_j5nopfm4duUc Q_jg_EPdNf9eDMn1mLI2 _hpGev6RXFut0Jm_iRgf tkZo48dB4RhnHSlDXzoe">
-                            <svg class="E9GV5sZJIbfO_GEQ_moc _o2IXcpM0qnG3JPReKus" viewBox="0 0 26 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <rect x="0.25" y="0.779053" width="25.2567" height="16.6429" rx="1.75" fill="white" stroke="#F3F4F6" stroke-width="0.5"></rect>
-                                <mask id="mask0" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="0" y="0" width="26" height="18">
-                                    <rect x="0.25" y="0.779053" width="25.2567" height="16.6429" rx="1.75" fill="white" stroke="white" stroke-width="0.5"></rect>
-                                </mask>
-                                <g mask="url(#mask0)">
-                                    <rect x="18.3975" y="0.529053" width="7.35907" height="17.1429" fill="#FF3131"></rect>
-                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M0 17.6719H7.35907V0.529053H0V17.6719Z" fill="#FF3131"></path>
-                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M14.8804 8.37761C14.6418 8.59995 14.2588 8.38268 14.3272 8.06378L14.718 6.2432L13.4915 6.81463L12.8782 5.10034L12.265 6.81463L11.0385 6.2432L11.4292 8.06378C11.4977 8.38268 11.1147 8.59995 10.8761 8.37761L10.6525 8.16923C10.5244 8.04994 10.326 8.04994 10.198 8.16923L9.81196 8.52891L8.58545 7.95749L9.1987 9.10034L8.84717 9.4279C8.70571 9.55971 8.70571 9.78383 8.84717 9.91564L10.4252 11.3861H12.265L12.5716 13.1003H13.1849L13.4915 11.3861H15.3313L16.9093 9.91564C17.0508 9.78383 17.0508 9.55971 16.9093 9.4279L16.5578 9.10034L17.171 7.95749L15.9445 8.52891L15.5585 8.16923C15.4305 8.04994 15.232 8.04994 15.104 8.16923L14.8804 8.37761Z" fill="#FF3131"></path>
-                                </g>
-                            </svg>
-                            <span class="bIRey9ytskUfueo9E8EX ZaKHxcG4mQbOvJ4IzRtQ oA7zcT_42jVeFuWTXQnq _07uZcLokMvX7uULfRPY d3C8uAdJKNl1jzfE9ynq ezMFUVl744lvw6ht0lFe __9sbu0yrzdhGIkLWNXl OyABRrnTV_kvHV7dJ0uE">Canada</span>
-                        </div>
-                        <div class="t6gkcSf0Bt4MLItXvDJ_ rxe6apEJoEk8r75xaVNG WwS1mve_UI16RedcVHEs mveJTCIb2WII7J4sY22F jqg6J89cvxmDiFpnV56r">
-                            <div class="sQaK4IH7BIQSgBTGX8Pe rxe6apEJoEk8r75xaVNG gMXmdpOPfqG_3CKkL0VD IOPhczRgtphv6NdNBDjj wgkxUJNDca22__ptDPRh ijrOHNoSVGATsWYKl4Id W5n_NSFnC6y2nqoHw_5x IR64fXXu8VHPDt6EKlvV g40_g3BQzYCOX5eZADgY" style="width: 26%"> 26%</div>
-                        </div>
-                    </li>
-                    <!-- Item 3 -->
-                    <li class="Q_jg_EPdNf9eDMn1mLI2 t6gkcSf0Bt4MLItXvDJ_ rvdRhGyExrNYTA6euxsF">
-                        <!-- Flag -->
-                        <div class="YRrCJSr_j5nopfm4duUc Q_jg_EPdNf9eDMn1mLI2 _hpGev6RXFut0Jm_iRgf tkZo48dB4RhnHSlDXzoe">
-                            <svg class="E9GV5sZJIbfO_GEQ_moc _o2IXcpM0qnG3JPReKus" viewBox="0 0 26 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <rect x="0.25" y="0.779053" width="25.2567" height="16.6429" rx="1.75" fill="white" stroke="#F3F4F6" stroke-width="0.5"></rect>
-                                <mask id="mask0" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="0" y="0" width="26" height="18">
-                                    <rect x="0.25" y="0.779053" width="25.2567" height="16.6429" rx="1.75" fill="white" stroke="white" stroke-width="0.5"></rect>
-                                </mask>
-                                <g mask="url(#mask0)">
-                                    <rect x="17.1714" y="0.529053" width="8.58558" height="17.1429" fill="#F44653"></rect>
-                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M0 17.6719H8.58558V0.529053H0V17.6719Z" fill="#1035BB"></path>
-                                </g>
-                            </svg>
-                            <span class="bIRey9ytskUfueo9E8EX ZaKHxcG4mQbOvJ4IzRtQ oA7zcT_42jVeFuWTXQnq _07uZcLokMvX7uULfRPY d3C8uAdJKNl1jzfE9ynq ezMFUVl744lvw6ht0lFe __9sbu0yrzdhGIkLWNXl OyABRrnTV_kvHV7dJ0uE">France</span>
-                        </div>
-                        <div class="t6gkcSf0Bt4MLItXvDJ_ rxe6apEJoEk8r75xaVNG WwS1mve_UI16RedcVHEs mveJTCIb2WII7J4sY22F jqg6J89cvxmDiFpnV56r">
-                            <div class="sQaK4IH7BIQSgBTGX8Pe rxe6apEJoEk8r75xaVNG gMXmdpOPfqG_3CKkL0VD IOPhczRgtphv6NdNBDjj wgkxUJNDca22__ptDPRh ijrOHNoSVGATsWYKl4Id W5n_NSFnC6y2nqoHw_5x IR64fXXu8VHPDt6EKlvV g40_g3BQzYCOX5eZADgY" style="width: 18%"> 18%</div>
-                        </div>
-                    </li>
-                    <!-- Item 4 -->
-                    <li class="Q_jg_EPdNf9eDMn1mLI2 t6gkcSf0Bt4MLItXvDJ_ rvdRhGyExrNYTA6euxsF">
-                        <!-- Flag -->
-                        <div class="YRrCJSr_j5nopfm4duUc Q_jg_EPdNf9eDMn1mLI2 _hpGev6RXFut0Jm_iRgf tkZo48dB4RhnHSlDXzoe">
-                            <svg class="E9GV5sZJIbfO_GEQ_moc _o2IXcpM0qnG3JPReKus" viewBox="0 0 26 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <rect x="0.25" y="0.779297" width="25.2522" height="16.6429" rx="1.75" fill="white" stroke="#F3F4F6" stroke-width="0.5"></rect>
-                                <mask id="mask0" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="0" y="0" width="26" height="18">
-                                    <rect x="0.25" y="0.779297" width="25.2522" height="16.6429" rx="1.75" fill="white" stroke="white" stroke-width="0.5"></rect>
-                                </mask>
-                                <g mask="url(#mask0)">
-                                    <rect x="17.168" y="0.529297" width="8.58408" height="17.1429" fill="#E43D4C"></rect>
-                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M0 17.6722H8.58408V0.529297H0V17.6722Z" fill="#1BB65D"></path>
-                                </g>
-                            </svg>
-                            <span class="bIRey9ytskUfueo9E8EX ZaKHxcG4mQbOvJ4IzRtQ oA7zcT_42jVeFuWTXQnq _07uZcLokMvX7uULfRPY d3C8uAdJKNl1jzfE9ynq ezMFUVl744lvw6ht0lFe __9sbu0yrzdhGIkLWNXl OyABRrnTV_kvHV7dJ0uE">Italy</span>
-                        </div>
-                        <div class="t6gkcSf0Bt4MLItXvDJ_ rxe6apEJoEk8r75xaVNG WwS1mve_UI16RedcVHEs mveJTCIb2WII7J4sY22F jqg6J89cvxmDiFpnV56r">
-                            <div class="sQaK4IH7BIQSgBTGX8Pe rxe6apEJoEk8r75xaVNG gMXmdpOPfqG_3CKkL0VD IOPhczRgtphv6NdNBDjj wgkxUJNDca22__ptDPRh ijrOHNoSVGATsWYKl4Id W5n_NSFnC6y2nqoHw_5x IR64fXXu8VHPDt6EKlvV g40_g3BQzYCOX5eZADgY" style="width: 14%"> 14%</div>
-                        </div>
-                    </li>
-                    <!-- Item 5 -->
-                    <li class="Q_jg_EPdNf9eDMn1mLI2 t6gkcSf0Bt4MLItXvDJ_ rvdRhGyExrNYTA6euxsF">
-                        <!-- Flag -->
-                        <div class="YRrCJSr_j5nopfm4duUc Q_jg_EPdNf9eDMn1mLI2 _hpGev6RXFut0Jm_iRgf tkZo48dB4RhnHSlDXzoe">
-                            <svg class="E9GV5sZJIbfO_GEQ_moc _o2IXcpM0qnG3JPReKus" viewBox="0 0 26 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <rect y="0.529053" width="25.7567" height="17.1429" rx="2" fill="white"></rect>
-                                <mask id="mask0" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="0" y="0" width="26" height="18">
-                                    <rect y="0.529053" width="25.7567" height="17.1429" rx="2" fill="white"></rect>
-                                </mask>
-                                <g mask="url(#mask0)">
-                                    <rect y="0.529053" width="25.7567" height="17.1429" fill="#0A17A7"></rect>
-                                    <path d="M-0.951485 0.195719H0H0.613256H0.714042L0.797945 0.251562L5.00683 3.05286H6.04257L10.8708 0.241006L11.3719 -0.0508112V0.529053V0.921924C11.3719 1.14501 11.2604 1.3533 11.0746 1.4769L10.89 1.19941L11.0746 1.47691L7.07914 4.13618V4.94011L10.8133 7.92254C11.2032 8.23391 10.983 8.86239 10.4841 8.86239C10.3801 8.86239 10.2784 8.83164 10.1918 8.774M-0.951485 0.195719L10.1918 8.774M-0.951485 0.195719L-0.208022 0.78951L3.95946 4.118V4.92192L-0.184689 7.68013L-0.333333 7.77907V7.95763V8.52905V9.10892L0.16775 8.8171L4.99603 6.00524H6.03177L10.1918 8.774M-0.951485 0.195719L10.3764 8.49651L10.1918 8.774" fill="#FF2E3B" stroke="white" stroke-width="0.666667"></path>
-                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M0 3.3862V5.67191H4.29279V8.43382C4.29279 8.80201 4.59127 9.10048 4.95946 9.10048H6.07914C6.44733 9.10048 6.74581 8.80201 6.74581 8.43382V5.67191H10.9852C11.3534 5.67191 11.6519 5.37343 11.6519 5.00524V4.05286C11.6519 3.68467 11.3534 3.3862 10.9852 3.3862H6.74581V0.529053H4.29279V3.3862H0Z" fill="url(#paint0_linear)"></path>
-                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M0 3.95762H4.90604V3.3862V0.529053H6.13256V3.3862V3.95762H11.0386V5.10048H6.13256V5.67191V8.52905H4.90604V5.67191V5.10048H0V3.95762Z" fill="url(#paint1_linear)"></path>
-                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M5.51945 14.5289L4.43807 15.0587L4.64459 13.9367L3.76973 13.1421L4.97876 12.9784L5.51945 11.9575L6.06015 12.9784L7.26918 13.1421L6.39432 13.9367L6.60084 15.0587L5.51945 14.5289Z" fill="white"></path>
-                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M18.3979 15.3862L17.5306 15.6229L17.7846 14.8147L17.5306 14.0066L18.3979 14.2433L19.2652 14.0066L19.0112 14.8147L19.2652 15.6229L18.3979 15.3862Z" fill="white"></path>
-                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M18.3979 4.52898L17.5306 4.76568L17.7846 3.95755L17.5306 3.14943L18.3979 3.38613L19.2652 3.14943L19.0112 3.95755L19.2652 4.76568L18.3979 4.52898Z" fill="white"></path>
-                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M22.0771 7.95769L21.2098 8.19439L21.4638 7.38627L21.2098 6.57814L22.0771 6.81484L22.9444 6.57814L22.6904 7.38627L22.9444 8.19439L22.0771 7.95769Z" fill="white"></path>
-                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M14.7182 9.10052L13.8509 9.33721L14.105 8.52909L13.8509 7.72097L14.7182 7.95766L15.5855 7.72097L15.3315 8.52909L15.5855 9.33721L14.7182 9.10052Z" fill="white"></path>
-                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M20.2373 10.529L19.8036 10.6474L19.9307 10.2433L19.8036 9.83924L20.2373 9.95759L20.6709 9.83924L20.5439 10.2433L20.6709 10.6474L20.2373 10.529Z" fill="white"></path>
-                                </g>
-                                <defs>
-                                    <linearGradient id="paint0_linear" x1="0" y1="0.529053" x2="0" y2="9.10048" gradientUnits="userSpaceOnUse">
-                                        <stop stop-color="white"></stop>
-                                        <stop offset="1" stop-color="#F0F0F0"></stop>
-                                    </linearGradient>
-                                    <linearGradient id="paint1_linear" x1="0" y1="0.529053" x2="0" y2="8.52905" gradientUnits="userSpaceOnUse">
-                                        <stop stop-color="#FF2E3B"></stop>
-                                        <stop offset="1" stop-color="#FC0D1B"></stop>
-                                    </linearGradient>
-                                </defs>
-                            </svg>
-                            <span class="bIRey9ytskUfueo9E8EX ZaKHxcG4mQbOvJ4IzRtQ oA7zcT_42jVeFuWTXQnq _07uZcLokMvX7uULfRPY d3C8uAdJKNl1jzfE9ynq ezMFUVl744lvw6ht0lFe __9sbu0yrzdhGIkLWNXl OyABRrnTV_kvHV7dJ0uE">Australia</span>
-                        </div>
-                        <div class="t6gkcSf0Bt4MLItXvDJ_ rxe6apEJoEk8r75xaVNG WwS1mve_UI16RedcVHEs mveJTCIb2WII7J4sY22F jqg6J89cvxmDiFpnV56r">
-                            <div class="sQaK4IH7BIQSgBTGX8Pe rxe6apEJoEk8r75xaVNG gMXmdpOPfqG_3CKkL0VD IOPhczRgtphv6NdNBDjj wgkxUJNDca22__ptDPRh ijrOHNoSVGATsWYKl4Id W5n_NSFnC6y2nqoHw_5x IR64fXXu8VHPDt6EKlvV g40_g3BQzYCOX5eZADgY" style="width: 10%"> 10%</div>
-                        </div>
-                    </li>
-                    <!-- Item 5 -->
-                    <li class="Q_jg_EPdNf9eDMn1mLI2 t6gkcSf0Bt4MLItXvDJ_ rvdRhGyExrNYTA6euxsF">
-                        <!-- Flag -->
-                        <div class="YRrCJSr_j5nopfm4duUc Q_jg_EPdNf9eDMn1mLI2 _hpGev6RXFut0Jm_iRgf tkZo48dB4RhnHSlDXzoe">
-                            <svg class="E9GV5sZJIbfO_GEQ_moc _o2IXcpM0qnG3JPReKus" viewBox="0 0 26 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <rect x="0.25" y="0.779053" width="25.2567" height="16.6429" rx="1.75" fill="white" stroke="#F3F4F6" stroke-width="0.5"></rect>
-                                <mask id="mask0" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="0" y="0" width="26" height="18">
-                                    <rect x="0.25" y="0.779053" width="25.2567" height="16.6429" rx="1.75" fill="white" stroke="white" stroke-width="0.5"></rect>
-                                </mask>
-                                <g mask="url(#mask0)">
-                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M0 6.24334H25.7567V0.529053H0V6.24334Z" fill="#FFA44A"></path>
-                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M0 17.6718H25.7567V11.9575H0V17.6718Z" fill="#1A9F0B"></path>
-                                    <path d="M12.8783 11.1481C14.0559 11.1481 15.0514 10.2532 15.0514 9.10052C15.0514 7.94786 14.0559 7.0529 12.8783 7.0529C11.7007 7.0529 10.7052 7.94786 10.7052 9.10052C10.7052 10.2532 11.7007 11.1481 12.8783 11.1481Z" fill="#181A93" fill-opacity="0.15" stroke="#181A93" stroke-width="0.666667"></path>
-                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M12.8784 9.67191C13.2171 9.67191 13.4916 9.41607 13.4916 9.10048C13.4916 8.78489 13.2171 8.52905 12.8784 8.52905C12.5397 8.52905 12.2651 8.78489 12.2651 9.10048C12.2651 9.41607 12.5397 9.67191 12.8784 9.67191Z" fill="#181A93"></path>
-                                </g>
-                            </svg>
-                            <span class="bIRey9ytskUfueo9E8EX ZaKHxcG4mQbOvJ4IzRtQ oA7zcT_42jVeFuWTXQnq _07uZcLokMvX7uULfRPY d3C8uAdJKNl1jzfE9ynq ezMFUVl744lvw6ht0lFe __9sbu0yrzdhGIkLWNXl OyABRrnTV_kvHV7dJ0uE">India</span>
-                        </div>
-                        <div class="t6gkcSf0Bt4MLItXvDJ_ rxe6apEJoEk8r75xaVNG WwS1mve_UI16RedcVHEs mveJTCIb2WII7J4sY22F jqg6J89cvxmDiFpnV56r">
-                            <div class="sQaK4IH7BIQSgBTGX8Pe rxe6apEJoEk8r75xaVNG gMXmdpOPfqG_3CKkL0VD IOPhczRgtphv6NdNBDjj wgkxUJNDca22__ptDPRh ijrOHNoSVGATsWYKl4Id W5n_NSFnC6y2nqoHw_5x IR64fXXu8VHPDt6EKlvV g40_g3BQzYCOX5eZADgY" style="width: 7%"> 7%</div>
-                        </div>
-                    </li>
 
-                </ul>
-                <!-- Card Footer -->
-                <div class="YRrCJSr_j5nopfm4duUc sJNGKHxFYdN5Nzml5J2j Q_jg_EPdNf9eDMn1mLI2 wlOthpHGZ8jLLRoA3tl2 lK4YcZMYuPJXBsFBM5Hv pVSXSlnJdgskzP7BxPBe qUWbS_LTZujDB4XCd11V YJEBMPxJE_MyJtwHjBt6 _fGhMnSfYmaGrv7DvZ00">
+        <div class="max-w-sm w-full bg-white rounded-lg shadow dark:bg-gray-800 p-4 md:p-6">
+            <div class="flex justify-between pb-4 mb-4 border-b border-gray-200 dark:border-gray-700">
+                <div class="flex items-center">
+                    <div class="w-12 h-12 rounded-lg bg-gray-100 dark:bg-gray-700 flex items-center justify-center me-3">
+                        <svg class="w-6 h-6 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 19">
+                            <path d="M14.5 0A3.987 3.987 0 0 0 11 2.1a4.977 4.977 0 0 1 3.9 5.858A3.989 3.989 0 0 0 14.5 0ZM9 13h2a4 4 0 0 1 4 4v2H5v-2a4 4 0 0 1 4-4Z"/>
+                            <path d="M5 19h10v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2ZM5 7a5.008 5.008 0 0 1 4-4.9 3.988 3.988 0 1 0-3.9 5.859A4.974 4.974 0 0 1 5 7Zm5 3a3 3 0 1 0 0-6 3 3 0 0 0 0 6Zm5-1h-.424a5.016 5.016 0 0 1-1.942 2.232A6.007 6.007 0 0 1 17 17h2a1 1 0 0 0 1-1v-2a5.006 5.006 0 0 0-5-5ZM5.424 9H5a5.006 5.006 0 0 0-5 5v2a1 1 0 0 0 1 1h2a6.007 6.007 0 0 1 4.366-5.768A5.016 5.016 0 0 1 5.424 9Z"/>
+                        </svg>
+                    </div>
                     <div>
-                        <button class="_k0lTW0vvzboctTxDi2R Q_jg_EPdNf9eDMn1mLI2 FJRldeiG2gFGZfuKgp88 c8dCx6gnV43hTOLV6ks5 ezMFUVl744lvw6ht0lFe ijrOHNoSVGATsWYKl4Id PeR2JZ9BZHYIH8Ea3F36 mveJTCIb2WII7J4sY22F ZnBoTVi7VOJdCLSSU62n XIIs8ZOri3wm8Wnj9N_y dMTOiA3mf3FTjlHu6DqW" type="button" data-dropdown-toggle="sessions-dropdown">Last 7 days <svg class="t1I6QaLqvCmfaYJcpWU_ E9GV5sZJIbfO_GEQ_moc _o2IXcpM0qnG3JPReKus" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg></button>
-                        <!-- Dropdown menu -->
-                        <div class="_SmdlCf6eUKB_V9S5IDj Jq3rRDG6Hsr3eAZ0KJeH aJF41JQLhtfw_MCGt5Th d3C8uAdJKNl1jzfE9ynq xdunzYpzbwcYs_0Tjgcz _Ybd3WwuTVljUT4vEaM3 Y3FxyuXtj2gecrGXvLEI Zy1Pypi71Xu6guex6urN z30cepEEBLSTPSvWeVPH mngKhi_Rv06PF57lblDI jqg6J89cvxmDiFpnV56r PoeKYEQfG4WfmL9xM6vu" id="sessions-dropdown">
-                            <div class="i8v96MUlFwGv9qJUkAx7 RZmKBZs1E1eXw8vkE6jY" role="none">
-                                <p class="c8dCx6gnV43hTOLV6ks5 ezMFUVl744lvw6ht0lFe __9sbu0yrzdhGIkLWNXl vfNYjqjYMlN1XskEucCt OyABRrnTV_kvHV7dJ0uE" role="none">
-                                    Sep 16, 2021 - Sep 22, 2021
-                                </p>
-                            </div>
-                            <ul class="_bVaO2NfVVP88LtHWYlv" role="none">
-                                <li>
-                                    <a href="#" class="_Vb9igHms0hI1PQcvp_S b9aD6g2qw84oyZNsMO8j RZmKBZs1E1eXw8vkE6jY c8dCx6gnV43hTOLV6ks5 rYHHksRBEMl_guI3q0UQ _7KA5gD55t2lxf9Jkj20 XIIs8ZOri3wm8Wnj9N_y RzANcaqunVvlLrO6_tal dMTOiA3mf3FTjlHu6DqW" role="menuitem">Yesterday</a>
-                                </li>
-                                <li>
-                                    <a href="#" class="_Vb9igHms0hI1PQcvp_S b9aD6g2qw84oyZNsMO8j RZmKBZs1E1eXw8vkE6jY c8dCx6gnV43hTOLV6ks5 rYHHksRBEMl_guI3q0UQ _7KA5gD55t2lxf9Jkj20 XIIs8ZOri3wm8Wnj9N_y RzANcaqunVvlLrO6_tal dMTOiA3mf3FTjlHu6DqW" role="menuitem">Today</a>
-                                </li>
-                                <li>
-                                    <a href="#" class="_Vb9igHms0hI1PQcvp_S b9aD6g2qw84oyZNsMO8j RZmKBZs1E1eXw8vkE6jY c8dCx6gnV43hTOLV6ks5 rYHHksRBEMl_guI3q0UQ _7KA5gD55t2lxf9Jkj20 XIIs8ZOri3wm8Wnj9N_y RzANcaqunVvlLrO6_tal dMTOiA3mf3FTjlHu6DqW" role="menuitem">Last 7 days</a>
-                                </li>
-                                <li>
-                                    <a href="#" class="_Vb9igHms0hI1PQcvp_S b9aD6g2qw84oyZNsMO8j RZmKBZs1E1eXw8vkE6jY c8dCx6gnV43hTOLV6ks5 rYHHksRBEMl_guI3q0UQ _7KA5gD55t2lxf9Jkj20 XIIs8ZOri3wm8Wnj9N_y RzANcaqunVvlLrO6_tal dMTOiA3mf3FTjlHu6DqW" role="menuitem">Last 30 days</a>
-                                </li>
-                                <li>
-                                    <a href="#" class="_Vb9igHms0hI1PQcvp_S b9aD6g2qw84oyZNsMO8j RZmKBZs1E1eXw8vkE6jY c8dCx6gnV43hTOLV6ks5 rYHHksRBEMl_guI3q0UQ _7KA5gD55t2lxf9Jkj20 XIIs8ZOri3wm8Wnj9N_y RzANcaqunVvlLrO6_tal dMTOiA3mf3FTjlHu6DqW" role="menuitem">Last 90 days</a>
-                                </li>
-                            </ul>
-                            <div class="_bVaO2NfVVP88LtHWYlv" role="none">
-                                <a href="#" class="_Vb9igHms0hI1PQcvp_S b9aD6g2qw84oyZNsMO8j RZmKBZs1E1eXw8vkE6jY c8dCx6gnV43hTOLV6ks5 rYHHksRBEMl_guI3q0UQ _7KA5gD55t2lxf9Jkj20 XIIs8ZOri3wm8Wnj9N_y RzANcaqunVvlLrO6_tal dMTOiA3mf3FTjlHu6DqW" role="menuitem">Custom...</a>
-                            </div>
-                        </div>
+                        <h5 class="leading-none text-2xl font-bold text-gray-900 dark:text-white pb-1">3.4k</h5>
+                        <p class="text-sm font-normal text-gray-500 dark:text-gray-400">Leads generated per week</p>
                     </div>
-                    <div class="VQS2tmQ_zFyBOC2tkmto">
-                        <a href="#" class="_k0lTW0vvzboctTxDi2R Q_jg_EPdNf9eDMn1mLI2 FJRldeiG2gFGZfuKgp88 gMXmdpOPfqG_3CKkL0VD ezMFUVl744lvw6ht0lFe sdSaZcRa4_We5kKaX4pf mveJTCIb2WII7J4sY22F OQflBVxALl1Ntbyc2J2_ gx_pYWtAG2cJIqhquLbx _7KA5gD55t2lxf9Jkj20 fZf6W_ZtzEh6EEqmWMA9 OPrb_iG5WDy_7F05BDOX">
-                            Location Overview
-                            <svg class="c2LzVf9SsdSEMBrRjNwS E9GV5sZJIbfO_GEQ_moc _o2IXcpM0qnG3JPReKus KcFFi0RQeeLbabX2ce8e cetJU7yt52TBxxdaIygU" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
-                        </a>
-                    </div>
+                </div>
+                <div>
+      <span class="bg-green-100 text-green-800 text-xs font-medium inline-flex items-center px-2.5 py-1 rounded-md dark:bg-green-900 dark:text-green-300">
+        <svg class="w-2.5 h-2.5 me-1.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 14">
+          <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13V1m0 0L1 5m4-4 4 4"/>
+        </svg>
+        42.5%
+      </span>
                 </div>
             </div>
-            <!-- Right Content -->
-            <div class="xCPtuxM4_gihvpPwv9bX iHPddplqYvrN6qWgvntn AqVNvLG_H6VHhym2yKMp r8lSKzxeZmXfyH8vtxDQ">
-                <!-- Top Sales Card -->
-                <div class="_wYiJGbRZyFZeCc8y7Sf hD0sTTDgbxakubcHVW2X uLPch_bqyJDXwe5tynMV _Ybd3WwuTVljUT4vEaM3 mveJTCIb2WII7J4sY22F mngKhi_Rv06PF57lblDI _YxZw_O8dWkTljptcO7z _1jTZ8KXRZul60S6czNi">
-                    <div class="YRrCJSr_j5nopfm4duUc sJNGKHxFYdN5Nzml5J2j Q_jg_EPdNf9eDMn1mLI2 hD0sTTDgbxakubcHVW2X">
-                        <h3 class="vyo_A8gnQD1QWDPglr3h IOPhczRgtphv6NdNBDjj wgkxUJNDca22__ptDPRh __9sbu0yrzdhGIkLWNXl OyABRrnTV_kvHV7dJ0uE">Latest Customers</h3>
-                        <a href="#" class="_k0lTW0vvzboctTxDi2R Q_jg_EPdNf9eDMn1mLI2 FJRldeiG2gFGZfuKgp88 c8dCx6gnV43hTOLV6ks5 ezMFUVl744lvw6ht0lFe mveJTCIb2WII7J4sY22F OQflBVxALl1Ntbyc2J2_ _7KA5gD55t2lxf9Jkj20 fZf6W_ZtzEh6EEqmWMA9 OPrb_iG5WDy_7F05BDOX">
-                            View all
-                        </a>
-                    </div>
-                    <div class="FF0B1uH_gtoM9lki9mia">
-                        <ul role="list" class="Zy1Pypi71Xu6guex6urN NIAblPiyeuYQ0zW671xb XpuPpk9eXhVCrleKmXDr">
-                            <li class="i8v96MUlFwGv9qJUkAx7 yMBL9uNh7GmEQ_E_GNSh">
-                                <div class="YRrCJSr_j5nopfm4duUc Q_jg_EPdNf9eDMn1mLI2 d4louhNic5PFgJGRKqn6">
-                                    <div class="VQS2tmQ_zFyBOC2tkmto">
-                                        <img class="yNvZ2JlUalNo5uPPv1sf mWvJQyBFgwNGEt0h7bSP RpVwy4sO7Asb86CncKJ_" src="images/users/neil-sims.png" alt="Neil image">
-                                    </div>
-                                    <div class="_74lpPUMEtHf6F0_fjLe G4dLHP1O7x3gaD0_p7Kc">
-                                        <p class="c8dCx6gnV43hTOLV6ks5 ezMFUVl744lvw6ht0lFe __9sbu0yrzdhGIkLWNXl vfNYjqjYMlN1XskEucCt OyABRrnTV_kvHV7dJ0uE">
-                                            Neil Sims
-                                        </p>
-                                        <p class="c8dCx6gnV43hTOLV6ks5 PeR2JZ9BZHYIH8Ea3F36 vfNYjqjYMlN1XskEucCt XIIs8ZOri3wm8Wnj9N_y">
-                                            email@flowbite.com
-                                        </p>
-                                    </div>
-                                    <div class="_k0lTW0vvzboctTxDi2R Q_jg_EPdNf9eDMn1mLI2 d3C8uAdJKNl1jzfE9ynq yM_AorRf2jSON3pDsdrz __9sbu0yrzdhGIkLWNXl OyABRrnTV_kvHV7dJ0uE">
-                                        $320
-                                    </div>
-                                </div>
+
+            <div class="grid grid-cols-2">
+                <dl class="flex items-center">
+                    <dt class="text-gray-500 dark:text-gray-400 text-sm font-normal me-1">Money spent:</dt>
+                    <dd class="text-gray-900 text-sm dark:text-white font-semibold">$3,232</dd>
+                </dl>
+                <dl class="flex items-center justify-end">
+                    <dt class="text-gray-500 dark:text-gray-400 text-sm font-normal me-1">Conversion rate:</dt>
+                    <dd class="text-gray-900 text-sm dark:text-white font-semibold">1.2%</dd>
+                </dl>
+            </div>
+
+            <div id="column-chart"></div>
+            <div class="grid grid-cols-1 items-center border-gray-200 border-t dark:border-gray-700 justify-between">
+                <div class="flex justify-between items-center pt-5">
+                    <!-- Button -->
+                    <button
+                        id="dropdownDefaultButton"
+                        data-dropdown-toggle="lastDaysdropdown"
+                        data-dropdown-placement="bottom"
+                        class="text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-gray-900 text-center inline-flex items-center dark:hover:text-white"
+                        type="button">
+                        Last 7 days
+                        <svg class="w-2.5 m-2.5 ms-1.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
+                        </svg>
+                    </button>
+                    <!-- Dropdown menu -->
+                    <div id="lastDaysdropdown" class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700">
+                        <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownDefaultButton">
+                            <li>
+                                <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Yesterday</a>
                             </li>
-                            <li class="i8v96MUlFwGv9qJUkAx7 yMBL9uNh7GmEQ_E_GNSh">
-                                <div class="YRrCJSr_j5nopfm4duUc Q_jg_EPdNf9eDMn1mLI2 d4louhNic5PFgJGRKqn6">
-                                    <div class="VQS2tmQ_zFyBOC2tkmto">
-                                        <img class="yNvZ2JlUalNo5uPPv1sf mWvJQyBFgwNGEt0h7bSP RpVwy4sO7Asb86CncKJ_" src="images/users/bonnie-green.png" alt="Neil image">
-                                    </div>
-                                    <div class="_74lpPUMEtHf6F0_fjLe G4dLHP1O7x3gaD0_p7Kc">
-                                        <p class="c8dCx6gnV43hTOLV6ks5 ezMFUVl744lvw6ht0lFe __9sbu0yrzdhGIkLWNXl vfNYjqjYMlN1XskEucCt OyABRrnTV_kvHV7dJ0uE">
-                                            Bonnie Green
-                                        </p>
-                                        <p class="c8dCx6gnV43hTOLV6ks5 PeR2JZ9BZHYIH8Ea3F36 vfNYjqjYMlN1XskEucCt XIIs8ZOri3wm8Wnj9N_y">
-                                            email@flowbite.com
-                                        </p>
-                                    </div>
-                                    <div class="_k0lTW0vvzboctTxDi2R Q_jg_EPdNf9eDMn1mLI2 d3C8uAdJKNl1jzfE9ynq yM_AorRf2jSON3pDsdrz __9sbu0yrzdhGIkLWNXl OyABRrnTV_kvHV7dJ0uE">
-                                        $3467
-                                    </div>
-                                </div>
+                            <li>
+                                <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Today</a>
                             </li>
-                            <li class="i8v96MUlFwGv9qJUkAx7 yMBL9uNh7GmEQ_E_GNSh">
-                                <div class="YRrCJSr_j5nopfm4duUc Q_jg_EPdNf9eDMn1mLI2 d4louhNic5PFgJGRKqn6">
-                                    <div class="VQS2tmQ_zFyBOC2tkmto">
-                                        <img class="yNvZ2JlUalNo5uPPv1sf mWvJQyBFgwNGEt0h7bSP RpVwy4sO7Asb86CncKJ_" src="images/users/michael-gough.png" alt="Neil image">
-                                    </div>
-                                    <div class="_74lpPUMEtHf6F0_fjLe G4dLHP1O7x3gaD0_p7Kc">
-                                        <p class="c8dCx6gnV43hTOLV6ks5 ezMFUVl744lvw6ht0lFe __9sbu0yrzdhGIkLWNXl vfNYjqjYMlN1XskEucCt OyABRrnTV_kvHV7dJ0uE">
-                                            Michael Gough
-                                        </p>
-                                        <p class="c8dCx6gnV43hTOLV6ks5 PeR2JZ9BZHYIH8Ea3F36 vfNYjqjYMlN1XskEucCt XIIs8ZOri3wm8Wnj9N_y">
-                                            email@flowbite.com
-                                        </p>
-                                    </div>
-                                    <div class="_k0lTW0vvzboctTxDi2R Q_jg_EPdNf9eDMn1mLI2 d3C8uAdJKNl1jzfE9ynq yM_AorRf2jSON3pDsdrz __9sbu0yrzdhGIkLWNXl OyABRrnTV_kvHV7dJ0uE">
-                                        $67
-                                    </div>
-                                </div>
+                            <li>
+                                <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Last 7 days</a>
                             </li>
-                            <li class="i8v96MUlFwGv9qJUkAx7 yMBL9uNh7GmEQ_E_GNSh">
-                                <div class="YRrCJSr_j5nopfm4duUc Q_jg_EPdNf9eDMn1mLI2 d4louhNic5PFgJGRKqn6">
-                                    <div class="VQS2tmQ_zFyBOC2tkmto">
-                                        <img class="yNvZ2JlUalNo5uPPv1sf mWvJQyBFgwNGEt0h7bSP RpVwy4sO7Asb86CncKJ_" src="images/users/thomas-lean.png" alt="Neil image">
-                                    </div>
-                                    <div class="_74lpPUMEtHf6F0_fjLe G4dLHP1O7x3gaD0_p7Kc">
-                                        <p class="c8dCx6gnV43hTOLV6ks5 ezMFUVl744lvw6ht0lFe __9sbu0yrzdhGIkLWNXl vfNYjqjYMlN1XskEucCt OyABRrnTV_kvHV7dJ0uE">
-                                            Thomes Lean
-                                        </p>
-                                        <p class="c8dCx6gnV43hTOLV6ks5 PeR2JZ9BZHYIH8Ea3F36 vfNYjqjYMlN1XskEucCt XIIs8ZOri3wm8Wnj9N_y">
-                                            email@flowbite.com
-                                        </p>
-                                    </div>
-                                    <div class="_k0lTW0vvzboctTxDi2R Q_jg_EPdNf9eDMn1mLI2 d3C8uAdJKNl1jzfE9ynq yM_AorRf2jSON3pDsdrz __9sbu0yrzdhGIkLWNXl OyABRrnTV_kvHV7dJ0uE">
-                                        $2367
-                                    </div>
-                                </div>
+                            <li>
+                                <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Last 30 days</a>
                             </li>
-                            <li class="i8v96MUlFwGv9qJUkAx7 yMBL9uNh7GmEQ_E_GNSh">
-                                <div class="YRrCJSr_j5nopfm4duUc Q_jg_EPdNf9eDMn1mLI2 d4louhNic5PFgJGRKqn6">
-                                    <div class="VQS2tmQ_zFyBOC2tkmto">
-                                        <img class="yNvZ2JlUalNo5uPPv1sf mWvJQyBFgwNGEt0h7bSP RpVwy4sO7Asb86CncKJ_" src="images/users/lana-byrd.png" alt="Neil image">
-                                    </div>
-                                    <div class="_74lpPUMEtHf6F0_fjLe G4dLHP1O7x3gaD0_p7Kc">
-                                        <p class="c8dCx6gnV43hTOLV6ks5 ezMFUVl744lvw6ht0lFe __9sbu0yrzdhGIkLWNXl vfNYjqjYMlN1XskEucCt OyABRrnTV_kvHV7dJ0uE">
-                                            Lana Byrd
-                                        </p>
-                                        <p class="c8dCx6gnV43hTOLV6ks5 PeR2JZ9BZHYIH8Ea3F36 vfNYjqjYMlN1XskEucCt XIIs8ZOri3wm8Wnj9N_y">
-                                            email@flowbite.com
-                                        </p>
-                                    </div>
-                                    <div class="_k0lTW0vvzboctTxDi2R Q_jg_EPdNf9eDMn1mLI2 d3C8uAdJKNl1jzfE9ynq yM_AorRf2jSON3pDsdrz __9sbu0yrzdhGIkLWNXl OyABRrnTV_kvHV7dJ0uE">
-                                        $367
-                                    </div>
-                                </div>
+                            <li>
+                                <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Last 90 days</a>
                             </li>
                         </ul>
                     </div>
-                    <!-- Card Footer -->
-                    <div class="YRrCJSr_j5nopfm4duUc sJNGKHxFYdN5Nzml5J2j Q_jg_EPdNf9eDMn1mLI2 wlOthpHGZ8jLLRoA3tl2 pVSXSlnJdgskzP7BxPBe qUWbS_LTZujDB4XCd11V YJEBMPxJE_MyJtwHjBt6 _fGhMnSfYmaGrv7DvZ00">
-                        <div>
-                            <button class="_k0lTW0vvzboctTxDi2R Q_jg_EPdNf9eDMn1mLI2 FJRldeiG2gFGZfuKgp88 c8dCx6gnV43hTOLV6ks5 ezMFUVl744lvw6ht0lFe ijrOHNoSVGATsWYKl4Id PeR2JZ9BZHYIH8Ea3F36 mveJTCIb2WII7J4sY22F ZnBoTVi7VOJdCLSSU62n XIIs8ZOri3wm8Wnj9N_y dMTOiA3mf3FTjlHu6DqW" type="button" data-dropdown-toggle="latest-customers-dropdown">Last 7 days <svg class="t1I6QaLqvCmfaYJcpWU_ E9GV5sZJIbfO_GEQ_moc _o2IXcpM0qnG3JPReKus" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg></button>
-                            <!-- Dropdown menu -->
-                            <div class="_SmdlCf6eUKB_V9S5IDj Jq3rRDG6Hsr3eAZ0KJeH aJF41JQLhtfw_MCGt5Th d3C8uAdJKNl1jzfE9ynq xdunzYpzbwcYs_0Tjgcz _Ybd3WwuTVljUT4vEaM3 Y3FxyuXtj2gecrGXvLEI Zy1Pypi71Xu6guex6urN z30cepEEBLSTPSvWeVPH mngKhi_Rv06PF57lblDI jqg6J89cvxmDiFpnV56r PoeKYEQfG4WfmL9xM6vu" id="latest-customers-dropdown">
-                                <div class="i8v96MUlFwGv9qJUkAx7 RZmKBZs1E1eXw8vkE6jY" role="none">
-                                    <p class="c8dCx6gnV43hTOLV6ks5 ezMFUVl744lvw6ht0lFe __9sbu0yrzdhGIkLWNXl vfNYjqjYMlN1XskEucCt OyABRrnTV_kvHV7dJ0uE" role="none">
-                                        Sep 16, 2021 - Sep 22, 2021
-                                    </p>
-                                </div>
-                                <ul class="_bVaO2NfVVP88LtHWYlv" role="none">
-                                    <li>
-                                        <a href="#" class="_Vb9igHms0hI1PQcvp_S b9aD6g2qw84oyZNsMO8j RZmKBZs1E1eXw8vkE6jY c8dCx6gnV43hTOLV6ks5 rYHHksRBEMl_guI3q0UQ _7KA5gD55t2lxf9Jkj20 XIIs8ZOri3wm8Wnj9N_y RzANcaqunVvlLrO6_tal dMTOiA3mf3FTjlHu6DqW" role="menuitem">Yesterday</a>
-                                    </li>
-                                    <li>
-                                        <a href="#" class="_Vb9igHms0hI1PQcvp_S b9aD6g2qw84oyZNsMO8j RZmKBZs1E1eXw8vkE6jY c8dCx6gnV43hTOLV6ks5 rYHHksRBEMl_guI3q0UQ _7KA5gD55t2lxf9Jkj20 XIIs8ZOri3wm8Wnj9N_y RzANcaqunVvlLrO6_tal dMTOiA3mf3FTjlHu6DqW" role="menuitem">Today</a>
-                                    </li>
-                                    <li>
-                                        <a href="#" class="_Vb9igHms0hI1PQcvp_S b9aD6g2qw84oyZNsMO8j RZmKBZs1E1eXw8vkE6jY c8dCx6gnV43hTOLV6ks5 rYHHksRBEMl_guI3q0UQ _7KA5gD55t2lxf9Jkj20 XIIs8ZOri3wm8Wnj9N_y RzANcaqunVvlLrO6_tal dMTOiA3mf3FTjlHu6DqW" role="menuitem">Last 7 days</a>
-                                    </li>
-                                    <li>
-                                        <a href="#" class="_Vb9igHms0hI1PQcvp_S b9aD6g2qw84oyZNsMO8j RZmKBZs1E1eXw8vkE6jY c8dCx6gnV43hTOLV6ks5 rYHHksRBEMl_guI3q0UQ _7KA5gD55t2lxf9Jkj20 XIIs8ZOri3wm8Wnj9N_y RzANcaqunVvlLrO6_tal dMTOiA3mf3FTjlHu6DqW" role="menuitem">Last 30 days</a>
-                                    </li>
-                                    <li>
-                                        <a href="#" class="_Vb9igHms0hI1PQcvp_S b9aD6g2qw84oyZNsMO8j RZmKBZs1E1eXw8vkE6jY c8dCx6gnV43hTOLV6ks5 rYHHksRBEMl_guI3q0UQ _7KA5gD55t2lxf9Jkj20 XIIs8ZOri3wm8Wnj9N_y RzANcaqunVvlLrO6_tal dMTOiA3mf3FTjlHu6DqW" role="menuitem">Last 90 days</a>
-                                    </li>
-                                </ul>
-                                <div class="_bVaO2NfVVP88LtHWYlv" role="none">
-                                    <a href="#" class="_Vb9igHms0hI1PQcvp_S b9aD6g2qw84oyZNsMO8j RZmKBZs1E1eXw8vkE6jY c8dCx6gnV43hTOLV6ks5 rYHHksRBEMl_guI3q0UQ _7KA5gD55t2lxf9Jkj20 XIIs8ZOri3wm8Wnj9N_y RzANcaqunVvlLrO6_tal dMTOiA3mf3FTjlHu6DqW" role="menuitem">Custom...</a>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="VQS2tmQ_zFyBOC2tkmto">
-                            <a href="#" class="_k0lTW0vvzboctTxDi2R Q_jg_EPdNf9eDMn1mLI2 FJRldeiG2gFGZfuKgp88 gMXmdpOPfqG_3CKkL0VD ezMFUVl744lvw6ht0lFe sdSaZcRa4_We5kKaX4pf mveJTCIb2WII7J4sY22F OQflBVxALl1Ntbyc2J2_ gx_pYWtAG2cJIqhquLbx _7KA5gD55t2lxf9Jkj20 fZf6W_ZtzEh6EEqmWMA9 OPrb_iG5WDy_7F05BDOX">
-                                Sales Report
-                                <svg class="c2LzVf9SsdSEMBrRjNwS E9GV5sZJIbfO_GEQ_moc _o2IXcpM0qnG3JPReKus KcFFi0RQeeLbabX2ce8e cetJU7yt52TBxxdaIygU" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-                <!-- Sessions by device Card -->
-                <div class="_wYiJGbRZyFZeCc8y7Sf _Ybd3WwuTVljUT4vEaM3 mveJTCIb2WII7J4sY22F mngKhi_Rv06PF57lblDI _YxZw_O8dWkTljptcO7z SWDELhWFjL8JxEtm91_o _1jTZ8KXRZul60S6czNi">
-                    <!-- Card Title -->
-                    <h3 class="vyo_A8gnQD1QWDPglr3h IOPhczRgtphv6NdNBDjj wgkxUJNDca22__ptDPRh __9sbu0yrzdhGIkLWNXl OyABRrnTV_kvHV7dJ0uE">Acquisition Overview</h3>
-                    <div id="traffic-channels-chart" class="YHiWkESJ_FRThRhSUhlR"></div>
-                    <div class="_Vb9igHms0hI1PQcvp_S _IebywwKB6L2zG0BTy63 t6gkcSf0Bt4MLItXvDJ_">
-                        <table class="Q_jg_EPdNf9eDMn1mLI2 t6gkcSf0Bt4MLItXvDJ_ mW4LfSTbez3WHPeTDguY SDE5yUtgfTb3G7uZsTXF">
-                            <thead>
-                            <tr>
-                                <th class="i8v96MUlFwGv9qJUkAx7 RZmKBZs1E1eXw8vkE6jY gMXmdpOPfqG_3CKkL0VD yM_AorRf2jSON3pDsdrz upQp7iWehfaU8VTbfx_w rYHHksRBEMl_guI3q0UQ sdSaZcRa4_We5kKaX4pf u0Aizb1ol0gBXDISYKJM BHrWGjM1Iab_fAz0_91H jtAJHOc7mn7b4IKRO59D XLlgRXUdQQs0S2kEfqxT _vn8PvoZLLDetPCJlfPP OGKixnDyVtiO6FLfdedj jqg6J89cvxmDiFpnV56r OyABRrnTV_kvHV7dJ0uE">Top Channels</th>
-                                <th class="i8v96MUlFwGv9qJUkAx7 RZmKBZs1E1eXw8vkE6jY gMXmdpOPfqG_3CKkL0VD yM_AorRf2jSON3pDsdrz upQp7iWehfaU8VTbfx_w rYHHksRBEMl_guI3q0UQ sdSaZcRa4_We5kKaX4pf u0Aizb1ol0gBXDISYKJM BHrWGjM1Iab_fAz0_91H jtAJHOc7mn7b4IKRO59D _vn8PvoZLLDetPCJlfPP OGKixnDyVtiO6FLfdedj jqg6J89cvxmDiFpnV56r OyABRrnTV_kvHV7dJ0uE">Users</th>
-                                <th class="i8v96MUlFwGv9qJUkAx7 RZmKBZs1E1eXw8vkE6jY gMXmdpOPfqG_3CKkL0VD yM_AorRf2jSON3pDsdrz upQp7iWehfaU8VTbfx_w rYHHksRBEMl_guI3q0UQ sdSaZcRa4_We5kKaX4pf u0Aizb1ol0gBXDISYKJM BHrWGjM1Iab_fAz0_91H jtAJHOc7mn7b4IKRO59D _NarM3uVIDdkHugrf78E _vn8PvoZLLDetPCJlfPP OGKixnDyVtiO6FLfdedj min-w-140-px jqg6J89cvxmDiFpnV56r OyABRrnTV_kvHV7dJ0uE"></th>
-                            </tr>
-                            </thead>
-                            <tbody class="Zy1Pypi71Xu6guex6urN z30cepEEBLSTPSvWeVPH XpuPpk9eXhVCrleKmXDr">
-                            <tr class="PeR2JZ9BZHYIH8Ea3F36 XIIs8ZOri3wm8Wnj9N_y">
-                                <th class="_wYiJGbRZyFZeCc8y7Sf RZmKBZs1E1eXw8vkE6jY c8dCx6gnV43hTOLV6ks5 _43MO1gcdi2Y0RJW1uHL upQp7iWehfaU8VTbfx_w u0Aizb1ol0gBXDISYKJM BHrWGjM1Iab_fAz0_91H KRYm_slIW7o1BHfoH1bZ">Organic Search</th>
-                                <td class="_wYiJGbRZyFZeCc8y7Sf RZmKBZs1E1eXw8vkE6jY gMXmdpOPfqG_3CKkL0VD ezMFUVl744lvw6ht0lFe __9sbu0yrzdhGIkLWNXl u0Aizb1ol0gBXDISYKJM BHrWGjM1Iab_fAz0_91H KRYm_slIW7o1BHfoH1bZ OyABRrnTV_kvHV7dJ0uE">5,649</td>
-                                <td class="_wYiJGbRZyFZeCc8y7Sf RZmKBZs1E1eXw8vkE6jY gMXmdpOPfqG_3CKkL0VD u0Aizb1ol0gBXDISYKJM BHrWGjM1Iab_fAz0_91H KRYm_slIW7o1BHfoH1bZ">
-                                    <div class="YRrCJSr_j5nopfm4duUc Q_jg_EPdNf9eDMn1mLI2">
-                                        <span class="fhCwost7CSNRc2WSHLFW gMXmdpOPfqG_3CKkL0VD ezMFUVl744lvw6ht0lFe">30%</span>
-                                        <div class="ahOqFrhzLjivRe8a1kX_ t6gkcSf0Bt4MLItXvDJ_">
-                                            <div class="t6gkcSf0Bt4MLItXvDJ_ iRRyDh3hk0uKgmcxvdhD WwS1mve_UI16RedcVHEs D0cB2fwpzIAF6I3dz1f_ jqg6J89cvxmDiFpnV56r">
-                                                <div class="iRRyDh3hk0uKgmcxvdhD D0cB2fwpzIAF6I3dz1f_ g40_g3BQzYCOX5eZADgY" style="width: 30%"></div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr class="PeR2JZ9BZHYIH8Ea3F36 XIIs8ZOri3wm8Wnj9N_y">
-                                <th class="_wYiJGbRZyFZeCc8y7Sf RZmKBZs1E1eXw8vkE6jY c8dCx6gnV43hTOLV6ks5 _43MO1gcdi2Y0RJW1uHL upQp7iWehfaU8VTbfx_w u0Aizb1ol0gBXDISYKJM BHrWGjM1Iab_fAz0_91H KRYm_slIW7o1BHfoH1bZ">Referral</th>
-                                <td class="_wYiJGbRZyFZeCc8y7Sf RZmKBZs1E1eXw8vkE6jY gMXmdpOPfqG_3CKkL0VD ezMFUVl744lvw6ht0lFe __9sbu0yrzdhGIkLWNXl u0Aizb1ol0gBXDISYKJM BHrWGjM1Iab_fAz0_91H KRYm_slIW7o1BHfoH1bZ OyABRrnTV_kvHV7dJ0uE">4,025</td>
-                                <td class="_wYiJGbRZyFZeCc8y7Sf RZmKBZs1E1eXw8vkE6jY gMXmdpOPfqG_3CKkL0VD u0Aizb1ol0gBXDISYKJM BHrWGjM1Iab_fAz0_91H KRYm_slIW7o1BHfoH1bZ">
-                                    <div class="YRrCJSr_j5nopfm4duUc Q_jg_EPdNf9eDMn1mLI2">
-                                        <span class="fhCwost7CSNRc2WSHLFW gMXmdpOPfqG_3CKkL0VD ezMFUVl744lvw6ht0lFe">24%</span>
-                                        <div class="ahOqFrhzLjivRe8a1kX_ t6gkcSf0Bt4MLItXvDJ_">
-                                            <div class="t6gkcSf0Bt4MLItXvDJ_ iRRyDh3hk0uKgmcxvdhD WwS1mve_UI16RedcVHEs D0cB2fwpzIAF6I3dz1f_ jqg6J89cvxmDiFpnV56r">
-                                                <div class="iRRyDh3hk0uKgmcxvdhD _9l2MVOj9uksi1brcZMM D0cB2fwpzIAF6I3dz1f_" style="width: 24%"></div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr class="PeR2JZ9BZHYIH8Ea3F36 XIIs8ZOri3wm8Wnj9N_y">
-                                <th class="_wYiJGbRZyFZeCc8y7Sf RZmKBZs1E1eXw8vkE6jY c8dCx6gnV43hTOLV6ks5 _43MO1gcdi2Y0RJW1uHL upQp7iWehfaU8VTbfx_w u0Aizb1ol0gBXDISYKJM BHrWGjM1Iab_fAz0_91H KRYm_slIW7o1BHfoH1bZ">Direct</th>
-                                <td class="_wYiJGbRZyFZeCc8y7Sf RZmKBZs1E1eXw8vkE6jY gMXmdpOPfqG_3CKkL0VD ezMFUVl744lvw6ht0lFe __9sbu0yrzdhGIkLWNXl u0Aizb1ol0gBXDISYKJM BHrWGjM1Iab_fAz0_91H KRYm_slIW7o1BHfoH1bZ OyABRrnTV_kvHV7dJ0uE">3,105</td>
-                                <td class="_wYiJGbRZyFZeCc8y7Sf RZmKBZs1E1eXw8vkE6jY gMXmdpOPfqG_3CKkL0VD u0Aizb1ol0gBXDISYKJM BHrWGjM1Iab_fAz0_91H KRYm_slIW7o1BHfoH1bZ">
-                                    <div class="YRrCJSr_j5nopfm4duUc Q_jg_EPdNf9eDMn1mLI2">
-                                        <span class="fhCwost7CSNRc2WSHLFW gMXmdpOPfqG_3CKkL0VD ezMFUVl744lvw6ht0lFe">18%</span>
-                                        <div class="ahOqFrhzLjivRe8a1kX_ t6gkcSf0Bt4MLItXvDJ_">
-                                            <div class="t6gkcSf0Bt4MLItXvDJ_ iRRyDh3hk0uKgmcxvdhD WwS1mve_UI16RedcVHEs D0cB2fwpzIAF6I3dz1f_ jqg6J89cvxmDiFpnV56r">
-                                                <div class="iRRyDh3hk0uKgmcxvdhD TdN_rgqCTju0IuQUjOfH D0cB2fwpzIAF6I3dz1f_" style="width: 18%"></div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr class="PeR2JZ9BZHYIH8Ea3F36 XIIs8ZOri3wm8Wnj9N_y">
-                                <th class="_wYiJGbRZyFZeCc8y7Sf RZmKBZs1E1eXw8vkE6jY c8dCx6gnV43hTOLV6ks5 _43MO1gcdi2Y0RJW1uHL upQp7iWehfaU8VTbfx_w u0Aizb1ol0gBXDISYKJM BHrWGjM1Iab_fAz0_91H KRYm_slIW7o1BHfoH1bZ">Social</th>
-                                <td class="_wYiJGbRZyFZeCc8y7Sf RZmKBZs1E1eXw8vkE6jY gMXmdpOPfqG_3CKkL0VD ezMFUVl744lvw6ht0lFe __9sbu0yrzdhGIkLWNXl u0Aizb1ol0gBXDISYKJM BHrWGjM1Iab_fAz0_91H KRYm_slIW7o1BHfoH1bZ OyABRrnTV_kvHV7dJ0uE">1251</td>
-                                <td class="_wYiJGbRZyFZeCc8y7Sf RZmKBZs1E1eXw8vkE6jY gMXmdpOPfqG_3CKkL0VD u0Aizb1ol0gBXDISYKJM BHrWGjM1Iab_fAz0_91H KRYm_slIW7o1BHfoH1bZ">
-                                    <div class="YRrCJSr_j5nopfm4duUc Q_jg_EPdNf9eDMn1mLI2">
-                                        <span class="fhCwost7CSNRc2WSHLFW gMXmdpOPfqG_3CKkL0VD ezMFUVl744lvw6ht0lFe">12%</span>
-                                        <div class="ahOqFrhzLjivRe8a1kX_ t6gkcSf0Bt4MLItXvDJ_">
-                                            <div class="t6gkcSf0Bt4MLItXvDJ_ iRRyDh3hk0uKgmcxvdhD WwS1mve_UI16RedcVHEs D0cB2fwpzIAF6I3dz1f_ jqg6J89cvxmDiFpnV56r">
-                                                <div class="iRRyDh3hk0uKgmcxvdhD hkPJMkgbvafVO7Vf2I80 D0cB2fwpzIAF6I3dz1f_" style="width: 12%"></div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr class="PeR2JZ9BZHYIH8Ea3F36 XIIs8ZOri3wm8Wnj9N_y">
-                                <th class="_wYiJGbRZyFZeCc8y7Sf RZmKBZs1E1eXw8vkE6jY c8dCx6gnV43hTOLV6ks5 _43MO1gcdi2Y0RJW1uHL upQp7iWehfaU8VTbfx_w u0Aizb1ol0gBXDISYKJM BHrWGjM1Iab_fAz0_91H KRYm_slIW7o1BHfoH1bZ">Other</th>
-                                <td class="_wYiJGbRZyFZeCc8y7Sf RZmKBZs1E1eXw8vkE6jY gMXmdpOPfqG_3CKkL0VD ezMFUVl744lvw6ht0lFe __9sbu0yrzdhGIkLWNXl u0Aizb1ol0gBXDISYKJM BHrWGjM1Iab_fAz0_91H KRYm_slIW7o1BHfoH1bZ OyABRrnTV_kvHV7dJ0uE">734</td>
-                                <td class="_wYiJGbRZyFZeCc8y7Sf RZmKBZs1E1eXw8vkE6jY gMXmdpOPfqG_3CKkL0VD u0Aizb1ol0gBXDISYKJM BHrWGjM1Iab_fAz0_91H KRYm_slIW7o1BHfoH1bZ">
-                                    <div class="YRrCJSr_j5nopfm4duUc Q_jg_EPdNf9eDMn1mLI2">
-                                        <span class="fhCwost7CSNRc2WSHLFW gMXmdpOPfqG_3CKkL0VD ezMFUVl744lvw6ht0lFe">9%</span>
-                                        <div class="ahOqFrhzLjivRe8a1kX_ t6gkcSf0Bt4MLItXvDJ_">
-                                            <div class="t6gkcSf0Bt4MLItXvDJ_ iRRyDh3hk0uKgmcxvdhD WwS1mve_UI16RedcVHEs D0cB2fwpzIAF6I3dz1f_ jqg6J89cvxmDiFpnV56r">
-                                                <div class="iRRyDh3hk0uKgmcxvdhD eD79DAAyg5R4oxRIpzVL D0cB2fwpzIAF6I3dz1f_" style="width: 9%"></div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr class="PeR2JZ9BZHYIH8Ea3F36 XIIs8ZOri3wm8Wnj9N_y">
-                                <th class="_wYiJGbRZyFZeCc8y7Sf RZmKBZs1E1eXw8vkE6jY c8dCx6gnV43hTOLV6ks5 _43MO1gcdi2Y0RJW1uHL upQp7iWehfaU8VTbfx_w u0Aizb1ol0gBXDISYKJM BHrWGjM1Iab_fAz0_91H KRYm_slIW7o1BHfoH1bZ">Email</th>
-                                <td class="_wYiJGbRZyFZeCc8y7Sf RZmKBZs1E1eXw8vkE6jY gMXmdpOPfqG_3CKkL0VD ezMFUVl744lvw6ht0lFe __9sbu0yrzdhGIkLWNXl u0Aizb1ol0gBXDISYKJM BHrWGjM1Iab_fAz0_91H KRYm_slIW7o1BHfoH1bZ OyABRrnTV_kvHV7dJ0uE">456</td>
-                                <td class="_wYiJGbRZyFZeCc8y7Sf RZmKBZs1E1eXw8vkE6jY gMXmdpOPfqG_3CKkL0VD u0Aizb1ol0gBXDISYKJM BHrWGjM1Iab_fAz0_91H KRYm_slIW7o1BHfoH1bZ">
-                                    <div class="YRrCJSr_j5nopfm4duUc Q_jg_EPdNf9eDMn1mLI2">
-                                        <span class="fhCwost7CSNRc2WSHLFW gMXmdpOPfqG_3CKkL0VD ezMFUVl744lvw6ht0lFe">7%</span>
-                                        <div class="ahOqFrhzLjivRe8a1kX_ t6gkcSf0Bt4MLItXvDJ_">
-                                            <div class="t6gkcSf0Bt4MLItXvDJ_ iRRyDh3hk0uKgmcxvdhD WwS1mve_UI16RedcVHEs D0cB2fwpzIAF6I3dz1f_ jqg6J89cvxmDiFpnV56r">
-                                                <div class="iRRyDh3hk0uKgmcxvdhD _I92_RswYrnpS0B5dKZO D0cB2fwpzIAF6I3dz1f_" style="width: 7%"></div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    <!-- Card Footer -->
-                    <div class="YRrCJSr_j5nopfm4duUc sJNGKHxFYdN5Nzml5J2j Q_jg_EPdNf9eDMn1mLI2 wlOthpHGZ8jLLRoA3tl2 pVSXSlnJdgskzP7BxPBe qUWbS_LTZujDB4XCd11V YJEBMPxJE_MyJtwHjBt6 _fGhMnSfYmaGrv7DvZ00">
-                        <div>
-                            <button class="_k0lTW0vvzboctTxDi2R Q_jg_EPdNf9eDMn1mLI2 FJRldeiG2gFGZfuKgp88 c8dCx6gnV43hTOLV6ks5 ezMFUVl744lvw6ht0lFe ijrOHNoSVGATsWYKl4Id PeR2JZ9BZHYIH8Ea3F36 mveJTCIb2WII7J4sY22F ZnBoTVi7VOJdCLSSU62n XIIs8ZOri3wm8Wnj9N_y dMTOiA3mf3FTjlHu6DqW" type="button" data-dropdown-toggle="aquisitions-dropdown">Last 7 days <svg class="t1I6QaLqvCmfaYJcpWU_ E9GV5sZJIbfO_GEQ_moc _o2IXcpM0qnG3JPReKus" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg></button>
-                            <!-- Dropdown menu -->
-                            <div class="_SmdlCf6eUKB_V9S5IDj Jq3rRDG6Hsr3eAZ0KJeH aJF41JQLhtfw_MCGt5Th d3C8uAdJKNl1jzfE9ynq xdunzYpzbwcYs_0Tjgcz _Ybd3WwuTVljUT4vEaM3 Y3FxyuXtj2gecrGXvLEI Zy1Pypi71Xu6guex6urN z30cepEEBLSTPSvWeVPH mngKhi_Rv06PF57lblDI jqg6J89cvxmDiFpnV56r PoeKYEQfG4WfmL9xM6vu" id="aquisitions-dropdown">
-                                <div class="i8v96MUlFwGv9qJUkAx7 RZmKBZs1E1eXw8vkE6jY" role="none">
-                                    <p class="c8dCx6gnV43hTOLV6ks5 ezMFUVl744lvw6ht0lFe __9sbu0yrzdhGIkLWNXl vfNYjqjYMlN1XskEucCt OyABRrnTV_kvHV7dJ0uE" role="none">
-                                        Sep 16, 2021 - Sep 22, 2021
-                                    </p>
-                                </div>
-                                <ul class="_bVaO2NfVVP88LtHWYlv" role="none">
-                                    <li>
-                                        <a href="#" class="_Vb9igHms0hI1PQcvp_S b9aD6g2qw84oyZNsMO8j RZmKBZs1E1eXw8vkE6jY c8dCx6gnV43hTOLV6ks5 rYHHksRBEMl_guI3q0UQ _7KA5gD55t2lxf9Jkj20 XIIs8ZOri3wm8Wnj9N_y RzANcaqunVvlLrO6_tal dMTOiA3mf3FTjlHu6DqW" role="menuitem">Yesterday</a>
-                                    </li>
-                                    <li>
-                                        <a href="#" class="_Vb9igHms0hI1PQcvp_S b9aD6g2qw84oyZNsMO8j RZmKBZs1E1eXw8vkE6jY c8dCx6gnV43hTOLV6ks5 rYHHksRBEMl_guI3q0UQ _7KA5gD55t2lxf9Jkj20 XIIs8ZOri3wm8Wnj9N_y RzANcaqunVvlLrO6_tal dMTOiA3mf3FTjlHu6DqW" role="menuitem">Today</a>
-                                    </li>
-                                    <li>
-                                        <a href="#" class="_Vb9igHms0hI1PQcvp_S b9aD6g2qw84oyZNsMO8j RZmKBZs1E1eXw8vkE6jY c8dCx6gnV43hTOLV6ks5 rYHHksRBEMl_guI3q0UQ _7KA5gD55t2lxf9Jkj20 XIIs8ZOri3wm8Wnj9N_y RzANcaqunVvlLrO6_tal dMTOiA3mf3FTjlHu6DqW" role="menuitem">Last 7 days</a>
-                                    </li>
-                                    <li>
-                                        <a href="#" class="_Vb9igHms0hI1PQcvp_S b9aD6g2qw84oyZNsMO8j RZmKBZs1E1eXw8vkE6jY c8dCx6gnV43hTOLV6ks5 rYHHksRBEMl_guI3q0UQ _7KA5gD55t2lxf9Jkj20 XIIs8ZOri3wm8Wnj9N_y RzANcaqunVvlLrO6_tal dMTOiA3mf3FTjlHu6DqW" role="menuitem">Last 30 days</a>
-                                    </li>
-                                    <li>
-                                        <a href="#" class="_Vb9igHms0hI1PQcvp_S b9aD6g2qw84oyZNsMO8j RZmKBZs1E1eXw8vkE6jY c8dCx6gnV43hTOLV6ks5 rYHHksRBEMl_guI3q0UQ _7KA5gD55t2lxf9Jkj20 XIIs8ZOri3wm8Wnj9N_y RzANcaqunVvlLrO6_tal dMTOiA3mf3FTjlHu6DqW" role="menuitem">Last 90 days</a>
-                                    </li>
-                                </ul>
-                                <div class="_bVaO2NfVVP88LtHWYlv" role="none">
-                                    <a href="#" class="_Vb9igHms0hI1PQcvp_S b9aD6g2qw84oyZNsMO8j RZmKBZs1E1eXw8vkE6jY c8dCx6gnV43hTOLV6ks5 rYHHksRBEMl_guI3q0UQ _7KA5gD55t2lxf9Jkj20 XIIs8ZOri3wm8Wnj9N_y RzANcaqunVvlLrO6_tal dMTOiA3mf3FTjlHu6DqW" role="menuitem">Custom...</a>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="VQS2tmQ_zFyBOC2tkmto">
-                            <a href="#" class="_k0lTW0vvzboctTxDi2R Q_jg_EPdNf9eDMn1mLI2 FJRldeiG2gFGZfuKgp88 gMXmdpOPfqG_3CKkL0VD ezMFUVl744lvw6ht0lFe sdSaZcRa4_We5kKaX4pf mveJTCIb2WII7J4sY22F OQflBVxALl1Ntbyc2J2_ gx_pYWtAG2cJIqhquLbx _7KA5gD55t2lxf9Jkj20 fZf6W_ZtzEh6EEqmWMA9 OPrb_iG5WDy_7F05BDOX">
-                                Acquisition Report
-                                <svg class="c2LzVf9SsdSEMBrRjNwS E9GV5sZJIbfO_GEQ_moc _o2IXcpM0qnG3JPReKus KcFFi0RQeeLbabX2ce8e cetJU7yt52TBxxdaIygU" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
-                            </a>
-                        </div>
-                    </div>
+                    <a
+                        href="#"
+                        class="uppercase text-sm font-semibold inline-flex items-center rounded-lg text-blue-600 hover:text-blue-700 dark:hover:text-blue-500  hover:bg-gray-100 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700 px-3 py-2">
+                        Leads Report
+                        <svg class="w-2.5 h-2.5 ms-1.5 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4"/>
+                        </svg>
+                    </a>
                 </div>
             </div>
         </div>
+
     </x-filament::section>
 </x-filament-widgets::widget>
