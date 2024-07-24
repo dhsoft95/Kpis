@@ -15,7 +15,8 @@ class ChurnChart extends ChartWidget
 
     protected function getData(): array
     {
-        $filter = $this->filter;
+        // Default filter set to 'week'
+        $filter = $this->filter ?? 'week';
 
         switch ($filter) {
             case 'month':
@@ -41,7 +42,7 @@ class ChurnChart extends ChartWidget
                 [
                     'label' => 'Churn Users',
                     'data' => $churnData['data'],
-                    'backgroundColor' => $churnData['colors'],
+                    'backgroundColor' => ['#007bff', '#28a745', '#dc3545', '#ffc107', '#6c757d'], // Simple colors
                 ],
             ],
             'labels' => $churnData['labels'],
@@ -52,7 +53,6 @@ class ChurnChart extends ChartWidget
     {
         $churnCounts = [];
         $labels = [];
-        $colors = [];
         $date = $start->copy();
         $interval = $filter === 'week' ? '1 week' : ($filter === 'month' ? '1 month' : '3 months');
 
@@ -67,7 +67,6 @@ class ChurnChart extends ChartWidget
 
             $churnCounts[] = $this->getChurnCount($periodStart, $periodEnd);
             $labels[] = $periodStart->format('M d') . ' - ' . $periodEnd->format('M d');
-            $colors[] = '#' . substr(md5(rand()), 0, 6); // random color for each period
 
             $date->add($interval);
         }
@@ -75,7 +74,6 @@ class ChurnChart extends ChartWidget
         return [
             'data' => $churnCounts,
             'labels' => $labels,
-            'colors' => $colors,
         ];
     }
 
@@ -101,7 +99,7 @@ class ChurnChart extends ChartWidget
 
     protected function getType(): string
     {
-        return 'line';
+        return 'bar';
     }
 
     protected function getFilters(): ?array
@@ -116,7 +114,9 @@ class ChurnChart extends ChartWidget
 
     protected function getFooterWidgets(): array
     {
-        $filter = $this->filter;
+        // Default filter set to 'week'
+        $filter = $this->filter ?? 'week';
+        $interval = $filter === 'week' ? '1 week' : ($filter === 'month' ? '1 month' : '3 months');
 
         switch ($filter) {
             case 'month':
