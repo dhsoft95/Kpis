@@ -39,7 +39,7 @@
             }
             .card-title {
                 color: #6b7280; /* Tailwind gray-500 */
-                font-size: 0.6rem;
+                font-size: 0.4rem;
                 font-weight: 500;
                 text-transform: uppercase;
                 letter-spacing: 0.05em;
@@ -53,6 +53,49 @@
                 color: #9ca3af; /* Tailwind gray-400 */
                 font-size: 0.6rem;
             }
+            .card-tooltip {
+                visibility: hidden;
+                width: 200px;
+                background-color: #ffffff;
+                color: #333333;
+                text-align: left;
+                border-radius: 6px;
+                padding: 8px;
+                position: absolute;
+                z-index: 1;
+                bottom: 125%;
+                left: 50%;
+                margin-left: -100px;
+                opacity: 0;
+                transition: opacity 0.3s, transform 0.3s;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+                font-size: 0.65rem;
+                line-height: 1.3;
+                transform: translateY(10px);
+            }
+            .card-tooltip::after {
+                content: "";
+                position: absolute;
+                top: 100%;
+                left: 50%;
+                margin-left: -5px;
+                border-width: 5px;
+                border-style: solid;
+                border-color: #ffffff transparent transparent transparent;
+            }
+            .card-container:hover .card-tooltip {
+                visibility: visible;
+                opacity: 1;
+                transform: translateY(0);
+            }
+            .tooltip-title {
+                font-weight: 500;
+                margin-bottom: 3px;
+                color: #4a5568;
+            }
+            .tooltip-description {
+                color: #718096;
+            }
         </style>
 
         <div class="container mx-auto p-4" wire:poll.4s="calculateStats">
@@ -64,70 +107,82 @@
                             'icon' => 'fas fa-users',
                             'iconBgColor' => 'bg-yellow-100',
                             'iconColor' => 'text-yellow-600',
+                            'description' => 'Total number of users who have registered on the Simba Money platform.'
                         ],
                         'active' => [
                             'title' => 'Active Customers',
                             'icon' => 'fas fa-user-check',
                             'iconBgColor' => 'bg-blue-100',
                             'iconColor' => 'text-blue-600',
+                            'description' => 'Users who have engaged in any revenue-generating activity within the last 30 days.'
                         ],
                         'inactive' => [
                             'title' => 'Inactive Customers',
                             'icon' => 'fas fa-user-slash',
                             'iconBgColor' => 'bg-red-100',
                             'iconColor' => 'text-red-600',
+                            'description' => 'Users who have not engaged in any revenue-generating activities for more than 30 days.'
                         ],
                         'churn' => [
                             'title' => 'Churn Customers',
                             'icon' => 'fas fa-user-minus',
                             'iconBgColor' => 'bg-orange-100',
                             'iconColor' => 'text-orange-600',
+                            'description' => 'Users who have stopped using the platform and whose last activity was more than 30 days ago.'
                         ],
                         'avgValuePerDay' => [
                             'title' => 'Avg Trans Value/Day',
                             'icon' => 'fas fa-dollar-sign',
                             'iconBgColor' => 'bg-green-100',
                             'iconColor' => 'text-green-600',
+                            'description' => 'Average monetary value of all transactions processed per day on the platform.'
                         ],
                         'avgTransactionPerCustomer' => [
                             'title' => 'Avg Trans/Customer',
                             'icon' => 'fas fa-exchange-alt',
                             'iconBgColor' => 'bg-purple-100',
                             'iconColor' => 'text-purple-600',
+                            'description' => 'Average number of transactions made by each customer on the platform.'
                         ],
                     ];
                 @endphp
 
                 @foreach ($cards as $key => $card)
-                    <div class="card p-3">
-                        <div class="flex justify-between items-start mb-2">
-                            <div>
-                                <h5 class="card-title mb-1">{{ $card['title'] }}</h5>
-                                <h2 class="card-value" wire:key="count-{{ $key }}">
-                                    @if ($key === 'avgValuePerDay')
-                                        TSH {{ number_format($stats[$key]['value'] ?? 0, 0) }}
-                                    @elseif ($key === 'avgTransactionPerCustomer')
-                                        {{ number_format($stats[$key]['value'] ?? 0, 2) }}
-                                    @else
-                                        {{ number_format($stats[$key]['count'] ?? 0, 0) }}
-                                    @endif
-                                </h2>
+                    <div class="card-container relative">
+                        <div class="card p-3">
+                            <div class="flex justify-between items-start mb-2">
+                                <div>
+                                    <h5 class="card-title mb-1">{{ $card['title'] }}</h5>
+                                    <h2 class="card-value" wire:key="count-{{ $key }}">
+                                        @if ($key === 'avgValuePerDay')
+                                            TSH {{ number_format($stats[$key]['value'] ?? 0, 0) }}
+                                        @elseif ($key === 'avgTransactionPerCustomer')
+                                            {{ number_format($stats[$key]['value'] ?? 0, 2) }}
+                                        @else
+                                            {{ number_format($stats[$key]['count'] ?? 0, 0) }}
+                                        @endif
+                                    </h2>
+                                </div>
+                                <div class="icon-bg {{ $card['iconBgColor'] }}">
+                                    <i class="{{ $card['icon'] }} {{ $card['iconColor'] }} text-xs"></i>
+                                </div>
                             </div>
-                            <div class="icon-bg {{ $card['iconBgColor'] }}">
-                                <i class="{{ $card['icon'] }} {{ $card['iconColor'] }} text-xs"></i>
+                            <div class="flex items-center">
+                                @php
+                                    $percentageChange = $stats[$key]['percentageChange'] ?? 0;
+                                    $formattedPercentage = number_format(abs($percentageChange), 0);
+                                    $isGrowth = $stats[$key]['isGrowth'] ?? false;
+                                    $changeColor = $isGrowth ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800';
+                                @endphp
+                                <span class="percentage-badge {{ $changeColor }} mr-2">
+                                    {{ $isGrowth ? '+' : '-' }}{{ $formattedPercentage }}%
+                                </span>
+                                <span class="time-period">From the last month</span>
                             </div>
                         </div>
-                        <div class="flex items-center">
-                            @php
-                                $percentageChange = $stats[$key]['percentageChange'] ?? 0;
-                                $formattedPercentage = number_format(abs($percentageChange), 0);
-                                $isGrowth = $stats[$key]['isGrowth'] ?? false;
-                                $changeColor = $isGrowth ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800';
-                            @endphp
-                            <span class="percentage-badge {{ $changeColor }} mr-2">
-                                {{ $isGrowth ? '+' : '-' }}{{ $formattedPercentage }}%
-                            </span>
-                            <span class="time-period">From the last month</span>
+                        <div class="card-tooltip">
+                            <div class="tooltip-title">{{ $card['title'] }}</div>
+                            <div class="tooltip-description">{{ $card['description'] }}</div>
                         </div>
                     </div>
                 @endforeach
