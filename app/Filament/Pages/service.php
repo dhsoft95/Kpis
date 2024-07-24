@@ -8,6 +8,7 @@ use App\Livewire\CustvalueChart;
 use App\Livewire\HelpDeskChart;
 use App\Livewire\SericeDeskOverview;
 use App\Livewire\TransvalueChart;
+use App\Livewire\UserDemographic;
 use Filament\Pages\Page;
 use Filament\Support\Enums\MaxWidth;
 
@@ -18,7 +19,8 @@ class service extends Page
     {
         return [
            HelpDeskChart::class,
-            \App\Livewire\Interactions::class
+            \App\Livewire\Interactions::class,
+            UserDemographic::class
         ];
     }
 
