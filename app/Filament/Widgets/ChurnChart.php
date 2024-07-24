@@ -14,14 +14,12 @@ class ChurnChart extends ChartWidget
     protected static ?string $maxHeight = '300px';
 
     // Default filter value
-    public ?string $filter = 'four_weeks';
+    public ?string $filter = 'five_weeks';
 
     protected function getData(): array
     {
         $filter = $this->filter;
         $today = Carbon::now()->startOfDay();
-
-        // Calculate the week periods
         $weeks = $this->getWeekPeriods($filter, $today);
 
         $currentWeekChurn = [];
@@ -69,7 +67,6 @@ class ChurnChart extends ChartWidget
         $weeks = [];
         $endDate = $today->copy()->endOfWeek();
 
-        // Adjust start date based on filter
         switch ($filter) {
             case 'month':
                 $startDate = $today->copy()->startOfMonth();
@@ -80,14 +77,14 @@ class ChurnChart extends ChartWidget
             case 'year':
                 $startDate = $today->copy()->startOfYear();
                 break;
-            case 'four_weeks':
+            case 'five_weeks':
             default:
-                $startDate = $today->copy()->startOfWeek()->subWeeks(3);
+                $startDate = $today->copy()->startOfWeek()->subWeeks(4);
                 break;
         }
 
         // Generate weekly periods for the defined range
-        for ($i = 0; $i < 4; $i++) {
+        for ($i = 0; $i < 5; $i++) {
             $currentStart = $startDate->copy()->addWeeks($i)->startOfWeek();
             $currentEnd = $currentStart->copy()->endOfWeek();
             $previousStart = $currentStart->copy()->subWeek();
@@ -125,7 +122,7 @@ class ChurnChart extends ChartWidget
     protected function getFilters(): ?array
     {
         return [
-            'four_weeks' => 'Last 4 Weeks',
+            'five_weeks' => 'Last 5 Weeks',
             'month' => 'Last 3 Months',
             'quarter' => 'Last Quarter',
             'year' => 'Last Year',
