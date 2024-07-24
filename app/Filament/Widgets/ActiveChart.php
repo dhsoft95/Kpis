@@ -8,7 +8,7 @@ use Carbon\Carbon;
 
 class ActiveChart extends ChartWidget
 {
-    protected static ?string $heading = ' Active Vs Inactive users (WoW)';
+    protected static ?string $heading = 'Active Vs Inactive Users (WoW)';
     protected static ?string $maxHeight = '300px';
     protected static ?string $pollingInterval = '3600s'; // Update every hour
 
@@ -70,8 +70,8 @@ class ActiveChart extends ChartWidget
 
             // Calculate WoW percentages
             if ($i < 4) {
-                $wowActivePercentages[] = ($activeCounts[3-$i] - $activeCounts[4-$i]) / $activeCounts[4-$i] * 100;
-                $wowInactivePercentages[] = ($inactiveCounts[3-$i] - $inactiveCounts[4-$i]) / $inactiveCounts[4-$i] * 100;
+                $wowActivePercentages[] = $this->calculatePercentageChange($activeCounts[4-$i], $activeCounts[3-$i]);
+                $wowInactivePercentages[] = $this->calculatePercentageChange($inactiveCounts[4-$i], $inactiveCounts[3-$i]);
             }
         }
 
@@ -84,9 +84,16 @@ class ActiveChart extends ChartWidget
         ];
     }
 
+    protected function calculatePercentageChange($oldValue, $newValue)
+    {
+        if ($oldValue == 0) {
+            return $newValue > 0 ? 100 : 0; // 100% increase if new value is positive, 0% if it's also 0
+        }
+        return (($newValue - $oldValue) / $oldValue) * 100;
+    }
+
     protected function getType(): string
     {
         return 'bar';
     }
-
 }
