@@ -4,13 +4,11 @@ namespace App\Filament\Widgets;
 
 use Carbon\Carbon;
 use Filament\Widgets\ChartWidget;
-use Filament\Widgets\StatsOverviewWidget\Stat;
 use Illuminate\Support\Facades\DB;
+use Filament\Widgets\StatsOverviewWidget\Stat;
 
 class ChurnChart extends ChartWidget
 {
-
-
     protected static ?string $heading = 'Week-on-Week Churn Users';
     protected static ?int $sort = 2;
     protected static ?string $maxHeight = '300px';
@@ -44,11 +42,11 @@ class ChurnChart extends ChartWidget
     private function getChurnCount(Carbon $start, Carbon $end): int
     {
         return DB::connection('mysql_second')->table('users')
-            ->leftJoin('tbl_transactions', function ($join) use ($end) {
-                $join->on('users.phone_number', '=', 'tbl_transactions.sender_phone')
+            ->whereNotIn('users.phone_number', function ($query) use ($end) {
+                $query->select('tbl_transactions.sender_phone')
+                    ->from('tbl_transactions')
                     ->where('tbl_transactions.created_at', '>', DB::raw("DATE_SUB('{$end}', INTERVAL 30 DAY)"));
             })
-            ->whereNull('tbl_transactions.sender_phone')
             ->where('users.created_at', '<=', $end)
             ->count();
     }
@@ -63,12 +61,11 @@ class ChurnChart extends ChartWidget
 
     protected function getType(): string
     {
-        return 'line';
+        return 'bar';
     }
 
     protected function getFooterWidgets(): array
     {
-
         $currentWeekEnd = Carbon::now()->endOfWeek();
         $currentWeekStart = $currentWeekEnd->copy()->startOfWeek();
         $previousWeekStart = $currentWeekStart->copy()->subWeek();
