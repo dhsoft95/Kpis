@@ -55,7 +55,7 @@
                 color: #d1d5db; /* Tailwind gray-300 for dark mode */
             }
             .card-value {
-                font-size: 1.1rem;
+                font-size: 0.7rem;
                 font-weight: 700;
                 color: #1f2937; /* Tailwind gray-800 */
             }
