@@ -22,7 +22,7 @@ class service extends Page
         return [
            HelpDeskChart::class,
             \App\Livewire\Interactions::class,
-            \BezhanSalleh\FilamentGoogleAnalytics\Widgets\SessionsByCountryWidget::class,
+            \BezhanSalleh\FilamentGoogleAnalytics\Widgets\SessionsByDeviceWidget::class,
         ];
     }
 
