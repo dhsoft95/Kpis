@@ -13,8 +13,6 @@
                 box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
                 position: relative;
                 overflow: hidden;
-                padding: 1.25rem; /* Increased padding */
-                max-width: 350px; /* Set maximum width */
             }
             .dark .card {
                 background-color: #1f2937; /* Tailwind gray-800 for dark mode */
@@ -33,22 +31,22 @@
                 background: #60a5fa; /* Tailwind blue-400 for dark mode */
             }
             .icon-bg {
-                width: 32px; /* Increased icon size */
-                height: 32px; /* Increased icon size */
+                width: 28px;
+                height: 28px;
                 border-radius: 6px;
                 display: flex;
                 align-items: center;
                 justify-content: center;
             }
             .percentage-badge {
-                padding: 2px 8px; /* Increased padding */
+                padding: 1px 6px;
                 border-radius: 10px;
-                font-size: 0.75rem; /* Increased font size */
+                font-size: 0.6rem;
                 font-weight: 500;
             }
             .card-title {
                 color: #6b7280; /* Tailwind gray-500 */
-                font-size: 0.5rem; /* Increased font size */
+                font-size: 0.4rem;
                 font-weight: 500;
                 text-transform: uppercase;
                 letter-spacing: 0.05em;
@@ -57,7 +55,7 @@
                 color: #d1d5db; /* Tailwind gray-300 for dark mode */
             }
             .card-value {
-                font-size: 0.85rem; /* Increased font size */
+                font-size: 0.7rem;
                 font-weight: 700;
                 color: #1f2937; /* Tailwind gray-800 */
             }
@@ -66,7 +64,7 @@
             }
             .time-period {
                 color: #9ca3af; /* Tailwind gray-400 */
-                font-size: 0.75rem; /* Increased font size */
+                font-size: 0.6rem;
             }
             .dark .time-period {
                 color: #a1a1aa; /* Tailwind gray-500 for dark mode */
@@ -87,7 +85,7 @@
                 opacity: 0;
                 transition: opacity 0.3s, transform 0.3s;
                 box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-                font-size: 0.75rem; /* Increased font size */
+                font-size: 0.65rem;
                 line-height: 1.3;
                 transform: translateY(10px);
             }
@@ -121,7 +119,6 @@
                 color: #cbd5e1; /* Tailwind gray-300 for dark mode */
             }
         </style>
-
 
         <div class="container mx-auto p-4" wire:poll.2s="calculateStats">
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
