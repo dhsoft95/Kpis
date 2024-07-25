@@ -11,6 +11,8 @@ use App\Livewire\TransvalueChart;
 use App\Livewire\UserDemographic;
 use Filament\Pages\Page;
 use Filament\Support\Enums\MaxWidth;
+use BezhanSalleh\FilamentGoogleAnalytics\Widgets;
+
 
 class service extends Page
 {
@@ -20,7 +22,7 @@ class service extends Page
         return [
            HelpDeskChart::class,
             \App\Livewire\Interactions::class,
-            UserDemographic::class
+            \BezhanSalleh\FilamentGoogleAnalytics\Widgets\SessionsByCountryWidget::class,
         ];
     }
 

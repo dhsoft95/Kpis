@@ -82,9 +82,7 @@
                 defaultColor: '#4b5563',
                 legend: 'none',
             };
-
             var chart = new google.visualization.GeoChart(document.getElementById('regions_div'));
-
             chart.draw(data, options);
         }
     </script>
