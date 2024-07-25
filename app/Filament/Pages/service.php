@@ -23,8 +23,6 @@ class service extends Page
            HelpDeskChart::class,
             \App\Livewire\Interactions::class,
 //             UserDemographic::class
-
-        \App\Filament\Widgets\UserDemographic::class
         ];
     }
 

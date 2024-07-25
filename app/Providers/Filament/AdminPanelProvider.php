@@ -79,7 +79,7 @@ class AdminPanelProvider extends PanelProvider
                 RegisterdUsersChart::class,
                 ActiveChart::class,
                 ChurnChart::class,
-                \App\Filament\Widgets\UserDemographic::class
+//                \App\Filament\Widgets\UserDemographic::class
 
 
             ])
