@@ -1,40 +1,18 @@
 <x-filament-widgets::widget>
     <x-filament::section>
-        <div class="max-w-sm mx-auto bg-white shadow-lg rounded-xl overflow-hidden">
-            <div class="px-6 py-4 bg-gradient-to-r from-purple-500 to-pink-500">
-                <h2 class="text-2xl font-bold text-white">User Demographics</h2>
-            </div>
+        <div class="max-w-3xl mx-auto p-6">
+            <div class="relative">
+                <svg viewBox="0 0 1000 500" class="w-full h-auto">
+                    <!-- World map path (simplified for brevity) -->
+                    <path d="M150,50 L850,50 L850,450 L150,450 Z" fill="#E5E7EB"/>
 
-            <div class="p-6 space-y-6">
-                <div>
-                    <div class="flex justify-between items-center mb-2">
-                        <span class="text-lg font-semibold text-gray-700">Age</span>
-                        <span class="text-sm font-medium text-gray-500 bg-gray-100 px-2 py-1 rounded">25-34</span>
-                    </div>
-                    <div class="w-full bg-gray-200 rounded-full h-2.5">
-                        <div class="bg-blue-600 h-2.5 rounded-full transition-all duration-500 ease-out" style="width: 45%"></div>
-                    </div>
-                </div>
-
-                <div>
-                    <div class="flex justify-between items-center mb-2">
-                        <span class="text-lg font-semibold text-gray-700">Gender</span>
-                        <span class="text-sm font-medium text-gray-500 bg-gray-100 px-2 py-1 rounded">Female</span>
-                    </div>
-                    <div class="w-full bg-gray-200 rounded-full h-2.5">
-                        <div class="bg-pink-500 h-2.5 rounded-full transition-all duration-500 ease-out" style="width: 60%"></div>
-                    </div>
-                </div>
-
-                <div>
-                    <div class="flex justify-between items-center mb-2">
-                        <span class="text-lg font-semibold text-gray-700">Location</span>
-                        <span class="text-sm font-medium text-gray-500 bg-gray-100 px-2 py-1 rounded">Urban</span>
-                    </div>
-                    <div class="w-full bg-gray-200 rounded-full h-2.5">
-                        <div class="bg-green-500 h-2.5 rounded-full transition-all duration-500 ease-out" style="width: 75%"></div>
-                    </div>
-                </div>
+                    <!-- Location markers -->
+                    <circle cx="250" cy="150" r="8" fill="#3B82F6"/>
+                    <circle cx="400" cy="100" r="8" fill="#3B82F6"/>
+                    <circle cx="700" cy="200" r="8" fill="#3B82F6"/>
+                    <circle cx="550" cy="300" r="8" fill="#3B82F6"/>
+                    <circle cx="300" cy="350" r="8" fill="#3B82F6"/>
+                </svg>
             </div>
         </div>
     </x-filament::section>
