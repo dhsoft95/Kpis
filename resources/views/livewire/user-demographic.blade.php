@@ -15,8 +15,8 @@
             google.charts.setOnLoadCallback(drawRegionsMap);
 
             function drawRegionsMap() {
-                var data = google.visualization.arrayToDataTable(@json($this->chartData));
-                var options = @json($this->chartOptions);
+                var data = google.visualization.arrayToDataTable(@json($chartData));
+                var options = @json($chartOptions);
                 var chart = new google.visualization.GeoChart(document.getElementById('geo-chart'));
                 chart.draw(data, options);
             }
