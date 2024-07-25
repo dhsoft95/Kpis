@@ -23,6 +23,7 @@ class service extends Page
            HelpDeskChart::class,
             \App\Livewire\Interactions::class,
             \BezhanSalleh\FilamentGoogleAnalytics\Widgets\SessionsByDeviceWidget::class,
+            \BezhanSalleh\FilamentGoogleAnalytics\Widgets\ActiveUsersSevenDayWidget::class,
         ];
     }
 
