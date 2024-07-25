@@ -3,31 +3,24 @@
 namespace App\Livewire;
 
 use Filament\Widgets\Widget;
-use Livewire\WithPagination;
 
 class UserDemographic extends Widget
 {
     protected static string $view = 'livewire.user-demographic';
-    public array $chartData = [];
-    public array $chartOptions = [];
 
-    public function mount()
+
+    public function getViewData(): array
     {
-        $this->chartData = [
-            ['Country', 'Popularity'],
-            ['Germany', 200],
-            ['United States', 300],
-            ['Brazil', 400],
-            ['Canada', 500],
-            ['France', 600],
-            ['RU', 700]
-        ];
-
-        $this->chartOptions = [
-            'colorAxis' => ['colors' => ['#e7711c', '#4374e0']],
-            'backgroundColor' => '#81d4fa',
-            'datalessRegionColor' => '#f8bbd0',
-            'defaultColor' => '#f5f5f5',
+        return [
+            'chartData' => [
+                ['Country', 'Popularity'],
+                ['Germany', 200],
+                ['United States', 300],
+                ['Brazil', 400],
+                ['Canada', 500],
+                ['France', 600],
+                ['RU', 700]
+            ],
         ];
     }
 }
