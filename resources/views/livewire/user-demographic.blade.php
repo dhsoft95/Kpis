@@ -7,22 +7,26 @@
             <div class="mb-8 relative">
                 <div class="bg-gray-800 h-[300px] w-full rounded-lg overflow-hidden">
                     <svg viewBox="0 0 1000 500" class="w-full h-full">
-                        <!-- Simplified world map paths -->
-                        <path d="M150,100 Q200,50 250,100 T350,100 T450,100 T550,100 T650,100 T750,100 Q800,50 850,100" fill="none" stroke="#4a5568" stroke-width="30"/>
-                        <path d="M100,200 Q150,150 200,200 T300,200 T400,200 T500,200 T600,200 T700,200 Q750,150 800,200" fill="none" stroke="#4a5568" stroke-width="30"/>
-                        <path d="M200,300 Q250,250 300,300 T400,300 T500,300 T600,300" fill="none" stroke="#4a5568" stroke-width="30"/>
+                        <!-- Simplified world map background -->
+                        <path d="M0,0 v500 h1000 v-500 z" fill="#374151"/>
+
+                        <!-- Highlighted countries -->
                         <!-- United States -->
-                        <path d="M200,150 Q220,130 240,150 T280,150" fill="#3b82f6"/>
+                        <path d="M200,180 q30,-30 60,0 t60,0 t60,0" fill="#3b82f6"/>
                         <!-- Canada -->
-                        <path d="M200,100 Q220,80 240,100 T280,100" fill="#60a5fa"/>
+                        <path d="M200,120 q30,-30 60,0 t60,0" fill="#60a5fa"/>
                         <!-- France -->
-                        <path d="M460,160 Q470,150 480,160" fill="#60a5fa"/>
+                        <path d="M470,170 q5,-5 10,0 t10,0" fill="#93c5fd"/>
                         <!-- Italy -->
-                        <path d="M490,170 Q500,160 510,170" fill="#60a5fa"/>
-                        <!-- India -->
-                        <path d="M650,220 Q670,200 690,220" fill="#60a5fa"/>
+                        <path d="M490,180 q5,-5 10,0 t10,0" fill="#bfdbfe"/>
                         <!-- Australia -->
-                        <path d="M750,350 Q770,330 790,350" fill="#60a5fa"/>
+                        <path d="M800,350 q20,-20 40,0" fill="#dbeafe"/>
+                        <!-- India -->
+                        <path d="M700,230 q20,-20 40,0" fill="#eff6ff"/>
+
+                        <!-- Other major landmasses (simplified) -->
+                        <path d="M300,200 q50,-50 100,0 t100,0 t100,0" fill="#4b5563" />
+                        <path d="M150,300 q100,-100 200,0 t200,0" fill="#4b5563" />
                     </svg>
                 </div>
                 <div class="absolute bottom-2 left-2 flex space-x-2">
@@ -51,7 +55,7 @@
                 </div>
 
                 <div class="flex items-center">
-                    <span class="w-6 h-4 mr-3 bg-blue-400"></span>
+                    <span class="w-6 h-4 mr-3 bg-blue-300"></span>
                     <span class="w-28 text-sm">France</span>
                     <div class="flex-grow bg-gray-700 rounded-full h-2">
                         <div class="bg-blue-600 rounded-full h-2 w-[18%]"></div>
@@ -60,7 +64,7 @@
                 </div>
 
                 <div class="flex items-center">
-                    <span class="w-6 h-4 mr-3 bg-blue-400"></span>
+                    <span class="w-6 h-4 mr-3 bg-blue-200"></span>
                     <span class="w-28 text-sm">Italy</span>
                     <div class="flex-grow bg-gray-700 rounded-full h-2">
                         <div class="bg-blue-600 rounded-full h-2 w-[14%]"></div>
@@ -69,7 +73,7 @@
                 </div>
 
                 <div class="flex items-center">
-                    <span class="w-6 h-4 mr-3 bg-blue-400"></span>
+                    <span class="w-6 h-4 mr-3 bg-blue-100"></span>
                     <span class="w-28 text-sm">Australia</span>
                     <div class="flex-grow bg-gray-700 rounded-full h-2">
                         <div class="bg-blue-600 rounded-full h-2 w-[10%]"></div>
@@ -78,7 +82,7 @@
                 </div>
 
                 <div class="flex items-center">
-                    <span class="w-6 h-4 mr-3 bg-blue-400"></span>
+                    <span class="w-6 h-4 mr-3 bg-blue-50"></span>
                     <span class="w-28 text-sm">India</span>
                     <div class="flex-grow bg-gray-700 rounded-full h-2">
                         <div class="bg-blue-600 rounded-full h-2 w-[7%]"></div>
