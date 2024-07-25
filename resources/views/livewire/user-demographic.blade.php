@@ -1,6 +1,9 @@
 <x-filament-widgets::widget>
+    <x-filament::section>
+        <div id="regions_div" style="width: 900px; height: 500px;"></div>
+    </x-filament::section>
 
-    @push()
+    @push('scripts')
         <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
         <script type="text/javascript">
             google.charts.load('current', {
@@ -27,9 +30,4 @@
             }
         </script>
     @endpush
-
-    <x-filament::section>
-        <div id="regions_div" style="width: 900px; height: 500px;"></div>
-    </x-filament::section>
 </x-filament-widgets::widget>
-
