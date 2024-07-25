@@ -4,11 +4,9 @@
             <h1 class="text-2xl font-bold mb-1">Sessions by region in Tanzania</h1>
             <p class="text-sm text-gray-400 mb-6">View website visitors on the map</p>
 
-            <div class="mb-8 relative">
-                <div id="map" class="h-[500px] w-full rounded-lg overflow-hidden"></div>
-            </div>
+            <div id="regions_div" style="width: 100%; height: 500px;"></div>
 
-            <div class="space-y-3">
+            <div class="space-y-3 mt-6">
                 <div class="flex items-center">
                     <span class="w-6 h-4 mr-3 bg-blue-600"></span>
                     <span class="w-28 text-sm">Dar es Salaam</span>
@@ -57,120 +55,37 @@
         </div>
     </x-filament::section>
 
-    <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY"></script>
-    <script>
-        function initMap() {
-            const tanzania = { lat: -6.369028, lng: 34.888822 };
-            const map = new google.maps.Map(document.getElementById("map"), {
-                zoom: 6,
-                center: tanzania,
-                styles: [
-                    { elementType: "geometry", stylers: [{ color: "#242f3e" }] },
-                    { elementType: "labels.text.stroke", stylers: [{ color: "#242f3e" }] },
-                    { elementType: "labels.text.fill", stylers: [{ color: "#746855" }] },
-                    {
-                        featureType: "administrative.locality",
-                        elementType: "labels.text.fill",
-                        stylers: [{ color: "#d59563" }],
-                    },
-                    {
-                        featureType: "poi",
-                        elementType: "labels.text.fill",
-                        stylers: [{ color: "#d59563" }],
-                    },
-                    {
-                        featureType: "poi.park",
-                        elementType: "geometry",
-                        stylers: [{ color: "#263c3f" }],
-                    },
-                    {
-                        featureType: "poi.park",
-                        elementType: "labels.text.fill",
-                        stylers: [{ color: "#6b9a76" }],
-                    },
-                    {
-                        featureType: "road",
-                        elementType: "geometry",
-                        stylers: [{ color: "#38414e" }],
-                    },
-                    {
-                        featureType: "road",
-                        elementType: "geometry.stroke",
-                        stylers: [{ color: "#212a37" }],
-                    },
-                    {
-                        featureType: "road",
-                        elementType: "labels.text.fill",
-                        stylers: [{ color: "#9ca5b3" }],
-                    },
-                    {
-                        featureType: "road.highway",
-                        elementType: "geometry",
-                        stylers: [{ color: "#746855" }],
-                    },
-                    {
-                        featureType: "road.highway",
-                        elementType: "geometry.stroke",
-                        stylers: [{ color: "#1f2835" }],
-                    },
-                    {
-                        featureType: "road.highway",
-                        elementType: "labels.text.fill",
-                        stylers: [{ color: "#f3d19c" }],
-                    },
-                    {
-                        featureType: "transit",
-                        elementType: "geometry",
-                        stylers: [{ color: "#2f3948" }],
-                    },
-                    {
-                        featureType: "transit.station",
-                        elementType: "labels.text.fill",
-                        stylers: [{ color: "#d59563" }],
-                    },
-                    {
-                        featureType: "water",
-                        elementType: "geometry",
-                        stylers: [{ color: "#17263c" }],
-                    },
-                    {
-                        featureType: "water",
-                        elementType: "labels.text.fill",
-                        stylers: [{ color: "#515c6d" }],
-                    },
-                    {
-                        featureType: "water",
-                        elementType: "labels.text.stroke",
-                        stylers: [{ color: "#17263c" }],
-                    },
-                ],
-            });
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+        google.charts.load('current', {
+            'packages': ['geochart'],
+            'mapsApiKey': 'AIzaSyA7AzYDQTKAMaSjyKUxoyJevka5f1QyBNQ'
+        });
+        google.charts.setOnLoadCallback(drawRegionsMap);
 
-            const cities = [
-                { name: "Dar es Salaam", lat: -6.792354, lng: 39.208328, percentage: 35 },
-                { name: "Mwanza", lat: -2.516667, lng: 32.900000, percentage: 26 },
-                { name: "Arusha", lat: -3.366667, lng: 36.683333, percentage: 18 },
-                { name: "Mbeya", lat: -8.900000, lng: 33.450000, percentage: 14 },
-                { name: "Dodoma", lat: -6.173056, lng: 35.741944, percentage: 7 },
-            ];
+        function drawRegionsMap() {
+            var data = google.visualization.arrayToDataTable([
+                ['Region', 'Sessions'],
+                ['TZ-02', 35], // Dar es Salaam
+                ['TZ-13', 26], // Mwanza
+                ['TZ-01', 18], // Arusha
+                ['TZ-14', 14], // Mbeya
+                ['TZ-03', 7]   // Dodoma
+            ]);
 
-            cities.forEach(city => {
-                const marker = new google.maps.Marker({
-                    position: { lat: city.lat, lng: city.lng },
-                    map: map,
-                    title: city.name,
-                });
+            var options = {
+                region: 'TZ',
+                resolution: 'provinces',
+                colorAxis: {colors: ['#dbeafe', '#3b82f6']},
+                backgroundColor: '#1f2937',
+                datalessRegionColor: '#4b5563',
+                defaultColor: '#4b5563',
+                legend: 'none',
+            };
 
-                const infowindow = new google.maps.InfoWindow({
-                    content: `<div style="color: black;">${city.name}: ${city.percentage}%</div>`,
-                });
+            var chart = new google.visualization.GeoChart(document.getElementById('regions_div'));
 
-                marker.addListener("click", () => {
-                    infowindow.open(map, marker);
-                });
-            });
+            chart.draw(data, options);
         }
-
-        window.addEventListener("load", initMap);
     </script>
 </x-filament-widgets::widget>
