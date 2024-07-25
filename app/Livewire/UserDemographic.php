@@ -14,7 +14,7 @@ class UserDemographic extends Widget
         // In a real application, you'd fetch this data from your database or analytics service
         return [
             'countries' => [
-                ['name' => 'United States', 'code' => 'US', 'percentage' => 35],
+                ['name' => 'Tanzania', 'code' => 'TZ', 'percentage' => 35],
                 ['name' => 'Canada', 'code' => 'CA', 'percentage' => 26],
                 ['name' => 'France', 'code' => 'FR', 'percentage' => 18],
                 ['name' => 'Italy', 'code' => 'IT', 'percentage' => 14],
