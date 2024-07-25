@@ -9,30 +9,18 @@ class UserDemographic extends Widget
 {
     protected static string $view = 'livewire.user-demographic';
 
-    use WithPagination;
-
-    public $topCountries = [];
-    public $countryData = [];
-
-    public function mount()
+    public function getViewData(): array
     {
-        $this->topCountries = [
-            ['name' => 'United States', 'code' => 'us', 'percentage' => '35%'],
-            ['name' => 'Canada', 'code' => 'ca', 'percentage' => '26%'],
-            ['name' => 'France', 'code' => 'fr', 'percentage' => '18%'],
-            ['name' => 'Italy', 'code' => 'it', 'percentage' => '14%'],
-            ['name' => 'Australia', 'code' => 'au', 'percentage' => '10%'],
-            ['name' => 'India', 'code' => 'in', 'percentage' => '7%'],
-        ];
-
-        $this->countryData = [
-            ['Country', 'Popularity'],
-            ['Germany', 200],
-            ['United States', 300],
-            ['Brazil', 400],
-            ['Canada', 500],
-            ['France', 600],
-            ['RU', 700]
+        // In a real application, you'd fetch this data from your database or analytics service
+        return [
+            'countries' => [
+                ['name' => 'United States', 'code' => 'US', 'percentage' => 35],
+                ['name' => 'Canada', 'code' => 'CA', 'percentage' => 26],
+                ['name' => 'France', 'code' => 'FR', 'percentage' => 18],
+                ['name' => 'Italy', 'code' => 'IT', 'percentage' => 14],
+                ['name' => 'Australia', 'code' => 'AU', 'percentage' => 10],
+                ['name' => 'India', 'code' => 'IN', 'percentage' => 7],
+            ],
         ];
     }
 }
