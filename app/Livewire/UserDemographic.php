@@ -8,19 +8,18 @@ class UserDemographic extends Widget
 {
     protected static string $view = 'livewire.user-demographic';
 
+    public array $chartData = [];
 
-    public function getViewData(): array
+    public function mount()
     {
-        return [
-            'chartData' => [
-                ['Country', 'Popularity'],
-                ['Germany', 200],
-                ['United States', 300],
-                ['Brazil', 400],
-                ['Canada', 500],
-                ['France', 600],
-                ['RU', 700]
-            ],
+        $this->chartData = [
+            ['Country', 'Popularity'],
+            ['Germany', 200],
+            ['United States', 300],
+            ['Brazil', 400],
+            ['Canada', 500],
+            ['France', 600],
+            ['RU', 700]
         ];
     }
 }

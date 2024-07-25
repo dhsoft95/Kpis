@@ -18,12 +18,12 @@
                 google.charts.setOnLoadCallback(drawRegionsMap);
 
                 function drawRegionsMap() {
-                    var data = google.visualization.arrayToDataTable(@json($this->chartData));
+                    var data = google.visualization.arrayToDataTable(@json($chartData));
                     var options = {
-                        colorAxis: {colors: ['#e5f5e0', '#31a354']}, // Light green to dark green
-                        backgroundColor: '#f8fafc', // Light gray background
-                        datalessRegionColor: '#edf2f7', // Light blue-gray for regions without data
-                        defaultColor: '#e2e8f0', // Default color for regions
+                        colorAxis: {colors: ['#e5f5e0', '#31a354']},
+                        backgroundColor: '#f8fafc',
+                        datalessRegionColor: '#edf2f7',
+                        defaultColor: '#e2e8f0',
                     };
                     var chart = new google.visualization.GeoChart(document.getElementById('regions_div'));
                     chart.draw(data, options);
