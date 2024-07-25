@@ -1,5 +1,7 @@
 <x-filament::widget>
     <x-filament::card>
+
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
         <div class="space-y-4 p-1 "> <!-- Adjusted padding -->
             <!-- Device Downloads Section -->
             <div>
@@ -8,7 +10,8 @@
                     <div class="bg-blue-50 dark:bg-gray-800 rounded-lg p-2"> <!-- Adjusted padding -->
                         <div class="flex items-center space-x-2">
                             <div class="bg-blue-500 rounded-full p-1.5">
-                                <x-heroicon-s-device-phone-mobile class="w-4 h-4 text-white"/>
+{{--                                <x-heroicon-s-device-phone-mobile class="w-4 h-4 text-white"/>--}}
+                                <span class="material-symbols-outlined">male</span>
                             </div>
                             <div>
                                 <span class="text-sm font-semibold text-gray-900 dark:text-white">{{ number_format($iosDownloads) }}</span> <!-- Adjusted font size -->
