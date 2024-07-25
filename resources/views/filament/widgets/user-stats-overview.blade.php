@@ -13,6 +13,7 @@
                 box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
                 position: relative;
                 overflow: hidden;
+                max-width: 350px;
             }
             .dark .card {
                 background-color: #1f2937; /* Tailwind gray-800 for dark mode */
@@ -46,7 +47,7 @@
             }
             .card-title {
                 color: #6b7280; /* Tailwind gray-500 */
-                font-size: 0.4rem;
+                font-size: 0.5rem;
                 font-weight: 500;
                 text-transform: uppercase;
                 letter-spacing: 0.05em;
@@ -55,7 +56,7 @@
                 color: #d1d5db; /* Tailwind gray-300 for dark mode */
             }
             .card-value {
-                font-size: 0.7rem;
+                font-size: 0.8rem;
                 font-weight: 700;
                 color: #1f2937; /* Tailwind gray-800 */
             }
@@ -110,7 +111,7 @@
                 color: #4a5568;
             }
             .dark .tooltip-title {
-                color: #a1a1aa;!important; /* Tailwind gray-500 for dark mode */
+                color: #a1a1aa !important; /* Tailwind gray-500 for dark mode */
             }
             .tooltip-description {
                 color: #718096;
@@ -120,10 +121,31 @@
             }
         </style>
 
-        <div class="container mx-auto p-4" wire:poll.2s="calculateStats">
+        <div class="container mx-auto p-1" wire:poll.2s="calculateStats">
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 @php
                     $cards = [
+                        'totalSuccess' => [
+                            'title' => 'Total Success',
+                            'icon' => 'fas fa-check-circle',
+                            'iconBgColor' => 'bg-green-100 dark:bg-green-700',
+                            'iconColor' => 'text-green-600 dark:text-green-200',
+                            'description' => 'Total number of successful transactions.'
+                        ],
+                        'failed' => [
+                            'title' => 'Failed Transactions',
+                            'icon' => 'fas fa-times-circle',
+                            'iconBgColor' => 'bg-red-100 dark:bg-red-700',
+                            'iconColor' => 'text-red-600 dark:text-red-200',
+                            'description' => 'Total number of failed transactions.'
+                        ],
+                        'pending' => [
+                            'title' => 'Pending Transactions',
+                            'icon' => 'fas fa-clock',
+                            'iconBgColor' => 'bg-yellow-100 dark:bg-yellow-700',
+                            'iconColor' => 'text-yellow-600 dark:text-yellow-200',
+                            'description' => 'Total number of pending transactions.'
+                        ],
                         'registered' => [
                             'title' => 'Total Customers',
                             'icon' => 'fas fa-users',
