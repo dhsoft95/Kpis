@@ -6,8 +6,7 @@
 
             <div class="mb-8 relative">
                 <div class="bg-gray-800 h-[500px] w-full rounded-lg overflow-hidden">
-                    <?xml version="1.0" encoding="utf-8"?>
-                        <!-- (c) ammap.com | SVG map of Tanzania - High -->
+                    <!-- (c) ammap.com | SVG map of Tanzania - High -->
                     <svg xmlns="http://www.w3.org/2000/svg" xmlns:amcharts="http://amcharts.com/ammap" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1">
                         <defs>
                             <style type="text/css">
@@ -115,6 +114,4 @@
             </div>
         </div>
     </x-filament::section>
-
 </x-filament-widgets::widget>
-
