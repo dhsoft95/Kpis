@@ -9,17 +9,23 @@ class UserDemographic extends Widget
 {
     protected static string $view = 'livewire.user-demographic';
 
-    public function getViewData(): array
+    protected function getViewData(): array
     {
-        // In a real application, you'd fetch this data from your database or analytics service
         return [
-            'countries' => [
-                ['name' => 'Tanzania', 'code' => 'TZ', 'percentage' => 35],
-                ['name' => 'Canada', 'code' => 'CA', 'percentage' => 26],
-                ['name' => 'France', 'code' => 'FR', 'percentage' => 18],
-                ['name' => 'Italy', 'code' => 'IT', 'percentage' => 14],
-                ['name' => 'Australia', 'code' => 'AU', 'percentage' => 10],
-                ['name' => 'India', 'code' => 'IN', 'percentage' => 7],
+            'chartData' => [
+                ['Country', 'Popularity'],
+                ['Germany', 200],
+                ['United States', 300],
+                ['Brazil', 400],
+                ['Canada', 500],
+                ['France', 600],
+                ['RU', 700]
+            ],
+            'chartOptions' => [
+                'colorAxis' => ['colors' => ['#e7711c', '#4374e0']],
+                'backgroundColor' => '#81d4fa',
+                'datalessRegionColor' => '#f8bbd0',
+                'defaultColor' => '#f5f5f5',
             ],
         ];
     }

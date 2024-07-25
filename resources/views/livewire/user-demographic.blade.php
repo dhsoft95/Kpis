@@ -1,33 +1,27 @@
-<x-filament-widgets::widget>
-    <x-filament::section>
-        <div id="regions_div" style="width: 900px; height: 500px;"></div>
-    </x-filament::section>
+<x-filament::widget>
+    <x-filament::card>
+        <div id="geo-chart" style="width: 100%; height: 500px;"></div>
+    </x-filament::card>
 
-    @push('scripts')
+    @pushOnce('scripts')
         <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-        <script type="text/javascript">
+    @endPushOnce
+
+    <script>
+        document.addEventListener('livewire:load', function () {
             google.charts.load('current', {
-                'packages':['geochart'],
+                'packages': ['geochart']
             });
             google.charts.setOnLoadCallback(drawRegionsMap);
 
             function drawRegionsMap() {
-                var data = google.visualization.arrayToDataTable([
-                    ['Country', 'Popularity'],
-                    ['Germany', 200],
-                    ['United States', 300],
-                    ['Brazil', 400],
-                    ['Canada', 500],
-                    ['France', 600],
-                    ['RU', 700]
-                ]);
-
-                var options = {};
-
-                var chart = new google.visualization.GeoChart(document.getElementById('regions_div'));
-
+                var data = google.visualization.arrayToDataTable(@json($this->chartData));
+                var options = @json($this->chartOptions);
+                var chart = new google.visualization.GeoChart(document.getElementById('geo-chart'));
                 chart.draw(data, options);
             }
-        </script>
-    @endpush
-</x-filament-widgets::widget>
+
+            window.addEventListener('resize', drawRegionsMap);
+        });
+    </script>
+</x-filament::widget>
