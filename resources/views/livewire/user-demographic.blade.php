@@ -1,89 +1,41 @@
 <x-filament-widgets::widget>
     <x-filament::section>
-        <div class="bg-gray-900 p-8 text-white font-sans">
-            <h1 class="text-2xl font-bold mb-1">Sessions by region in Tanzania</h1>
-            <p class="text-sm text-gray-400 mb-6">View website visitors on the map</p>
+        <div class="max-w-sm mx-auto bg-white shadow-lg rounded-xl overflow-hidden">
+            <div class="px-6 py-4 bg-gradient-to-r from-purple-500 to-pink-500">
+                <h2 class="text-2xl font-bold text-white">User Demographics</h2>
+            </div>
 
-            <div id="regions_div" style="width: 100%; height: 500px;"></div>
-
-            <div class="space-y-3 mt-6">
-                <div class="flex items-center">
-                    <span class="w-6 h-4 mr-3 bg-blue-600"></span>
-                    <span class="w-28 text-sm">Dar es Salaam</span>
-                    <div class="flex-grow bg-gray-700 rounded-full h-2">
-                        <div class="bg-blue-600 rounded-full h-2 w-[35%]"></div>
+            <div class="p-6 space-y-6">
+                <div>
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="text-lg font-semibold text-gray-700">Age</span>
+                        <span class="text-sm font-medium text-gray-500 bg-gray-100 px-2 py-1 rounded">25-34</span>
                     </div>
-                    <span class="ml-3 text-sm">35%</span>
+                    <div class="w-full bg-gray-200 rounded-full h-2.5">
+                        <div class="bg-blue-600 h-2.5 rounded-full transition-all duration-500 ease-out" style="width: 45%"></div>
+                    </div>
                 </div>
 
-                <div class="flex items-center">
-                    <span class="w-6 h-4 mr-3 bg-blue-400"></span>
-                    <span class="w-28 text-sm">Mwanza</span>
-                    <div class="flex-grow bg-gray-700 rounded-full h-2">
-                        <div class="bg-blue-600 rounded-full h-2 w-[26%]"></div>
+                <div>
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="text-lg font-semibold text-gray-700">Gender</span>
+                        <span class="text-sm font-medium text-gray-500 bg-gray-100 px-2 py-1 rounded">Female</span>
                     </div>
-                    <span class="ml-3 text-sm">26%</span>
+                    <div class="w-full bg-gray-200 rounded-full h-2.5">
+                        <div class="bg-pink-500 h-2.5 rounded-full transition-all duration-500 ease-out" style="width: 60%"></div>
+                    </div>
                 </div>
 
-                <div class="flex items-center">
-                    <span class="w-6 h-4 mr-3 bg-blue-300"></span>
-                    <span class="w-28 text-sm">Arusha</span>
-                    <div class="flex-grow bg-gray-700 rounded-full h-2">
-                        <div class="bg-blue-600 rounded-full h-2 w-[18%]"></div>
+                <div>
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="text-lg font-semibold text-gray-700">Location</span>
+                        <span class="text-sm font-medium text-gray-500 bg-gray-100 px-2 py-1 rounded">Urban</span>
                     </div>
-                    <span class="ml-3 text-sm">18%</span>
-                </div>
-
-                <div class="flex items-center">
-                    <span class="w-6 h-4 mr-3 bg-blue-200"></span>
-                    <span class="w-28 text-sm">Mbeya</span>
-                    <div class="flex-grow bg-gray-700 rounded-full h-2">
-                        <div class="bg-blue-600 rounded-full h-2 w-[14%]"></div>
+                    <div class="w-full bg-gray-200 rounded-full h-2.5">
+                        <div class="bg-green-500 h-2.5 rounded-full transition-all duration-500 ease-out" style="width: 75%"></div>
                     </div>
-                    <span class="ml-3 text-sm">14%</span>
-                </div>
-
-                <div class="flex items-center">
-                    <span class="w-6 h-4 mr-3 bg-blue-100"></span>
-                    <span class="w-28 text-sm">Dodoma</span>
-                    <div class="flex-grow bg-gray-700 rounded-full h-2">
-                        <div class="bg-blue-600 rounded-full h-2 w-[7%]"></div>
-                    </div>
-                    <span class="ml-3 text-sm">7%</span>
                 </div>
             </div>
         </div>
     </x-filament::section>
-
-    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-    <script type="text/javascript">
-        google.charts.load('current', {
-            'packages': ['geochart'],
-            'mapsApiKey': 'AIzaSyA7AzYDQTKAMaSjyKUxoyJevka5f1QyBNQ'
-        });
-        google.charts.setOnLoadCallback(drawRegionsMap);
-
-        function drawRegionsMap() {
-            var data = google.visualization.arrayToDataTable([
-                ['Region', 'Sessions'],
-                ['TZ-02', 35], // Dar es Salaam
-                ['TZ-13', 26], // Mwanza
-                ['TZ-01', 18], // Arusha
-                ['TZ-14', 14], // Mbeya
-                ['TZ-03', 7]   // Dodoma
-            ]);
-
-            var options = {
-                region: 'TZ',
-                resolution: 'provinces',
-                colorAxis: {colors: ['#dbeafe', '#3b82f6']},
-                backgroundColor: '#1f2937',
-                datalessRegionColor: '#4b5563',
-                defaultColor: '#4b5563',
-                legend: 'none',
-            };
-            var chart = new google.visualization.GeoChart(document.getElementById('regions_div'));
-            chart.draw(data, options);
-        }
-    </script>
-</x-filament-widgets::widget>
+</x-filament-widgets::widget>z
