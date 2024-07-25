@@ -14,6 +14,7 @@
                 position: relative;
                 overflow: hidden;
                 padding: 1.25rem; /* Increased padding */
+                max-width: 350px; /* Set maximum width */
             }
             .dark .card {
                 background-color: #1f2937; /* Tailwind gray-800 for dark mode */
