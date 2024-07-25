@@ -10,7 +10,7 @@
         @endPushOnce
 
         <script>
-            document.addEventListener('livewire:load', function () {
+            document.addEventListener('DOMContentLoaded', function () { // Change 'livewire:load' to 'DOMContentLoaded'
                 google.charts.load('current', {
                     'packages': ['geochart'],
                 });
@@ -19,17 +19,26 @@
 
                 function drawRegionsMap() {
                     var data = google.visualization.arrayToDataTable(@json($chartData));
+
                     var options = {
-                        colorAxis: {colors: ['#e5f5e0', '#31a354']},
+                        colorAxis: { colors: ['#e5f5e0', '#31a354'] },
                         backgroundColor: '#f8fafc',
                         datalessRegionColor: '#edf2f7',
                         defaultColor: '#e2e8f0',
+                        keepAspectRatio: true, // Add to maintain aspect ratio on resize
                     };
+
                     var chart = new google.visualization.GeoChart(document.getElementById('regions_div'));
+
                     chart.draw(data, options);
                 }
 
-                window.addEventListener('resize', drawRegionsMap);
+                // Debounce the resize event for better performance
+                let resizeTimer;
+                window.addEventListener('resize', function() {
+                    clearTimeout(resizeTimer);
+                    resizeTimer = setTimeout(drawRegionsMap, 250); // Adjust delay as needed
+                });
             });
         </script>
     </x-filament::section>
