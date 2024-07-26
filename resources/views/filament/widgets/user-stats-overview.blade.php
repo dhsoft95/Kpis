@@ -145,7 +145,7 @@
             }
             .route-title {
                 color: #1f2937;
-                font-size: 0.8rem;
+                font-size: 0.6rem;
                 font-weight: 600;
                 text-transform: uppercase;
                 letter-spacing: 0.05em;
@@ -215,7 +215,7 @@
             }
             .mno-title {
                 color: #1f2937;
-                font-size: 0.8rem;
+                font-size: 0.6rem;
                 font-weight: 600;
                 text-transform: uppercase;
                 letter-spacing: 0.05em;
@@ -378,9 +378,9 @@
             </div>
         </div>
 
-        <div class="flex flex-row space-x-4" style="margin-top: 20px;">
+        <div class="flex flex-row space-x-3" style="margin-top: 20px;">
             <div class="route-card p-4 w-full md:w-1/2">
-                <h3 class="route-title mb-4 text-xs">Popular Transfer Routes</h3>
+                <h3 class="route-title mb-4">Popular Transfer Routes</h3>
                 <div class="space-y-2">
                     @foreach($this->getPopularTransfersrouter as $transfers)
                         <div class="mno-item flex justify-between">
