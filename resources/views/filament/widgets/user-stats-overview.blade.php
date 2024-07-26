@@ -378,19 +378,16 @@
             </div>
         </div>
 
-
-        <div class="flex flex-wrap -mx-2 justify-center  md:flex md:gap-5" style="margin-top: 20px;">
+        <div class="flex flex-row space-x-4" style="margin-top: 20px;">
             <div class="route-card p-4 w-full md:w-1/2">
-                <h3 class="route-title mb-4">Popular Transfer Routes</h3>
+                <h3 class="route-title mb-4 text-xs">Popular Transfer Routes</h3>
                 <div class="space-y-2">
-                    <div class="space-y-2">
-                        @foreach($this->getPopularTransfersrouter as $transfers)
-                            <div class="mno-item flex justify-between">
-                                <span><i class="fas fa-exchange-alt route-icon"></i>{{ $transfers['route'] }}</span>
-                                <span class="transfer-count">{{ number_format($transfers['count']) }} transfers</span>
-                            </div>
-                        @endforeach
-                    </div>
+                    @foreach($this->getPopularTransfersrouter as $transfers)
+                        <div class="mno-item flex justify-between">
+                            <span><i class="fas fa-exchange-alt route-icon"></i>{{ $transfers['route'] }}</span>
+                            <span class="transfer-count">{{ number_format($transfers['count']) }} transfers</span>
+                        </div>
+                    @endforeach
                 </div>
             </div>
 
@@ -406,11 +403,6 @@
                 </div>
             </div>
         </div>
-
-
-
-
-
 
     </x-filament::section>
 
