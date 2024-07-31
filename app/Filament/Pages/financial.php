@@ -21,7 +21,7 @@ class financial extends Page
     protected function getHeaderWidgets(): array
     {
         return [
-            financialKpis::class,
+//            financialKpis::class,
         ];
     }
 }
