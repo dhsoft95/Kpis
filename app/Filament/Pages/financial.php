@@ -2,6 +2,10 @@
 
 namespace App\Filament\Pages;
 
+use App\Livewire\CustStatsOverview;
+use App\Livewire\CustvalueChart;
+use App\Livewire\financialKpis;
+use App\Livewire\TransvalueChart;
 use Filament\Pages\Page;
 
 class financial extends Page
@@ -11,4 +15,13 @@ class financial extends Page
     protected static ?string $navigationIcon = 'heroicon-o-currency-dollar';
 
     protected static string $view = 'filament.pages.financial';
+
+
+
+    protected function getHeaderWidgets(): array
+    {
+        return [
+            financialKpis::class,
+        ];
+    }
 }

@@ -71,26 +71,14 @@
                 color: #a1a1aa;
             }
         </style>
-
-        <div class="container mx-auto p-1" wire:poll.1s="calculateStats">
+        <div class="container mx-auto p-1" wire:poll.31s="mount">
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 @php
                     $cards = [
-                        'chats' => ['title' => 'Chats', 'icon' => 'fas fa-comments', 'iconBgColor' => 'bg-blue-100 dark:bg-blue-700', 'iconColor' => 'text-blue-600 dark:text-blue-200'],
-                        'whatsApp' => ['title' => 'WhatsApp Messages', 'icon' => 'fab fa-whatsapp', 'iconBgColor' => 'bg-green-100 dark:bg-green-700', 'iconColor' => 'text-green-600 dark:text-green-200'],
-                        'faq' => ['title' => 'FAQ Views', 'icon' => 'fas fa-question-circle', 'iconBgColor' => 'bg-yellow-100 dark:bg-yellow-700', 'iconColor' => 'text-yellow-600 dark:text-yellow-200'],
-                        'socialMedia' => ['title' => 'Social Media Interactions', 'icon' => 'fas fa-share-alt', 'iconBgColor' => 'bg-pink-100 dark:bg-pink-700', 'iconColor' => 'text-pink-600 dark:text-pink-200'],
-                        'phoneCalls' => ['title' => 'Phone Calls', 'icon' => 'fas fa-phone', 'iconBgColor' => 'bg-red-100 dark:bg-red-700', 'iconColor' => 'text-red-600 dark:text-red-200'],
-                        'email' => ['title' => 'Emails', 'icon' => 'fas fa-envelope', 'iconBgColor' => 'bg-indigo-100 dark:bg-indigo-700', 'iconColor' => 'text-indigo-600 dark:text-indigo-200'],
+                        'totalAmount' => ['title' => 'Total Amount', 'icon' => 'fas fa-dollar-sign', 'iconBgColor' => 'bg-green-100 dark:bg-green-700', 'iconColor' => 'text-green-600 dark:text-green-200'],
+                        'totalFailedAmount' => ['title' => 'Total Failed Amount', 'icon' => 'fas fa-times-circle', 'iconBgColor' => 'bg-red-100 dark:bg-red-700', 'iconColor' => 'text-red-600 dark:text-red-200'],
+                        'revenue' => ['title' => 'Revenue', 'icon' => 'fas fa-chart-line', 'iconBgColor' => 'bg-blue-100 dark:bg-blue-700', 'iconColor' => 'text-blue-600 dark:text-blue-200'],
                     ];
-
-                    // Dummy data for Help Desk metrics
-                    $stats['chats'] = ['value' => 850, 'percentageChange' => 3.2, 'isGrowth' => true];
-                    $stats['whatsApp'] = ['value' => 400, 'percentageChange' => -1.5, 'isGrowth' => false];
-                    $stats['faq'] = ['value' => 1200, 'percentageChange' => 7.5, 'isGrowth' => true];
-                    $stats['socialMedia'] = ['value' => 300, 'percentageChange' => 4.2, 'isGrowth' => true];
-                    $stats['phoneCalls'] = ['value' => 500, 'percentageChange' => -2.1, 'isGrowth' => false];
-                    $stats['email'] = ['value' => 750, 'percentageChange' => 1.8, 'isGrowth' => true];
                 @endphp
 
                 @foreach ($cards as $key => $card)
@@ -114,13 +102,14 @@
                                 $changeColor = $isGrowth ? 'bg-green-100 dark:bg-green-700 text-green-800 dark:text-green-200' : 'bg-red-100 dark:bg-red-700 text-red-800 dark:text-red-200';
                             @endphp
                             <span class="percentage-badge {{ $changeColor }} mr-2">
-                                {{ $isGrowth ? '+' : '-' }}{{ $formattedPercentage }}%
-                            </span>
+                        {{ $isGrowth ? '+' : '-' }}{{ $formattedPercentage }}%
+                    </span>
                             <span class="time-period">WoW</span>
                         </div>
                     </div>
                 @endforeach
             </div>
         </div>
+
     </x-filament::section>
 </x-filament-widgets::widget>

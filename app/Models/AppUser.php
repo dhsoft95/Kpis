@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class AppUser extends Model
 {
@@ -36,4 +37,15 @@ class AppUser extends Model
         'last_session_id',
         'is_active',
     ];
+
+
+    public function customerFeedbacks(): HasMany
+    {
+        return $this->hasMany(CustomerFeedback::class);
+    }
+
+    public function transfers(): HasMany
+    {
+        return $this->hasMany(trans::class);
+    }
 }

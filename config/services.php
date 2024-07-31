@@ -32,6 +32,10 @@ return [
         'api_token' => env('GOOGLE_PLAY_API_TOKEN'),
     ],
 
+    'google_analytics' => [
+        'property_id' => env('GOOGLE_ANALYTICS_PROPERTY_ID'),
+    ],
+
     'slack' => [
         'notifications' => [
             'bot_user_oauth_token' => env('SLACK_BOT_USER_OAUTH_TOKEN'),

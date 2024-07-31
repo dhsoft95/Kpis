@@ -2,91 +2,121 @@
 
 namespace App\Livewire;
 
+use AllowDynamicProperties;
+use App\Http\Controllers\GoogleAnalyticsController;
 use App\Models\AppUser;
-use App\Models\User;
 use Filament\Widgets\Widget;
 use Illuminate\Support\Facades\DB;
+use Google\ApiCore\ApiException;
+use Livewire\Attributes\Lazy;
 
+#[AllowDynamicProperties] #[Lazy]
 class devicDown extends Widget
 {
-    public function getDownloads()
+    public $iosDownloads = 0;
+    public $androidDownloads = 0;
+    public $topCountries = [];
+    public $userStats = [];
+    public $ageGroupCounts = [];
+    public $loading = false;
+
+    private $googleAnalyticsController;
+
+    public function mount()
     {
-        // Keep dummy data for downloads
-        return [
-            'ios' => 4352,
-            'android' => 5352,
+        $this->googleAnalyticsController = new GoogleAnalyticsController();
+        $this->loadAllData();
+    }
+
+    public function loadAllData()
+    {
+        $this->loading = true;
+        $this->loadDeviceData();
+        $this->loadTopCountries();
+        $this->loadUserStats();
+        $this->loadAgeGroupDistribution();
+        $this->loading = false;
+    }
+
+    public function loadDeviceData()
+    {
+        try {
+            $downloads = $this->googleAnalyticsController->getDownloads();
+            $this->iosDownloads = $downloads['ios'];
+            $this->androidDownloads = $downloads['android'];
+        } catch (ApiException $e) {
+            \Log::error('Failed to fetch Google Analytics data: ' . $e->getMessage());
+            $this->iosDownloads = 0;
+            $this->androidDownloads = 0;
+        }
+    }
+
+    public function loadTopCountries()
+    {
+        try {
+            $this->topCountries = $this->googleAnalyticsController->getTopCountries();
+        } catch (ApiException $e) {
+            \Log::error('Failed to fetch top countries from Google Analytics: ' . $e->getMessage());
+            $this->topCountries = [];
+        }
+    }
+
+    public function loadUserStats()
+    {
+        $this->userStats = [
+            'male' => AppUser::where('gender', 'male')->count(),
+            'female' => AppUser::where('gender', 'female')->count(),
         ];
     }
 
-    public function getUserStats()
+    public function loadAgeGroupDistribution()
     {
-        // Fetch user statistics using the User model
-        $maleCount = AppUser::where('gender', 'male')->count();
-        $femaleCount = AppUser::where('gender', 'female')->count();
-
-        // Return the results
-        return [
-            'male' => $maleCount,
-            'female' => $femaleCount,
-        ];
-    }
-
-    public function getAgeGroupDistribution()
-    {
-        // Fetch age group distribution using mysql_second connection
         $results = AppUser::on('mysql_second')->select(DB::raw("
-        CASE
-            WHEN TIMESTAMPDIFF(YEAR, birth_date, CURDATE()) BETWEEN 18 AND 24 THEN '18-24'
-            WHEN TIMESTAMPDIFF(YEAR, birth_date, CURDATE()) BETWEEN 25 AND 34 THEN '25-34'
-            WHEN TIMESTAMPDIFF(YEAR, birth_date, CURDATE()) BETWEEN 35 AND 44 THEN '35-44'
-            WHEN TIMESTAMPDIFF(YEAR, birth_date, CURDATE()) >= 45 THEN '45+'
-            ELSE 'Unknown'
-        END as age_group,
-        COUNT(*) as count
-    "))
+            CASE
+                WHEN TIMESTAMPDIFF(YEAR, birth_date, CURDATE()) BETWEEN 18 AND 24 THEN '18-24'
+                WHEN TIMESTAMPDIFF(YEAR, birth_date, CURDATE()) BETWEEN 25 AND 34 THEN '25-34'
+                WHEN TIMESTAMPDIFF(YEAR, birth_date, CURDATE()) BETWEEN 35 AND 44 THEN '35-44'
+                WHEN TIMESTAMPDIFF(YEAR, birth_date, CURDATE()) >= 45 THEN '45+'
+                ELSE 'Unknown'
+            END as age_group,
+            COUNT(*) as count
+        "))
             ->groupBy('age_group')
             ->orderBy('age_group')
             ->get();
 
-        // Convert the results to an associative array
-        return $results->mapWithKeys(function ($item) {
+        $this->ageGroupCounts = $results->mapWithKeys(function ($item) {
             return [$item->age_group => $item->count];
         })->toArray();
     }
 
-    public function getTopLocations()
-    {
-        // Fetch top 5 user locations using mysql_second connection
-        $results = AppUser::on('mysql_second')->select('city', DB::raw('COUNT(*) as count'))
-            ->whereNotNull('city')
-            ->groupBy('city')
-            ->orderByRaw('COUNT(*) DESC')
-            ->limit(5)
-            ->get();
-
-        // Convert the results to an associative array
-        return $results->mapWithKeys(function ($item) {
-            return [$item->city => $item->count];
-        })->toArray();
-    }
-
-
     public function render(): \Illuminate\Contracts\View\View
     {
-        $downloads = $this->getDownloads();
-        $userStats = $this->getUserStats();
-        $ageGroupCounts = $this->getAgeGroupDistribution();
-        $topLocations = $this->getTopLocations();
-
         return view(static::$view, [
-            'iosDownloads' => $downloads['ios'],
-            'androidDownloads' => $downloads['android'],
-            'maleUsers' => $userStats['male'],
-            'femaleUsers' => $userStats['female'],
-            'ageGroupCounts' => $ageGroupCounts,
-            'topLocations' => $topLocations,
+            'iosDownloads' => $this->iosDownloads,
+            'androidDownloads' => $this->androidDownloads,
+            'maleUsers' => $this->userStats['male'] ?? 0,
+            'femaleUsers' => $this->userStats['female'] ?? 0,
+            'ageGroupCounts' => $this->ageGroupCounts,
+            'topCountries' => $this->topCountries,
         ]);
     }
 
     protected static string $view = 'livewire.devic-down';
+
+
+    public function poll()
+    {
+        $this->loadAllData();
+    }
+
+
+    public function getListeners()
+    {
+        return [
+            'refreshData' => 'loadAllData',
+            '$refresh' => '$refresh',
+            'poll' => 'poll'
+        ];
+    }
 }
