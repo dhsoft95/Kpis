@@ -1,9 +1,6 @@
 <x-filament-widgets::widget>
     <x-filament::section>
-        <!-- Include Tailwind CSS -->
         <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-
-        <!-- Include Font Awesome -->
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" />
 
         <style>
@@ -111,33 +108,28 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 @php
                     $cards = [
-                        'customerStratification' => [
-                            'title' => 'Customer Stratification',
-                            'icon' => 'fas fa-users',
-                            'iconBgColor' => 'bg-blue-100 dark:bg-blue-700',
-                            'iconColor' => 'text-blue-600 dark:text-blue-200',
-                            'description' => 'Percentage of customers categorized into different segments based on their value to the company.'
-                        ],
                         'nps' => [
                             'title' => 'Net Promoter Score (NPS)',
                             'icon' => 'fas fa-chart-line',
-                            'iconBgColor' => 'bg-green-100 dark:bg-green-700',
-                            'iconColor' => 'text-green-600 dark:text-green-200',
+                            'iconBgColor' => 'bg-purple-100 dark:bg-purple-700',
+                            'iconColor' => 'text-purple-600 dark:text-purple-200',
                             'description' => 'Measure of customer loyalty and satisfaction. Ranges from -100 to 100.'
+                        ],
+                        'csat' => [
+                            'title' => 'Customer Satisfaction (CSAT)',
+                            'icon' => 'fas fa-smile',
+                            'iconBgColor' => 'bg-red-100 dark:bg-red-700',
+                            'iconColor' => 'text-red-600 dark:text-red-200',
+                            'description' => 'Percentage of customers who rate their experience as satisfactory.'
                         ],
                         'ces' => [
                             'title' => 'Customer Effort Score (CES)',
                             'icon' => 'fas fa-tasks',
-                            'iconBgColor' => 'bg-yellow-100 dark:bg-yellow-700',
-                            'iconColor' => 'text-yellow-600 dark:text-yellow-200',
-                            'description' => 'Measure of how much effort a customer has to exert to get an issue resolved or a request fulfilled.'
+                            'iconBgColor' => 'bg-indigo-100 dark:bg-indigo-700',
+                            'iconColor' => 'text-indigo-600 dark:text-indigo-200',
+                            'description' => 'Average score of how much effort a customer has to exert to get an issue resolved or a request fulfilled.'
                         ],
                     ];
-
-                    // Dummy data for all metrics (now in percentages)
-                    $stats['customerStratification'] = ['value' => 85, 'percentageChange' => 3.5, 'isGrowth' => true];
-                    $stats['nps'] = ['value' => 65, 'percentageChange' => 5.2, 'isGrowth' => true];
-                    $stats['ces'] = ['value' => 76, 'percentageChange' => -2.5, 'isGrowth' => false];
                 @endphp
 
                 @foreach ($cards as $key => $card)
@@ -147,7 +139,7 @@
                                 <div>
                                     <h5 class="card-title mb-1">{{ $card['title'] }}</h5>
                                     <h2 class="card-value" wire:key="count-{{ $key }}">
-                                        {{ number_format($stats[$key]['value'], 1) }}%
+                                        {{ number_format($stats[$key]['value'], 2) }}{{ in_array($key, ['nps', 'csat']) ? '%' : '' }}
                                     </h2>
                                 </div>
                                 <div class="icon-bg {{ $card['iconBgColor'] }}">
@@ -155,14 +147,8 @@
                                 </div>
                             </div>
                             <div class="flex items-center">
-                                @php
-                                    $percentageChange = $stats[$key]['percentageChange'];
-                                    $formattedPercentage = number_format(abs($percentageChange), 2);
-                                    $isGrowth = $stats[$key]['isGrowth'];
-                                    $changeColor = $isGrowth ? 'bg-green-100 dark:bg-green-700 text-green-800 dark:text-green-200' : 'bg-red-100 dark:bg-red-700 text-red-800 dark:text-red-200';
-                                @endphp
-                                <span class="percentage-badge {{ $changeColor }} mr-2">
-                                    {{ $isGrowth ? '+' : '-' }}{{ $formattedPercentage }}%
+                                <span class="percentage-badge {{ $stats[$key]['isGrowth'] ? 'bg-green-100 dark:bg-green-700 text-green-800 dark:text-green-200' : 'bg-red-100 dark:bg-red-700 text-red-800 dark:text-red-200' }} mr-2">
+                                    {{ $stats[$key]['isGrowth'] ? '+' : '-' }}{{ number_format(abs($stats[$key]['percentageChange']), 2) }}%
                                 </span>
                                 <span class="time-period">WoW</span>
                             </div>

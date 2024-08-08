@@ -5,6 +5,9 @@ namespace App\Livewire;
 use Filament\Widgets\Widget;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
+use App\Models\feedback_answers;
+use App\Models\feedbackQuestions;
+use Illuminate\Support\Facades\Log;
 
 class CustStatsOverview extends Widget
 {
@@ -12,9 +15,9 @@ class CustStatsOverview extends Widget
     protected static string $view = 'livewire.cust-stats-overview';
 
     public array $stats = [
-        'avgValuePerDay' => ['value' => 0, 'percentageChange' => 0, 'isGrowth' => true],
-        'avgTransactionPerCustomer' => ['value' => 0, 'percentageChange' => 0, 'isGrowth' => true],
-        'customerStratification' => ['value' => 0, 'percentageChange' => 0, 'isGrowth' => true],
+        'nps' => ['value' => 0, 'percentageChange' => 0, 'isGrowth' => true],
+        'csat' => ['value' => 0, 'percentageChange' => 0, 'isGrowth' => true],
+        'ces' => ['value' => 0, 'percentageChange' => 0, 'isGrowth' => true],
     ];
 
     public function mount(): void
@@ -24,110 +27,147 @@ class CustStatsOverview extends Widget
 
     public function calculateStats(): void
     {
-        $this->stats['avgValuePerDay'] = $this->calculateAverageValuePerDay();
-        $this->stats['avgTransactionPerCustomer'] = $this->calculateAverageTransactionPerCustomer();
-        $this->stats['customerStratification'] = $this->calculateCustomerStratification();
+        $this->stats['nps'] = $this->calculateNPS();
+        $this->stats['csat'] = $this->calculateCSAT();
+        $this->stats['ces'] = $this->calculateCES();
     }
 
-    private function calculateAverageValuePerDay(): array
+    private function calculateNPS(): array
     {
-        $currentWeekStart = Carbon::now()->startOfWeek();
-        $currentWeekEnd = Carbon::now()->endOfWeek();
-        $previousWeekStart = Carbon::now()->subWeek()->startOfWeek();
-        $previousWeekEnd = Carbon::now()->subWeek()->endOfWeek();
+        $currentWeekStart = Carbon::now()->startOfWeek()->startOfDay();
+        $currentWeekEnd = Carbon::now()->endOfWeek()->endOfDay();
 
-        $currentValue = DB::connection('mysql_second')->table('tbl_transactions')
+        $npsQuestionId = feedbackQuestions::where('type', 'nps')->pluck('id');
+
+        $npsAnswers = feedback_answers::whereIn('feedback_question_id', $npsQuestionId)
             ->whereBetween('created_at', [$currentWeekStart, $currentWeekEnd])
-            ->avg(DB::raw('CAST(sender_amount AS DECIMAL(15, 2))'));
+            ->get();
 
-        $previousValue = DB::connection('mysql_second')->table('tbl_transactions')
+        $promoters = $npsAnswers->where('rating', '>=', 9)->count();
+        $detractors = $npsAnswers->where('rating', '<=', 6)->count();
+        $total = $npsAnswers->count();
+
+        if ($total == 0) {
+            return [
+                'value' => 0,
+                'percentageChange' => 0,
+                'isGrowth' => false,
+            ];
+        }
+
+        $currentValue = (($promoters / $total) - ($detractors / $total)) * 100;
+
+        $previousWeekStart = Carbon::now()->subWeek()->startOfWeek()->startOfDay();
+        $previousWeekEnd = Carbon::now()->subWeek()->endOfWeek()->endOfDay();
+
+        $previousNpsAnswers = feedback_answers::whereIn('feedback_question_id', $npsQuestionId)
             ->whereBetween('created_at', [$previousWeekStart, $previousWeekEnd])
-            ->avg(DB::raw('CAST(sender_amount AS DECIMAL(15, 2))'));
+            ->get();
+
+        $previousPromoters = $previousNpsAnswers->where('rating', '>=', 9)->count();
+        $previousDetractors = $previousNpsAnswers->where('rating', '<=', 6)->count();
+        $previousTotal = $previousNpsAnswers->count();
+
+        $previousValue = $previousTotal > 0 ? (($previousPromoters / $previousTotal) - ($previousDetractors / $previousTotal)) * 100 : 0;
 
         $percentageChange = $this->calculatePercentageChange($previousValue, $currentValue);
 
+        Log::info("NPS Calculation: Promoters: $promoters, Detractors: $detractors, Total: $total");
+        Log::info("NPS Current Value: $currentValue, Previous Value: $previousValue");
+
         return [
-            'value' => $currentValue,
-            'percentageChange' => $percentageChange,
+            'value' => round($currentValue, 2),
+            'percentageChange' => round($percentageChange, 2),
             'isGrowth' => $percentageChange >= 0,
         ];
     }
 
-    private function calculateAverageTransactionPerCustomer(): array
+    private function calculateCSAT(): array
     {
-        $currentWeekStart = Carbon::now()->startOfWeek();
-        $currentWeekEnd = Carbon::now()->endOfWeek();
-        $previousWeekStart = Carbon::now()->subWeek()->startOfWeek();
-        $previousWeekEnd = Carbon::now()->subWeek()->endOfWeek();
+        $currentWeekStart = Carbon::now()->startOfWeek()->startOfDay();
+        $currentWeekEnd = Carbon::now()->endOfWeek()->endOfDay();
 
-        $currentValue = DB::connection('mysql_second')->table(DB::raw('(
-        SELECT receiver_phone, COUNT(*) AS transaction_count
-        FROM tbl_transactions
-        WHERE created_at BETWEEN ? AND ?
-        GROUP BY receiver_phone
-    ) AS weekly_transactions'))
-            ->setBindings([$currentWeekStart, $currentWeekEnd])
-            ->avg('transaction_count');
+        $csatQuestionId = feedbackQuestions::where('type', 'csat')->pluck('id');
 
-        $previousValue = DB::connection('mysql_second')->table(DB::raw('(
-        SELECT receiver_phone, COUNT(*) AS transaction_count
-        FROM tbl_transactions
-        WHERE created_at BETWEEN ? AND ?
-        GROUP BY receiver_phone
-    ) AS weekly_transactions'))
-            ->setBindings([$previousWeekStart, $previousWeekEnd])
-            ->avg('transaction_count');
+        $csatAnswers = feedback_answers::whereIn('feedback_question_id', $csatQuestionId)
+            ->whereBetween('created_at', [$currentWeekStart, $currentWeekEnd])
+            ->get();
+
+        $satisfied = $csatAnswers->where('rating', '>=', 4)->count();
+        $total = $csatAnswers->count();
+
+        if ($total == 0) {
+            return [
+                'value' => 0,
+                'percentageChange' => 0,
+                'isGrowth' => false,
+            ];
+        }
+
+        $currentValue = ($satisfied / $total) * 100;
+
+        $previousWeekStart = Carbon::now()->subWeek()->startOfWeek()->startOfDay();
+        $previousWeekEnd = Carbon::now()->subWeek()->endOfWeek()->endOfDay();
+
+        $previousCsatAnswers = feedback_answers::whereIn('feedback_question_id', $csatQuestionId)
+            ->whereBetween('created_at', [$previousWeekStart, $previousWeekEnd])
+            ->get();
+
+        $previousSatisfied = $previousCsatAnswers->where('rating', '>=', 4)->count();
+        $previousTotal = $previousCsatAnswers->count();
+
+        $previousValue = $previousTotal > 0 ? ($previousSatisfied / $previousTotal) * 100 : 0;
 
         $percentageChange = $this->calculatePercentageChange($previousValue, $currentValue);
 
+        Log::info("CSAT Calculation: Satisfied: $satisfied, Total: $total");
+        Log::info("CSAT Current Value: $currentValue, Previous Value: $previousValue");
+
         return [
-            'value' => $currentValue,
-            'percentageChange' => $percentageChange,
+            'value' => round($currentValue, 2),
+            'percentageChange' => round($percentageChange, 2),
             'isGrowth' => $percentageChange >= 0,
         ];
     }
 
-    private function calculateCustomerStratification(): array
+    private function calculateCES(): array
     {
-        $currentWeekStart = Carbon::now()->startOfWeek();
-        $currentWeekEnd = Carbon::now()->endOfWeek();
+        $currentWeekStart = Carbon::now()->startOfWeek()->startOfDay();
+        $currentWeekEnd = Carbon::now()->endOfWeek()->endOfDay();
 
-        // Example stratification logic
-        $stratum1Threshold = 2000; // Example threshold for high-value transactions
-        $stratum1Count = DB::connection('mysql_second')->table('tbl_transactions')
-            ->select(DB::raw('SUM(sender_amount) AS total_amount'))
+        $cesQuestionId = feedbackQuestions::where('type', 'ces')->pluck('id');
+
+        $currentValue = feedback_answers::whereIn('feedback_question_id', $cesQuestionId)
             ->whereBetween('created_at', [$currentWeekStart, $currentWeekEnd])
-            ->groupBy('receiver_phone')
-            ->having('total_amount', '>=', $stratum1Threshold)
-            ->count();
+            ->avg('rating') ?? 0;
 
-        $previousWeekStart = Carbon::now()->subWeek()->startOfWeek();
-        $previousWeekEnd = Carbon::now()->subWeek()->endOfWeek();
+        $previousWeekStart = Carbon::now()->subWeek()->startOfWeek()->startOfDay();
+        $previousWeekEnd = Carbon::now()->subWeek()->endOfWeek()->endOfDay();
 
-        $previousStratum1Count = DB::connection('mysql_second')->table('tbl_transactions')
-            ->select(DB::raw('SUM(sender_amount) AS total_amount'))
+        $previousValue = feedback_answers::whereIn('feedback_question_id', $cesQuestionId)
             ->whereBetween('created_at', [$previousWeekStart, $previousWeekEnd])
-            ->groupBy('receiver_phone')
-            ->having('total_amount', '>=', $stratum1Threshold)
-            ->count();
+            ->avg('rating') ?? 0;
 
-        $percentageChange = $this->calculatePercentageChange($previousStratum1Count, $stratum1Count);
+        $percentageChange = $this->calculatePercentageChange($previousValue, $currentValue);
+
+        Log::info("CES Current Value: $currentValue, Previous Value: $previousValue");
 
         return [
-            'value' => $stratum1Count,
-            'percentageChange' => $percentageChange,
+            'value' => round($currentValue, 2),
+            'percentageChange' => round($percentageChange, 2),
             'isGrowth' => $percentageChange >= 0,
         ];
     }
 
     private function calculatePercentageChange($previousValue, $currentValue): float
     {
-        if ($previousValue == 0) {
-            return $currentValue > 0 ? 100 : 0;
+        if ($previousValue == 0 && $currentValue == 0) {
+            return 0;
         }
-
-        $change = $currentValue - $previousValue;
-        return ($change / $previousValue) * 100;
+        if ($previousValue == 0) {
+            return $currentValue > 0 ? 100 : -100;
+        }
+        return (($currentValue - $previousValue) / abs($previousValue)) * 100;
     }
 
     protected function getViewData(): array

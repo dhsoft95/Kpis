@@ -2,74 +2,105 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\CustomerFeedback;
+use App\Models\feedback_answers;
+use App\Models\feedbackQuestions;
 use App\Models\trans;
 use Illuminate\Http\Request;
-// app/Http/Controllers/CustomerFeedbackController.php
+use Illuminate\Support\Facades\Validator;
 
 class CustomerFeedbackController extends Controller
 {
-
-    public function store(Request $request)
+    public function getQuestions(Request $request): \Illuminate\Http\JsonResponse
     {
-        $validatedData = $request->validate([
-            'type' => 'required|in:nps,ces,csat',
-            'score' => 'required|integer|min:1|max:10',
-            'comment' => 'nullable|string|max:1000',
+        $validator = Validator::make($request->all(), [
+            'sender_phone' => 'required|string',
         ]);
 
-        $feedback = new CustomerFeedback();
-        $feedback->user_id = auth()->id();
-        $feedback->type = $validatedData['type'];
-        $feedback->score = $validatedData['score'];
-        $feedback->comment = $validatedData['comment'] ?? null;
-        $feedback->save();
-
-        return response()->json(['message' => 'Feedback submitted successfully'], 201);
-    }
-
-    public function showQuestion($type)
-    {
-        // Check if user should see this question
-        if (!$this->shouldShowQuestion($type)) {
-            return response()->json(['show' => false]);
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 400);
         }
 
-        $question = $this->getQuestion($type);
-        return response()->json(['show' => true, 'question' => $question]);
+        $senderPhone = $request->sender_phone;
+
+        // Check if the phone number exists in the transactions table
+        $transactionCount = trans::where('sender_phone', $senderPhone)->count();
+
+        if ($transactionCount == 0) {
+            return response()->json(['message' => 'Telephone number not found.'], 404);
+        }
+
+        // Fetch questions based on transaction count
+        $questions = $this->generateQuestions($transactionCount);
+
+        return response()->json($questions);
     }
 
-    private function shouldShowQuestion($type)
+    private function generateQuestions($transactionCount)
     {
-        $user = auth()->user();
+        $questions = [];
 
-        switch ($type) {
-            case 'nps':
-                // Show NPS after 5 transfers
-                return $user->transfers()->count() >= 5;
-            case 'ces':
-                // Show CES if user just completed a transfer
-                return $user->transfers()->latest()->first()->created_at->isToday();
-            case 'csat':
-                // Show CSAT if user completed a transfer 2 days ago
-                $latestTransfer = $user->transfers()->latest()->first();
-                return $latestTransfer && $latestTransfer->created_at->diffInDays(now()) == 2;
-            default:
-                return false;
+        if ($transactionCount == 1) {
+            $questions = feedbackQuestions::where('type', 'nps')
+                ->where('transaction_stage', 'first')
+                ->get();
+        } elseif ($transactionCount >= 2 && $transactionCount <= 3) {
+            $questions = feedbackQuestions::where('type', 'ces')
+                ->where('transaction_stage', 'early')
+                ->get();
+        } elseif ($transactionCount >= 4 && $transactionCount <= 10) {
+            $questions = feedbackQuestions::where('type', 'nps')
+                ->where('transaction_stage', 'regular')
+                ->get();
+        } else {
+            $questions = feedbackQuestions::whereIn('type', ['csat', 'nps', 'ces'])
+                ->where('transaction_stage', 'loyal')
+                ->get();
         }
+
+        return $questions;
     }
 
-    private function getQuestion($type)
+    public function submitFeedback(Request $request)
     {
-        switch ($type) {
-            case 'nps':
-                return "How likely are you to recommend Simba Money to a friend or colleague?";
-            case 'ces':
-                return "How easy was it to complete your money transfer with Simba Money today?";
-            case 'csat':
-                return "How satisfied are you with your recent Simba Money transfer experience?";
-            default:
-                return "";
+        $validator = Validator::make($request->all(), [
+            'sender_phone' => 'required|string',
+            'feedback' => 'required|array',
+            'feedback.*.feedback_question_id' => 'required|exists:feedback_questions,id',
+            'feedback.*.rating' => 'required|integer|min:1|max:10',
+            'feedback.*.answer' => 'nullable|string',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 400);
         }
+
+        $senderPhone = $request->input('sender_phone');
+
+        // Check if the phone number exists in the transactions table
+        $transactionCount = trans::where('sender_phone', $senderPhone)->count();
+
+        if ($transactionCount == 0) {
+            return response()->json(['message' => 'Telephone number not found in transactions.'], 404);
+        }
+
+        foreach ($request->input('feedback') as $feedback) {
+            // Ensure the user has not already answered this question
+            $existingAnswer = feedback_answers::where('feedback_question_id', $feedback['feedback_question_id'])
+                ->where('sender_phone', $senderPhone)
+                ->first();
+
+            if ($existingAnswer) {
+                return response()->json(['message' => 'You have already answered this question.'], 400);
+            }
+
+            feedback_answers::create([
+                'feedback_question_id' => $feedback['feedback_question_id'],
+                'sender_phone' => $senderPhone,
+                'rating' => $feedback['rating'],
+                'answer' => $feedback['answer']
+            ]);
+        }
+
+        return response()->json(['message' => 'Feedback submitted successfully.']);
     }
 }

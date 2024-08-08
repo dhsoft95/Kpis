@@ -8,8 +8,10 @@ use App\Filament\Widgets\Custvalue;
 use App\Filament\Widgets\userStatsOverview;
 use App\Livewire\CustStatsOverview;
 use App\Livewire\CustvalueChart;
+use App\Livewire\NPSComponentsChart;
 use App\Livewire\testw;
 use App\Livewire\TransvalueChart;
+use App\Livewire\WeeklyTrendsChart;
 use Filament\Forms\Components\Tabs\Tab;
 use Filament\Pages\Page;
 use Filament\Support\Enums\MaxWidth;
@@ -21,9 +23,8 @@ class customer extends Page
     {
         return [
             CustStatsOverview::class,
-            CustvalueChart::class,
-//            testw::class,
-            TransvalueChart::class,
+            WeeklyTrendsChart::class,
+            NPSComponentsChart::class,
         ];
     }
 
@@ -34,10 +35,10 @@ class customer extends Page
     protected static ?string $navigationGroup = 'KPIs';
 
     protected static ?string $title = 'Customer Metric';
-    protected int | string | array $columnSpan = 'full';
+//    protected int | string | array $columnSpan = 'full';
 
 
-    protected ?string $maxContentWidth = 'full';
+//    protected ?string $maxContentWidth = 'full';
 
 //    public function getTabs(): array
 //    {

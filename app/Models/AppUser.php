@@ -46,6 +46,6 @@ class AppUser extends Model
 
     public function transfers(): HasMany
     {
-        return $this->hasMany(trans::class);
+        return $this->hasMany(Trans::class); // Ensure Trans::class is correct
     }
 }

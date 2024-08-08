@@ -25,15 +25,18 @@ Route::get('/crash-rate-metrics', [GooglePlayReportingController::class, 'getCra
 // routes/api.php
 
 
-Route::post('/feedback', [CustomerFeedbackController::class, 'store']);
-Route::get('/feedback/{transactionId}', [CustomerFeedbackController::class, 'showQuestion']);
-
 Route::post('register', [AuthController::class, 'register']);
 Route::post('login', [AuthController::class, 'login']);
 Route::post('logout', [AuthController::class, 'logout'])->middleware('auth:api');
-
-
 Route::get('/analytics/top-city-platform', [GoogleAnalyticsController::class, 'getTopData']);
 
 
-//Route::get('/analytics/top-data', [GoogleAnalyticsController::class, 'getTopData']);
+
+
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::post('/feedback', [CustomerFeedbackController::class, 'store']);
+    Route::get('/feedback/question/{type}', [CustomerFeedbackController::class, 'showQuestion']);
+});
+Route::get('/feedback/questions', [CustomerFeedbackController::class, 'getQuestions']);
+Route::post('/feedback/submit-feedback', [CustomerFeedbackController::class, 'submitFeedback']);

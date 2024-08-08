@@ -11,8 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('conversations', function (Blueprint $table) {
+        Schema::create('feedbacks', function (Blueprint $table) {
             $table->id();
+            $table->enum('type', ['csat', 'nps', 'ces']);
+            $table->integer('score');
+            $table->string('sender_phone');
+            $table->text('comment')->nullable();
+            $table->string('transaction_id')->nullable();
             $table->timestamps();
         });
     }
@@ -22,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('conversations');
+        Schema::dropIfExists('feedbacks');
     }
 };
