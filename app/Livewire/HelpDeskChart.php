@@ -2,46 +2,43 @@
 
 namespace App\Livewire;
 
+use App\Models\UserInteraction;
 use Filament\Widgets\Widget;
 
 class HelpDeskChart extends Widget
 {
     protected int | string | array $columnSpan = 'full';
     protected static string $view = 'livewire.help-desk-chart';
+    public $stats;
 
-
-
-    public array $stats = [
-        'totalInteractions' => ['value' => 0, 'percentageChange' => 0, 'isGrowth' => true],
-        'chats' => ['value' => 0, 'percentageChange' => 0, 'isGrowth' => true],
-        'whatsApp' => ['value' => 0, 'percentageChange' => 0, 'isGrowth' => true],
-    ];
-
-    public function mount(): void
+    public function mount()
     {
         $this->calculateStats();
     }
 
-    public function calculateStats(): void
+    public function calculateStats()
     {
-        $this->stats['totalInteractions'] = $this->getDummyData(150, 5.8, true);
-        $this->stats['chats'] = $this->getDummyData(850, 3.2, true);
-        $this->stats['whatsApp'] = $this->getDummyData(400, -1.5, false);
-    }
+        // Real WhatsApp data
+        $currentWeekInteractions = UserInteraction::whereBetween('created_at', [now()->startOfWeek(), now()])->count();
+        $lastWeekInteractions = UserInteraction::whereBetween('created_at', [now()->subWeek()->startOfWeek(), now()->subWeek()->endOfWeek()])->count();
 
-    private function getDummyData($value, $percentageChange, $isGrowth): array
-    {
-        return [
-            'value' => $value,
-            'percentageChange' => $percentageChange,
-            'isGrowth' => $isGrowth,
+        $percentageChange = $lastWeekInteractions > 0
+            ? (($currentWeekInteractions - $lastWeekInteractions) / $lastWeekInteractions) * 100
+            : 100;
+
+        $this->stats = [
+            'whatsApp' => [
+                'value' => $currentWeekInteractions,
+                'percentageChange' => $percentageChange,
+                'isGrowth' => $percentageChange >= 0,
+            ],
+            // Dummy data for other metrics
+            'chats' => ['value' => 850, 'percentageChange' => 3.2, 'isGrowth' => true],
+            'faq' => ['value' => 1200, 'percentageChange' => 7.5, 'isGrowth' => true],
+            'socialMedia' => ['value' => 300, 'percentageChange' => 4.2, 'isGrowth' => true],
+            'phoneCalls' => ['value' => 500, 'percentageChange' => -2.1, 'isGrowth' => false],
+            'email' => ['value' => 750, 'percentageChange' => 1.8, 'isGrowth' => true],
         ];
     }
 
-    protected function getViewData(): array
-    {
-        return [
-            'stats' => $this->stats,
-        ];
-    }
 }

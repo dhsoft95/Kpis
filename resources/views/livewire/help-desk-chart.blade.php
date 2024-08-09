@@ -72,7 +72,7 @@
             }
         </style>
 
-        <div class="container mx-auto p-1" wire:poll.1s="calculateStats">
+        <div class="container mx-auto p-1" wire:poll.10s="calculateStats">
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 @php
                     $cards = [
@@ -83,14 +83,6 @@
                         'phoneCalls' => ['title' => 'Phone Calls', 'icon' => 'fas fa-phone', 'iconBgColor' => 'bg-red-100 dark:bg-red-700', 'iconColor' => 'text-red-600 dark:text-red-200'],
                         'email' => ['title' => 'Emails', 'icon' => 'fas fa-envelope', 'iconBgColor' => 'bg-indigo-100 dark:bg-indigo-700', 'iconColor' => 'text-indigo-600 dark:text-indigo-200'],
                     ];
-
-                    // Dummy data for Help Desk metrics
-                    $stats['chats'] = ['value' => 850, 'percentageChange' => 3.2, 'isGrowth' => true];
-                    $stats['whatsApp'] = ['value' => 400, 'percentageChange' => -1.5, 'isGrowth' => false];
-                    $stats['faq'] = ['value' => 1200, 'percentageChange' => 7.5, 'isGrowth' => true];
-                    $stats['socialMedia'] = ['value' => 300, 'percentageChange' => 4.2, 'isGrowth' => true];
-                    $stats['phoneCalls'] = ['value' => 500, 'percentageChange' => -2.1, 'isGrowth' => false];
-                    $stats['email'] = ['value' => 750, 'percentageChange' => 1.8, 'isGrowth' => true];
                 @endphp
 
                 @foreach ($cards as $key => $card)
