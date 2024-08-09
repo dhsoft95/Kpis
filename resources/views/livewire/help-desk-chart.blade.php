@@ -72,7 +72,7 @@
             }
         </style>
 
-        <div class="container mx-auto p-1" wire:poll.10s="calculateStats">
+        <div class="container mx-auto p-1" wire:poll.2s="calculateStats">
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 @php
                     $cards = [

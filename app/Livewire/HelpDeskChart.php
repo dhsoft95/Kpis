@@ -16,7 +16,7 @@ class HelpDeskChart extends Widget
         $this->calculateStats();
     }
 
-    public function calculateStats()
+    public function calculateStats(): void
     {
         // Real WhatsApp data
         $currentWeekInteractions = UserInteraction::whereBetween('created_at', [now()->startOfWeek(), now()])->count();
