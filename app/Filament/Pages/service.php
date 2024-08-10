@@ -21,7 +21,7 @@ class service extends Page
     {
         return [
            HelpDeskChart::class,
-            \App\Livewire\Interactions::class,
+//            \App\Livewire\Interactions::class,
 //             UserDemographic::class
         ];
     }

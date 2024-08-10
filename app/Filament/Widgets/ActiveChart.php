@@ -2,12 +2,10 @@
 
 namespace App\Filament\Widgets;
 
-use Carbon\CarbonPeriod;
+use Carbon\Carbon;
 use DateInterval;
-use DatePeriod;
 use Filament\Widgets\ChartWidget;
 use Illuminate\Support\Facades\DB;
-use Carbon\Carbon;
 
 class ActiveChart extends ChartWidget
 {
@@ -30,26 +28,26 @@ class ActiveChart extends ChartWidget
     protected function getData(): array
     {
         $dateRange = $this->getDateRange();
-        $data = $this->getUserCounts($dateRange['start'], $dateRange['end']);
+        $userCounts = $this->getUserCounts($dateRange['start'], $dateRange['end']);
 
         return [
             'datasets' => [
                 [
                     'label' => 'Active Users',
-                    'data' => $data['activeCounts'],
+                    'data' => $userCounts['activeCounts'],
                     'backgroundColor' => '#4A58EC', // Simple color
                     'borderColor' => null, // Remove border color
                     'borderWidth' => 0, // Remove border width
                 ],
                 [
                     'label' => 'Inactive Users',
-                    'data' => $data['inactiveCounts'],
+                    'data' => $userCounts['inactiveCounts'],
                     'backgroundColor' => '#48D3FF', // Simple color
                     'borderColor' => null, // Remove border color
                     'borderWidth' => 0, // Remove border width
                 ],
             ],
-            'labels' => $data['labels'],
+            'labels' => $userCounts['labels'],
         ];
     }
 
@@ -75,8 +73,6 @@ class ActiveChart extends ChartWidget
         $activeCounts = [];
         $inactiveCounts = [];
         $labels = [];
-        $wowActivePercentages = [];
-        $wowInactivePercentages = [];
 
         $interval = $this->getIntervalFromFilter();
         $periodEnd = $endDate->copy();
@@ -87,23 +83,8 @@ class ActiveChart extends ChartWidget
                 $periodStart = $startDate->copy();
             }
 
-            // Active Users
-            $activeCount = DB::connection('mysql_second')
-                ->table('tbl_transactions')
-                ->select('sender_phone')
-                ->whereBetween('created_at', [$periodStart, $periodEnd])
-                ->where('status', 3)
-                ->whereNotNull('sender_amount')
-                ->distinct()
-                ->count();
-
-            // Total Registered Users
-            $totalRegisteredUsers = DB::connection('mysql_second')
-                ->table('users')
-                ->where('created_at', '<=', $periodEnd)
-                ->count();
-
-            // Inactive Users
+            $activeCount = $this->getActiveUserCount($periodStart, $periodEnd);
+            $totalRegisteredUsers = $this->getTotalRegisteredUsers($periodEnd);
             $inactiveCount = $totalRegisteredUsers - $activeCount;
 
             array_unshift($activeCounts, $activeCount);
@@ -113,38 +94,42 @@ class ActiveChart extends ChartWidget
             $periodEnd = $periodStart->subDay();
         }
 
-        // Calculate WoW percentages
-        for ($i = 1; $i < count($activeCounts); $i++) {
-            $wowActivePercentages[] = $this->calculatePercentageChange($activeCounts[$i-1], $activeCounts[$i]);
-            $wowInactivePercentages[] = $this->calculatePercentageChange($inactiveCounts[$i-1], $inactiveCounts[$i]);
-        }
-
         return [
             'activeCounts' => $activeCounts,
             'inactiveCounts' => $inactiveCounts,
             'labels' => $labels,
-            'wowActivePercentages' => $wowActivePercentages,
-            'wowInactivePercentages' => $wowInactivePercentages,
         ];
     }
 
-    protected function getIntervalFromFilter(): \DateInterval
+    protected function getActiveUserCount(Carbon $start, Carbon $end): int
     {
-        return match ($this->filter) {
-            'week' => new \DateInterval('P1W'),
-            'month' => new \DateInterval('P1M'),
-            'quarter' => new \DateInterval('P3M'),
-            'year' => new \DateInterval('P1Y'),
-            default => new \DateInterval('P1W'),
-        };
+        return DB::connection('mysql_second')
+            ->table('tbl_transactions')
+            ->select('sender_phone')
+            ->whereBetween('created_at', [$start, $end])
+            ->where('status', 3)
+            ->whereNotNull('sender_amount')
+            ->distinct()
+            ->count();
     }
 
-    protected function calculatePercentageChange($oldValue, $newValue)
+    protected function getTotalRegisteredUsers(Carbon $end): int
     {
-        if ($oldValue == 0) {
-            return $newValue > 0 ? 100 : 0;
-        }
-        return (($newValue - $oldValue) / $oldValue) * 100;
+        return DB::connection('mysql_second')
+            ->table('users')
+            ->where('created_at', '<=', $end)
+            ->count();
+    }
+
+    protected function getIntervalFromFilter(): DateInterval
+    {
+        return match ($this->filter) {
+            'week' => new DateInterval('P1W'),
+            'month' => new DateInterval('P1M'),
+            'quarter' => new DateInterval('P3M'),
+            'year' => new DateInterval('P1Y'),
+            default => new DateInterval('P1W'),
+        };
     }
 
     protected function getType(): string
