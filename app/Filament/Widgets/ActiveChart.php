@@ -3,13 +3,16 @@
 namespace App\Filament\Widgets;
 
 use Carbon\Carbon;
-use DateInterval;
+use Carbon\CarbonPeriod;
 use Filament\Widgets\ChartWidget;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Cache;
+use Exception;
 
 class ActiveChart extends ChartWidget
 {
-    protected static ?string $heading = 'Active Vs Inactive Users (WoW)';
+    protected static ?string $heading = 'Active vs Inactive Users';
+    protected static ?int $sort = 1;
     protected static ?string $maxHeight = '300px';
     protected static ?string $pollingInterval = '3600s'; // Update every hour
 
@@ -27,28 +30,38 @@ class ActiveChart extends ChartWidget
 
     protected function getData(): array
     {
-        $dateRange = $this->getDateRange();
-        $userCounts = $this->getUserCounts($dateRange['start'], $dateRange['end']);
+        try {
+            $dateRange = $this->getDateRange();
+            $data = $this->getUserCounts($dateRange['start'], $dateRange['end']);
 
-        return [
-            'datasets' => [
-                [
-                    'label' => 'Active Users',
-                    'data' => $userCounts['activeCounts'],
-                    'backgroundColor' => '#4A58EC', // Simple color
-                    'borderColor' => null, // Remove border color
-                    'borderWidth' => 0, // Remove border width
+            return [
+                'datasets' => [
+                    [
+                        'label' => 'Active Users',
+                        'data' => $data['activeCounts'],
+                        'backgroundColor' => '#4A58EC',
+                    ],
+                    [
+                        'label' => 'Inactive Users',
+                        'data' => $data['inactiveCounts'],
+                        'backgroundColor' => '#48D3FF',
+                    ],
                 ],
-                [
-                    'label' => 'Inactive Users',
-                    'data' => $userCounts['inactiveCounts'],
-                    'backgroundColor' => '#48D3FF', // Simple color
-                    'borderColor' => null, // Remove border color
-                    'borderWidth' => 0, // Remove border width
+                'labels' => $data['labels'],
+            ];
+        } catch (Exception $e) {
+            // Log the error
+            \Log::error('Error in ActiveChart getData: ' . $e->getMessage());
+
+            // Return empty data to prevent chart errors
+            return [
+                'datasets' => [
+                    ['label' => 'Active Users', 'data' => []],
+                    ['label' => 'Inactive Users', 'data' => []],
                 ],
-            ],
-            'labels' => $userCounts['labels'],
-        ];
+                'labels' => [],
+            ];
+        }
     }
 
     protected function getDateRange(): array
@@ -56,80 +69,77 @@ class ActiveChart extends ChartWidget
         $end = now()->endOfDay();
         $start = match ($this->filter) {
             'week' => $end->copy()->subWeeks(4)->startOfDay(),
-            'month' => $end->copy()->subMonths(2)->startOfMonth(),
-            'quarter' => $end->copy()->subMonths(3)->startOfQuarter(),
+            'month' => $end->copy()->subMonths(3)->startOfMonth(),
+            'quarter' => $end->copy()->subQuarter()->startOfQuarter(),
             'year' => $end->copy()->subYear()->startOfYear(),
             default => $end->copy()->subWeeks(4)->startOfDay(),
         };
 
-        return [
-            'start' => $start,
-            'end' => $end,
-        ];
+        return compact('start', 'end');
     }
 
     protected function getUserCounts(Carbon $startDate, Carbon $endDate): array
     {
-        $activeCounts = [];
-        $inactiveCounts = [];
-        $labels = [];
+        $cacheKey = "user_counts_{$this->filter}_{$startDate->timestamp}_{$endDate->timestamp}";
 
-        $interval = $this->getIntervalFromFilter();
-        $periodEnd = $endDate->copy();
+        return Cache::remember($cacheKey, now()->addHours(1), function () use ($startDate, $endDate) {
+            $activeCounts = [];
+            $inactiveCounts = [];
+            $labels = [];
+            $period = $this->getDatePeriod($startDate, $endDate);
 
-        while ($periodEnd->gte($startDate)) {
-            $periodStart = $periodEnd->copy()->sub($interval)->addDay();
-            if ($periodStart->lt($startDate)) {
-                $periodStart = $startDate->copy();
+            foreach ($period as $periodStart) {
+                $periodEnd = $periodStart->copy()->add($this->getIntervalFromFilter())->subDay();
+                if ($periodEnd->gt($endDate)) {
+                    $periodEnd = $endDate->copy();
+                }
+
+                $activeCount = $this->getActiveUserCount($periodStart, $periodEnd);
+                $totalUsers = $this->getTotalUserCount($periodEnd);
+                $inactiveCount = $totalUsers - $activeCount;
+
+                $activeCounts[] = $activeCount;
+                $inactiveCounts[] = $inactiveCount;
+                $labels[] = $periodStart->format('M d') . ' - ' . $periodEnd->format('M d');
             }
 
-            $activeCount = $this->getActiveUserCount($periodStart, $periodEnd);
-            $totalRegisteredUsers = $this->getTotalRegisteredUsers($periodEnd);
-            $inactiveCount = $totalRegisteredUsers - $activeCount;
+            return compact('activeCounts', 'inactiveCounts', 'labels');
+        });
+    }
 
-            array_unshift($activeCounts, $activeCount);
-            array_unshift($inactiveCounts, $inactiveCount);
-            array_unshift($labels, $periodStart->format('M d') . ' - ' . $periodEnd->format('M d'));
+    protected function getDatePeriod(Carbon $startDate, Carbon $endDate): CarbonPeriod
+    {
+        return CarbonPeriod::create($startDate, $this->getIntervalFromFilter(), $endDate);
+    }
 
-            $periodEnd = $periodStart->subDay();
-        }
-
-        return [
-            'activeCounts' => $activeCounts,
-            'inactiveCounts' => $inactiveCounts,
-            'labels' => $labels,
-        ];
+    protected function getIntervalFromFilter(): \DateInterval
+    {
+        return match ($this->filter) {
+            'week' => new \DateInterval('P1W'),
+            'month' => new \DateInterval('P1M'),
+            'quarter' => new \DateInterval('P3M'),
+            'year' => new \DateInterval('P1Y'),
+            default => new \DateInterval('P1W'),
+        };
     }
 
     protected function getActiveUserCount(Carbon $start, Carbon $end): int
     {
         return DB::connection('mysql_second')
             ->table('tbl_transactions')
-            ->select('sender_phone')
             ->whereBetween('created_at', [$start, $end])
             ->where('status', 3)
             ->whereNotNull('sender_amount')
-            ->distinct()
-            ->count();
+            ->distinct('sender_phone')
+            ->count('sender_phone');
     }
 
-    protected function getTotalRegisteredUsers(Carbon $end): int
+    protected function getTotalUserCount(Carbon $date): int
     {
         return DB::connection('mysql_second')
             ->table('users')
-            ->where('created_at', '<=', $end)
+            ->where('created_at', '<=', $date)
             ->count();
-    }
-
-    protected function getIntervalFromFilter(): DateInterval
-    {
-        return match ($this->filter) {
-            'week' => new DateInterval('P1W'),
-            'month' => new DateInterval('P1M'),
-            'quarter' => new DateInterval('P3M'),
-            'year' => new DateInterval('P1Y'),
-            default => new DateInterval('P1W'),
-        };
     }
 
     protected function getType(): string
