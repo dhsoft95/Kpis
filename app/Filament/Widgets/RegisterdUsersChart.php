@@ -2,15 +2,9 @@
 
 namespace App\Filament\Widgets;
 
-use App\Models\AppUser;
-use Filament\Forms\Components\DatePicker;
-use Filament\Forms\Components\Grid;
-use Filament\Forms\Components\Radio;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Toggle;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Leandrocfe\FilamentApexCharts\Widgets\ApexChartWidget;
-use Carbon\Carbon;
 
 class RegisterdUsersChart extends ApexChartWidget
 {
@@ -19,14 +13,12 @@ class RegisterdUsersChart extends ApexChartWidget
     protected static ?string $heading = 'Registered Users Trend';
 
     protected int | string | array $columnSpan = 'full';
-//    protected static ?int $contentHeight = 440;
     protected static ?int $contentHeight = 300;
-
-
 
     protected function getOptions(): array
     {
         $userRegistrations = $this->getUserRegistrations();
+        $weekLabels = $this->getWeekLabels($userRegistrations);
 
         return [
             'chart' => [
@@ -77,7 +69,7 @@ class RegisterdUsersChart extends ApexChartWidget
                 'show' => true,
             ],
             'xaxis' => [
-                'categories' => $this->getWeekLabels(),
+                'categories' => $weekLabels,
                 'labels' => [
                     'style' => [
                         'fontFamily' => 'inherit',
@@ -113,51 +105,58 @@ class RegisterdUsersChart extends ApexChartWidget
         ];
     }
 
-
-
-    /**
-     * Get user registrations for the last 12 weeks.
-     */
     protected function getUserRegistrations(): array
     {
+        $startDate = DB::connection('mysql_second')
+            ->table('users')
+            ->min('created_at');
+
+        $endDate = Carbon::now();
+
         $registrations = DB::connection('mysql_second')->table('users')
             ->select(DB::raw('YEARWEEK(created_at, 1) as week, COUNT(*) as count'))
+            ->where('created_at', '>=', $startDate)
+            ->where('created_at', '<=', $endDate)
             ->groupBy('week')
-            ->orderBy('week', 'desc')
-            ->take(13)
+            ->orderBy('week', 'asc')
             ->get()
+            ->keyBy('week')
             ->toArray();
 
         $data = [];
+        $previousWeek = null;
 
-        for ($i = 1; $i < count($registrations); $i++) {
-            $current = $registrations[$i]->count;
-            $previous = $registrations[$i - 1]->count;
+        foreach ($registrations as $week => $registration) {
+            $currentWeekCount = $registration->count;
+            $previousWeekCount = $previousWeek ? $registrations[$previousWeek]->count : 0;
 
             $data[] = [
-                'current' => $current,
-                'previous' => $previous,
+                'week' => $week,
+                'current' => $currentWeekCount,
+                'previous' => $previousWeekCount,
             ];
+
+            $previousWeek = $week;
         }
 
-        return array_reverse(array_slice($data, 0, 6));
+        return $data;
     }
 
-    /**
-     * Get week labels for the last 12 weeks.
-     */
-    protected function getWeekLabels(): array
+    protected function getWeekLabels(array $registrations): array
     {
-        $endDate = Carbon::now()->startOfWeek();
         $labels = [];
 
-        for ($i = 0; $i < 6; $i++) {
-            $startDate = $endDate->copy()->subDays(6);
-            $labels[] = $startDate->format('M d') . '-' . $endDate->format('M d');
-            $endDate->subWeek();
+        foreach ($registrations as $registration) {
+            $weekNumber = $registration['week'];
+            $year = substr($weekNumber, 0, 4);
+            $week = substr($weekNumber, -2);
+
+            $startOfWeek = Carbon::parse($year)->startOfYear()->addWeeks($week - 1)->startOfWeek();
+            $endOfWeek = $startOfWeek->copy()->endOfWeek();
+
+            $labels[] = $startOfWeek->format('M d') . '-' . $endOfWeek->format('M d');
         }
 
-        return array_reverse($labels);
+        return $labels;
     }
-
 }
