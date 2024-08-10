@@ -6,6 +6,8 @@ use Carbon\Carbon;
 use Filament\Widgets\ChartWidget;
 use Illuminate\Support\Facades\DB;
 use Filament\Widgets\StatsOverviewWidget\Stat;
+use Illuminate\Support\Facades\Cache;
+use Exception;
 
 class ChurnChart extends ChartWidget
 {
@@ -13,45 +15,52 @@ class ChurnChart extends ChartWidget
     protected static ?int $sort = 2;
     protected static ?string $maxHeight = '300px';
 
-    // Default filter value
     public ?string $filter = 'five_weeks';
 
     protected function getData(): array
     {
-        $filter = $this->filter;
-        $today = Carbon::now()->startOfDay();
-        $weeks = $this->getWeekPeriods($filter, $today);
+        try {
+            $filter = $this->filter;
+            $today = Carbon::now()->startOfDay();
+            $weeks = $this->getWeekPeriods($filter, $today);
 
-        $currentWeekChurn = [];
-        $previousWeekChurn = [];
-        $labels = [];
+            $currentWeekChurn = [];
+            $previousWeekChurn = [];
+            $labels = [];
 
-        foreach ($weeks as $week) {
-            $currentWeekChurn[] = $this->getChurnCount($week['currentStart'], $week['currentEnd']);
-            $previousWeekChurn[] = $this->getChurnCount($week['previousStart'], $week['previousEnd']);
+            foreach ($weeks as $week) {
+                $currentWeekChurn[] = $this->getCachedChurnCount($week['currentStart'], $week['currentEnd']);
+                $previousWeekChurn[] = $this->getCachedChurnCount($week['previousStart'], $week['previousEnd']);
+                $labels[] = $week['currentStart']->format('M d') . ' - ' . $week['currentEnd']->format('M d');
+            }
 
-            $labels[] = $week['currentStart']->format('M d') . ' - ' . $week['currentEnd']->format('M d');
+            return [
+                'datasets' => [
+                    [
+                        'label' => 'Previous Week',
+                        'data' => $previousWeekChurn,
+                        'backgroundColor' => '#4A58EC',
+                    ],
+                    [
+                        'label' => 'Current Week',
+                        'data' => $currentWeekChurn,
+                        'backgroundColor' => '#48D3FF',
+                    ],
+                ],
+                'labels' => $labels,
+            ];
+        } catch (Exception $e) {
+            \Log::error('Error in ChurnChart getData: ' . $e->getMessage());
+            return $this->getEmptyChartData();
         }
+    }
 
-        return [
-            'datasets' => [
-                [
-                    'label' => 'Previous Week',
-                    'data' => $previousWeekChurn,
-                    'backgroundColor' => '#4A58EC', // Simple color
-                    'borderColor' => null, // Remove border color
-                    'borderWidth' => 0, // Remove border width
-                ],
-                [
-                    'label' => 'Current Week',
-                    'data' => $currentWeekChurn,
-                    'backgroundColor' => '#48D3FF', // Simple color
-                    'borderColor' => null, // Remove border color
-                    'borderWidth' => 0, // Remove border width
-                ],
-            ],
-            'labels' => $labels,
-        ];
+    private function getCachedChurnCount(Carbon $start, Carbon $end): int
+    {
+        $cacheKey = "churn_count_{$start->timestamp}_{$end->timestamp}";
+        return Cache::remember($cacheKey, now()->addHours(1), function () use ($start, $end) {
+            return $this->getChurnCount($start, $end);
+        });
     }
 
     private function getChurnCount(Carbon $start, Carbon $end): int
@@ -60,7 +69,7 @@ class ChurnChart extends ChartWidget
             ->whereNotIn('users.phone_number', function ($query) use ($end) {
                 $query->select('tbl_transactions.sender_phone')
                     ->from('tbl_transactions')
-                    ->where('tbl_transactions.created_at', '>', DB::raw("DATE_SUB('{$end}', INTERVAL 30 DAY)"));
+                    ->where('tbl_transactions.created_at', '>', $end->copy()->subDays(30));
             })
             ->where('users.created_at', '<=', $end)
             ->count();
@@ -70,34 +79,18 @@ class ChurnChart extends ChartWidget
     {
         $weeks = [];
         $endDate = $today->copy()->endOfWeek();
+        $startDate = $this->getStartDateForFilter($filter, $today);
 
-        switch ($filter) {
-            case 'month':
-                $startDate = $today->copy()->startOfMonth();
-                break;
-            case 'quarter':
-                $startDate = $today->copy()->startOfQuarter();
-                break;
-            case 'year':
-                $startDate = $today->copy()->startOfYear();
-                break;
-            case 'five_weeks':
-            default:
-                $startDate = $today->copy()->startOfWeek()->subWeeks(4);
-                break;
-        }
+        $period = new \DatePeriod($startDate, new \DateInterval('P1W'), $endDate);
 
-        // Generate weekly periods for the defined range
-        for ($i = 0; $i < 5; $i++) {
-            $currentStart = $startDate->copy()->addWeeks($i)->startOfWeek();
+        foreach ($period as $date) {
+            $currentStart = Carbon::instance($date)->startOfWeek();
             $currentEnd = $currentStart->copy()->endOfWeek();
+            if ($currentEnd->isAfter($today)) {
+                $currentEnd = $today->copy();
+            }
             $previousStart = $currentStart->copy()->subWeek();
             $previousEnd = $previousStart->copy()->endOfWeek();
-
-            // Skip if the current period is beyond today's date
-            if ($currentEnd->isAfter($today)) {
-                $currentEnd = $today;
-            }
 
             $weeks[] = [
                 'currentStart' => $currentStart,
@@ -110,12 +103,14 @@ class ChurnChart extends ChartWidget
         return $weeks;
     }
 
-    private function calculatePercentageChange($oldValue, $newValue): float
+    private function getStartDateForFilter(string $filter, Carbon $today): Carbon
     {
-        if ($oldValue == 0) {
-            return $newValue > 0 ? 100 : 0;
-        }
-        return round((($newValue - $oldValue) / $oldValue) * 100, 2);
+        return match ($filter) {
+            'month' => $today->copy()->startOfMonth(),
+            'quarter' => $today->copy()->startOfQuarter(),
+            'year' => $today->copy()->startOfYear(),
+            default => $today->copy()->startOfWeek()->subWeeks(4),
+        };
     }
 
     protected function getType(): string
@@ -127,7 +122,7 @@ class ChurnChart extends ChartWidget
     {
         return [
             'five_weeks' => 'Last 5 Weeks',
-            'month' => 'Last 3 Months',
+            'month' => 'Last Month',
             'quarter' => 'Last Quarter',
             'year' => 'Last Year',
         ];
@@ -135,29 +130,52 @@ class ChurnChart extends ChartWidget
 
     protected function getFooterWidgets(): array
     {
+        try {
+            $churnData = $this->getChurnData();
+            $averageChange = $this->calculateAverageChange($churnData);
+
+            return [
+                Stat::make('Week-on-Week Change', $averageChange . '%')
+                    ->description($averageChange >= 0 ? 'Increase in churn' : 'Decrease in churn')
+                    ->color($averageChange >= 0 ? 'danger' : 'success')
+                    ->chart($churnData)
+            ];
+        } catch (Exception $e) {
+            \Log::error('Error in ChurnChart getFooterWidgets: ' . $e->getMessage());
+            return [];
+        }
+    }
+
+    private function getChurnData(): array
+    {
         $filter = $this->filter;
         $today = Carbon::now()->startOfDay();
         $weeks = $this->getWeekPeriods($filter, $today);
 
-        $currentWeekChurn = [];
-        $previousWeekChurn = [];
-
+        $churnData = [];
         foreach ($weeks as $week) {
-            $currentWeekChurn[] = $this->getChurnCount($week['currentStart'], $week['currentEnd']);
-            $previousWeekChurn[] = $this->getChurnCount($week['previousStart'], $week['previousEnd']);
+            $churnData[] = $this->getCachedChurnCount($week['previousStart'], $week['previousEnd']);
+            $churnData[] = $this->getCachedChurnCount($week['currentStart'], $week['currentEnd']);
         }
 
-        $percentageChanges = [];
-        foreach ($currentWeekChurn as $index => $currentChurn) {
-            $percentageChanges[] = $this->calculatePercentageChange($previousWeekChurn[$index], $currentChurn);
-        }
+        return $churnData;
+    }
 
-        return [
-            Stat::make('Week-on-Week Change', round(array_sum($percentageChanges) / count($percentageChanges), 2) . '%')
-                ->description($percentageChanges[0] >= 0 ? 'Increase in churn' : 'Decrease in churn')
-                ->color($percentageChanges[0] >= 0 ? 'danger' : 'success')
-                ->chart(array_merge($previousWeekChurn, $currentWeekChurn))
-        ];
+    private function calculateAverageChange(array $churnData): float
+    {
+        $changes = [];
+        for ($i = 0; $i < count($churnData) - 1; $i += 2) {
+            $changes[] = $this->calculatePercentageChange($churnData[$i], $churnData[$i + 1]);
+        }
+        return round(array_sum($changes) / count($changes), 2);
+    }
+
+    private function calculatePercentageChange($oldValue, $newValue): float
+    {
+        if ($oldValue == 0) {
+            return $newValue > 0 ? 100 : 0;
+        }
+        return round((($newValue - $oldValue) / $oldValue) * 100, 2);
     }
 
     protected function getOptions(): array
@@ -173,8 +191,6 @@ class ChurnChart extends ChartWidget
                     'stacked' => false,
                     'ticks' => [
                         'autoSkip' => false,
-//                        'maxRotation' => 90,
-//                        'minRotation' => 90,
                     ],
                 ],
                 'y' => [
@@ -184,6 +200,17 @@ class ChurnChart extends ChartWidget
                     ],
                 ],
             ],
+        ];
+    }
+
+    private function getEmptyChartData(): array
+    {
+        return [
+            'datasets' => [
+                ['label' => 'Previous Week', 'data' => []],
+                ['label' => 'Current Week', 'data' => []],
+            ],
+            'labels' => [],
         ];
     }
 }
