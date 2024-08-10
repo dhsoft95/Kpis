@@ -1,0 +1,10 @@
+<?php
+
+return [
+    'TEMBO_ACCOUNT_ID' => env('TEMBO_ACCOUNT_ID'),
+    'TEMBO_SECRET_KEY' => env('TEMBO_SECRET_KEY'),
+    'TEMBO_ENDPOINT' => env('TEMBO_ENDPOINT'),
+    'TEMBO_PLUS_ONBOARD' => env('TEMBO_PLUS_ONBOARD'),
+    'TEMBO_API_TOKEN' => env('TEMBO_API_TOKEN'),
+
+];

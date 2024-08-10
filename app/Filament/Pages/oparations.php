@@ -25,7 +25,7 @@ class oparations extends Page
     {
         return [
 
-            \App\Livewire\MnoWallets::class,
+//            \App\Livewire\MnoWallets::class,
             AgsWallets::class,
         ];
     }
