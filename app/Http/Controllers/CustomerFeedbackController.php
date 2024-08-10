@@ -29,45 +29,43 @@ class CustomerFeedbackController extends Controller
             return response()->json(['message' => 'Telephone number not found.'], 404);
         }
 
-        // Fetch questions based on transaction count
-        $questions = $this->generateQuestions($transactionCount);
+        // Get the next unanswered question for this user
+        $question = $this->getNextQuestion($senderPhone, $transactionCount);
 
-        return response()->json($questions);
-    }
-
-    private function generateQuestions($transactionCount)
-    {
-        $questions = [];
-
-        if ($transactionCount == 1) {
-            $questions = feedbackQuestions::where('type', 'nps')
-                ->where('transaction_stage', 'first')
-                ->get();
-        } elseif ($transactionCount >= 2 && $transactionCount <= 3) {
-            $questions = feedbackQuestions::where('type', 'ces')
-                ->where('transaction_stage', 'early')
-                ->get();
-        } elseif ($transactionCount >= 4 && $transactionCount <= 10) {
-            $questions = feedbackQuestions::where('type', 'nps')
-                ->where('transaction_stage', 'regular')
-                ->get();
-        } else {
-            $questions = feedbackQuestions::whereIn('type', ['csat', 'nps', 'ces'])
-                ->where('transaction_stage', 'loyal')
-                ->get();
+        if (!$question) {
+            return response()->json(['message' => 'No more questions available.'], 404);
         }
 
-        return $questions;
+        return response()->json($question);
+    }
+
+    private function getNextQuestion($senderPhone, $transactionCount)
+    {
+        $answeredQuestionIds = feedback_answers::where('sender_phone', $senderPhone)
+            ->pluck('feedback_question_id');
+
+        $query = feedbackQuestions::whereNotIn('id', $answeredQuestionIds);
+
+        if ($transactionCount == 1) {
+            $query->where('type', 'nps')->where('transaction_stage', 'first');
+        } elseif ($transactionCount >= 2 && $transactionCount <= 3) {
+            $query->where('type', 'ces')->where('transaction_stage', 'early');
+        } elseif ($transactionCount >= 4 && $transactionCount <= 10) {
+            $query->where('type', 'nps')->where('transaction_stage', 'regular');
+        } else {
+            $query->whereIn('type', ['csat', 'nps', 'ces'])->where('transaction_stage', 'loyal');
+        }
+
+        return $query->first();
     }
 
     public function submitFeedback(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'sender_phone' => 'required|string',
-            'feedback' => 'required|array',
-            'feedback.*.feedback_question_id' => 'required|exists:feedback_questions,id',
-            'feedback.*.rating' => 'required|integer|min:1|max:10',
-            'feedback.*.answer' => 'nullable|string',
+            'feedback_question_id' => 'required|exists:feedback_questions,id',
+            'rating' => 'required|integer|min:1|max:10',
+            'answer' => 'nullable|string',
         ]);
 
         if ($validator->fails()) {
@@ -83,23 +81,21 @@ class CustomerFeedbackController extends Controller
             return response()->json(['message' => 'Telephone number not found in transactions.'], 404);
         }
 
-        foreach ($request->input('feedback') as $feedback) {
-            // Ensure the user has not already answered this question
-            $existingAnswer = feedback_answers::where('feedback_question_id', $feedback['feedback_question_id'])
-                ->where('sender_phone', $senderPhone)
-                ->first();
+        // Ensure the user has not already answered this question
+        $existingAnswer = feedback_answers::where('feedback_question_id', $request->input('feedback_question_id'))
+            ->where('sender_phone', $senderPhone)
+            ->first();
 
-            if ($existingAnswer) {
-                return response()->json(['message' => 'You have already answered this question.'], 400);
-            }
-
-            feedback_answers::create([
-                'feedback_question_id' => $feedback['feedback_question_id'],
-                'sender_phone' => $senderPhone,
-                'rating' => $feedback['rating'],
-                'answer' => $feedback['answer']
-            ]);
+        if ($existingAnswer) {
+            return response()->json(['message' => 'You have already answered this question.'], 400);
         }
+
+        feedback_answers::create([
+            'feedback_question_id' => $request->input('feedback_question_id'),
+            'sender_phone' => $senderPhone,
+            'rating' => $request->input('rating'),
+            'answer' => $request->input('answer')
+        ]);
 
         return response()->json(['message' => 'Feedback submitted successfully.']);
     }
