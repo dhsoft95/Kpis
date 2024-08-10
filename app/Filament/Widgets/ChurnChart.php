@@ -29,8 +29,8 @@ class ChurnChart extends ChartWidget
             $labels = [];
 
             foreach ($weeks as $week) {
-                $currentWeekChurn[] = $this->getCachedChurnCount($week['currentStart'], $week['currentEnd']);
-                $previousWeekChurn[] = $this->getCachedChurnCount($week['previousStart'], $week['previousEnd']);
+                $currentWeekChurn[] = $this->getCachedChurnCount($week['currentEnd']);
+                $previousWeekChurn[] = $this->getCachedChurnCount($week['previousEnd']);
                 $labels[] = $week['currentStart']->format('M d') . ' - ' . $week['currentEnd']->format('M d');
             }
 
@@ -55,27 +55,25 @@ class ChurnChart extends ChartWidget
         }
     }
 
-    private function getCachedChurnCount(Carbon $start, Carbon $end): int
+    private function getCachedChurnCount(Carbon $date): int
     {
-        $cacheKey = "churn_count_{$start->timestamp}_{$end->timestamp}";
-        return Cache::remember($cacheKey, now()->addHours(1), function () use ($start, $end) {
-            return $this->getChurnCount($start, $end);
+        $cacheKey = "churn_count_{$date->timestamp}";
+        return Cache::remember($cacheKey, now()->addHours(1), function () use ($date) {
+            return $this->getChurnUsersCount($date);
         });
     }
 
-    private function getChurnCount(Carbon $start, Carbon $end): int
+    private function getChurnUsersCount(Carbon $date): int
     {
         return DB::connection('mysql_second')->table('users')
-            ->whereIn('phone_number', function ($query) use ($start, $end) {
+            ->whereIn('phone_number', function ($query) use ($date) {
                 $query->select('sender_phone')
                     ->from('tbl_transactions')
                     ->groupBy('sender_phone')
-                    ->havingRaw('MAX(created_at) < ?', [$start]);
+                    ->havingRaw('MAX(created_at) < ?', [$date]);
             })
-            ->where('created_at', '<=', $end)
             ->count();
     }
-
 
     private function getWeekPeriods(string $filter, Carbon $today): array
     {
