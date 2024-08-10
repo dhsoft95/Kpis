@@ -66,14 +66,16 @@ class ChurnChart extends ChartWidget
     private function getChurnCount(Carbon $start, Carbon $end): int
     {
         return DB::connection('mysql_second')->table('users')
-            ->whereNotIn('users.phone_number', function ($query) use ($end) {
-                $query->select('tbl_transactions.sender_phone')
+            ->whereIn('phone_number', function ($query) use ($start, $end) {
+                $query->select('sender_phone')
                     ->from('tbl_transactions')
-                    ->where('tbl_transactions.created_at', '>', $end->copy()->subDays(30));
+                    ->groupBy('sender_phone')
+                    ->havingRaw('MAX(created_at) < ?', [$start]);
             })
-            ->where('users.created_at', '<=', $end)
+            ->where('created_at', '<=', $end)
             ->count();
     }
+
 
     private function getWeekPeriods(string $filter, Carbon $today): array
     {
@@ -102,7 +104,6 @@ class ChurnChart extends ChartWidget
 
         return $weeks;
     }
-
     private function getStartDateForFilter(string $filter, Carbon $today): Carbon
     {
         return match ($filter) {
