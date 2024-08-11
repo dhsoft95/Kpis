@@ -27,7 +27,7 @@ class WalletOverview extends Widget
 
     public function calculateStats()
     {
-        $statuses = ['active','failed', 'inactive', 'inprogress'];
+        $statuses = ['active', 'failed', 'inactive', 'inprogress', 'pending'];
         $currentWeekCounts = $this->getWeekCounts($statuses, 0);
         $lastWeekCounts = $this->getWeekCounts($statuses, 1);
 
@@ -36,12 +36,10 @@ class WalletOverview extends Widget
             $currentCount = $currentWeekCounts[$status] ?? 0;
             $lastWeekCount = $lastWeekCounts[$status] ?? 0;
 
-            // Calculate percentage change
             $percentageChange = $lastWeekCount > 0
                 ? (($currentCount - $lastWeekCount) / $lastWeekCount) * 100
                 : 0;
 
-            // Format stats for display
             $stats[$status] = [
                 'value' => $currentCount,
                 'isGrowth' => $percentageChange >= 0,
@@ -57,20 +55,22 @@ class WalletOverview extends Widget
         $startDate = Carbon::now()->subWeeks($weeksAgo)->startOfWeek();
         $endDate = Carbon::now()->subWeeks($weeksAgo)->endOfWeek();
 
-        // Debugging output
-        // echo "Start Date: $startDate, End Date: $endDate";
-
         $counts = DB::connection('mysql_second')
             ->table('users')
+            ->select('wallet_status', DB::raw('COUNT(*) as count'))
             ->whereIn('wallet_status', $statuses)
             ->whereBetween('created_at', [$startDate, $endDate])
             ->groupBy('wallet_status')
-            ->pluck(DB::raw('COUNT(*) as count'), 'wallet_status')
+            ->get()
+            ->pluck('count', 'wallet_status')
             ->toArray();
 
-        // Debugging output
-        dd($counts);
+        // Ensure all statuses are included in the result, even if count is 0
+        $allCounts = array_fill_keys($statuses, 0);
+        foreach ($counts as $status => $count) {
+            $allCounts[$status] = $count;
+        }
 
-        return $counts;
+        return $allCounts;
     }
 }
