@@ -33,7 +33,7 @@ class AgsWallets extends Widget
         $this->fetchCellulantBalance();
     }
 
-    public function fetchDisbursementBalance()
+    public function fetchDisbursementBalance(): void
     {
         $this->error = null;
         $this->balance = null;
@@ -75,7 +75,7 @@ class AgsWallets extends Widget
 
     public function fetchCellulantBalance()
     {
-        // Dummy data for Cellulant
+
         $this->balanceCellulant = 67;
         $this->currencyCellulant = 'USD';
         $this->statusCellulant = 'available';
@@ -120,19 +120,19 @@ class AgsWallets extends Widget
     public function mainBalance()
     {
         try {
+            $accountId = env('TEMBO_ACCOUNT_ID');
+            $secretKey = env('TEMBO_SECRET_KEY');
             $requestId = $this->generateId();
 
-            $post = '{}';
-            $headers = array(
-                'content-type: application/json',
-                'x-account-id: ' . config('api.TEMBO_ACCOUNT_ID'),
-                'x-secret-key: ' . config('api.TEMBO_SECRET_KEY'),
+            $headers = [
+                'x-account-id: ' . $accountId,
+                'x-secret-key: ' . $secretKey,
                 'x-request-id: ' . $requestId
-            );
+            ];
 
-            $url = config('api.TEMBO_ENDPOINT') . 'wallet/main-balance';
+            $url = env('TEMBO_ENDPOINT') . 'wallet/main-balance';
 
-            $data = $this->processor($post, $headers, $url);
+            $data = $this->processor('{}', $headers, $url);
 
             $data = json_decode($data);
 
