@@ -105,7 +105,7 @@
         </style>
 
         <div class="container mx-auto p-1" wire:poll.4s="calculateStats">
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                 @php
                     $cards = [
                         'active' => [
@@ -136,13 +136,13 @@
                             'iconColor' => 'text-blue-600 dark:text-blue-200',
                             'description' => 'Number of wallets in progress.'
                         ],
-                        'pending' => [
-                            'title' => 'Pending Wallets',
-                            'icon' => 'fas fa-clock',
-                            'iconBgColor' => 'bg-yellow-100 dark:bg-yellow-700',
-                            'iconColor' => 'text-yellow-600 dark:text-yellow-200',
-                            'description' => 'Number of pending wallets.'
-                        ],
+//                        'pending' => [
+//                            'title' => 'Pending Wallets',
+//                            'icon' => 'fas fa-clock',
+//                            'iconBgColor' => 'bg-yellow-100 dark:bg-yellow-700',
+//                            'iconColor' => 'text-yellow-600 dark:text-yellow-200',
+//                            'description' => 'Number of pending wallets.'
+//                        ],
                     ];
                 @endphp
 
