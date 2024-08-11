@@ -62,5 +62,6 @@ class WalletOverview extends Widget
             ->groupBy('wallet_status')
             ->pluck(DB::raw('COUNT(*) as count'), 'wallet_status')
             ->toArray();
+
     }
 }
