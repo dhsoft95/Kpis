@@ -20,6 +20,7 @@ use App\Filament\Widgets\userStatsOverview;
 use App\Livewire\devicDown;
 use App\Livewire\MapOverview;
 use App\Livewire\UserGanders;
+use App\Livewire\WalletOverview;
 use Awcodes\FilamentStickyHeader\StickyHeaderPlugin;
 use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
 use Filament\Enums\ThemeMode;
@@ -74,6 +75,7 @@ class AdminPanelProvider extends PanelProvider
             ])
 //            ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
+                WalletOverview::class,
                 userStatsOverview::class,
                 devicDown::class,
                 RegisterdUsersChart::class,
