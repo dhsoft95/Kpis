@@ -13,10 +13,12 @@ class WalletOverview extends Widget
     protected static string $view = 'livewire.wallet-overview';
 
     public $stats = [];
+    public $totalCounts = [];
 
     public function mount()
     {
         $this->stats = $this->calculateStats();
+        $this->totalCounts = $this->getTotalCounts();
     }
 
     #[Computed]
@@ -72,5 +74,27 @@ class WalletOverview extends Widget
         }
 
         return $allCounts;
+    }
+
+    private function getTotalCounts(): array
+    {
+        $statuses = ['active', 'failed', 'inactive', 'inprogress', 'pending'];
+
+        $counts = DB::connection('mysql_second')
+            ->table('users')
+            ->select('wallet_status', DB::raw('COUNT(*) as count'))
+            ->whereIn('wallet_status', $statuses)
+            ->groupBy('wallet_status')
+            ->get()
+            ->pluck('count', 'wallet_status')
+            ->toArray();
+
+        // Ensure all statuses are included in the result, even if count is 0
+        $totalCounts = array_fill_keys($statuses, 0);
+        foreach ($counts as $status => $count) {
+            $totalCounts[$status] = $count;
+        }
+
+        return $totalCounts;
     }
 }
