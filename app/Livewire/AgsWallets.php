@@ -4,6 +4,7 @@ namespace App\Livewire;
 
 use Filament\Widgets\Widget;
 use Illuminate\Support\Facades\Log;
+use Exception;
 
 class AgsWallets extends Widget
 {
@@ -54,11 +55,22 @@ class AgsWallets extends Widget
 
     public function fetchTemboBalance()
     {
-        // Dummy data for Tembo Pay
-        $this->balanceTembo = 400;
-        $this->currencyTembo = 'USD';
-        $this->statusTembo = 'available';
         $this->errorTembo = null;
+        $this->balanceTembo = null;
+        $this->currencyTembo = null;
+        $this->statusTembo = null;
+
+        $response = $this->mainBalance();
+
+        if ($response['notification'] === 'success' && isset($response['data'])) {
+            $data = $response['data'];
+            $this->balanceTembo = $data->balance ?? null;
+            $this->currencyTembo = $data->currency ?? 'USD';
+            $this->statusTembo = 'available';
+        } else {
+            $this->errorTembo = $response['message'] ?? 'Unexpected response from Tembo API';
+            Log::error('Tembo API Error', $response);
+        }
     }
 
     public function fetchCellulantBalance()
@@ -105,4 +117,70 @@ class AgsWallets extends Widget
         return $response;
     }
 
+    public function mainBalance()
+    {
+        try {
+            $requestId = $this->generateId();
+
+            $post = '{}';
+            $headers = array(
+                'content-type: application/json',
+                'x-account-id: ' . config('api.TEMBO_ACCOUNT_ID'),
+                'x-secret-key: ' . config('api.TEMBO_SECRET_KEY'),
+                'x-request-id: ' . $requestId
+            );
+
+            $url = config('api.TEMBO_ENDPOINT') . 'wallet/main-balance';
+
+            $data = $this->processor($post, $headers, $url);
+
+            $data = json_decode($data);
+
+            $response = array(
+                "message" => "Main Balance Retrieved",
+                "notification" => "success",
+                "data" => $data
+            );
+
+            return $response;
+
+        } catch (Exception $e) {
+            Log::error('TemboPlus', ['DepositFunds' => $e]);
+            return ['message' => "Oops something went wrong", "notification" => "failure"];
+        }
+    }
+
+    protected function generateId()
+    {
+        return uniqid('tembo_', true);
+    }
+
+    protected function processor($post, $headers, $url)
+    {
+        $curl = curl_init();
+
+        curl_setopt_array($curl, array(
+            CURLOPT_URL => $url,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => '',
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 30,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => 'POST',
+            CURLOPT_POSTFIELDS => $post,
+            CURLOPT_HTTPHEADER => $headers,
+        ));
+
+        $response = curl_exec($curl);
+
+        if ($error = curl_error($curl)) {
+            Log::error('Curl Error', ['error' => $error]);
+            throw new Exception('Curl error: ' . $error);
+        }
+
+        curl_close($curl);
+
+        return $response;
+    }
 }
