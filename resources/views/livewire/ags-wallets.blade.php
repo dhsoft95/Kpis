@@ -108,7 +108,7 @@
                                 </h2>
                             </div>
                             <div class="icon-bg bg-gray-100 text-gray-600">
-                                <i class="bx bx-wallet text-xs"></i>
+                                <i class="fas fa-wallet text-xs"></i> <!-- Corrected icon class -->
                             </div>
                         </div>
                     </div>
@@ -133,7 +133,7 @@
                                 </h2>
                             </div>
                             <div class="icon-bg bg-gray-100 text-gray-600">
-                                <i class="bx bx-wallet text-xs"></i>
+                                <i class="fas fa-wallet text-xs"></i> <!-- Corrected icon class -->
                             </div>
                         </div>
                     </div>
@@ -158,7 +158,7 @@
                                 </h2>
                             </div>
                             <div class="icon-bg bg-gray-100 text-gray-600">
-                                <i class="bx bx-wallet text-xs"></i>
+                                <i class="fas fa-wallet text-xs"></i> <!-- Corrected icon class -->
                             </div>
                         </div>
                     </div>
