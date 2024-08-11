@@ -21,7 +21,7 @@ class EscalationRateTrend extends ApexChartWidget
 
         return [
             'chart' => [
-                'type' => 'line',
+                'type' => 'area',
                 'height' => 300,
             ],
             'series' => [
