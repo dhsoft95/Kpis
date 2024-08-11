@@ -36,10 +36,12 @@ class WalletOverview extends Widget
             $currentCount = $currentWeekCounts[$status] ?? 0;
             $lastWeekCount = $lastWeekCounts[$status] ?? 0;
 
+            // Calculate percentage change
             $percentageChange = $lastWeekCount > 0
                 ? (($currentCount - $lastWeekCount) / $lastWeekCount) * 100
                 : 0;
 
+            // Format stats for display
             $stats[$status] = [
                 'value' => $currentCount,
                 'isGrowth' => $percentageChange >= 0,
@@ -55,7 +57,10 @@ class WalletOverview extends Widget
         $startDate = Carbon::now()->subWeeks($weeksAgo)->startOfWeek();
         $endDate = Carbon::now()->subWeeks($weeksAgo)->endOfWeek();
 
-        return DB::connection('mysql_second')
+        // Debugging output
+        // echo "Start Date: $startDate, End Date: $endDate";
+
+        $counts = DB::connection('mysql_second')
             ->table('users')
             ->whereIn('wallet_status', $statuses)
             ->whereBetween('created_at', [$startDate, $endDate])
@@ -63,5 +68,9 @@ class WalletOverview extends Widget
             ->pluck(DB::raw('COUNT(*) as count'), 'wallet_status')
             ->toArray();
 
+        // Debugging output
+        dd($counts);
+
+        return $counts;
     }
 }
