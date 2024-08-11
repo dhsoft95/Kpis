@@ -68,23 +68,35 @@ class AgsWallets extends Widget
             $data = $response['data'] ?? null;
             Log::info('Tembo API Response Data', ['data' => $data]);
 
-            // Check if response is successful and data structure is valid
-            if (is_object($data) || is_array($data)) {
-                // Extract balances and status
-                $this->balanceTembo = isset($data->currentBalance) ? (float)$data->currentBalance : null;
-                $this->availableBalanceTembo = isset($data->availableBalance) ? (float)$data->availableBalance : null;
-                $this->statusTembo = $data->accountStatus ?? 'unknown';
+            // Check if response is successful
+            if ($response['notification'] === 'success') {
+                if ($data !== null) {
+                    // Extract balances and status
+                    if (is_object($data) || is_array($data)) {
+                        $this->balanceTembo = isset($data->currentBalance) ? (float)$data->currentBalance : null;
+                        $this->availableBalanceTembo = isset($data->availableBalance) ? (float)$data->availableBalance : null;
+                        $this->statusTembo = $data->accountStatus ?? 'unknown';
 
-                // Log the extracted balances and status
-                Log::info('Tembo API Extracted Balances and Status', [
-                    'balanceTembo' => $this->balanceTembo,
-                    'availableBalanceTembo' => $this->availableBalanceTembo,
-                    'statusTembo' => $this->statusTembo,
-                ]);
+                        // Log the extracted balances and status
+                        Log::info('Tembo API Extracted Balances and Status', [
+                            'balanceTembo' => $this->balanceTembo,
+                            'availableBalanceTembo' => $this->availableBalanceTembo,
+                            'statusTembo' => $this->statusTembo,
+                        ]);
+                    } else {
+                        // Handle unexpected data structure
+                        $this->errorTembo = 'Invalid data structure received from Tembo API';
+                        Log::error('Tembo API Invalid Data Structure', ['response' => $response]);
+                    }
+                } else {
+                    // Handle null data
+                    $this->errorTembo = 'Tembo API returned success but data is null';
+                    Log::error('Tembo API Null Data', ['response' => $response]);
+                }
             } else {
-                // Handle unexpected data structure
-                $this->errorTembo = 'Invalid data structure received from Tembo API';
-                Log::error('Tembo API Invalid Data Structure', ['response' => $response]);
+                // Handle API error response
+                $this->errorTembo = $response['message'] ?? 'Unexpected response from Tembo API';
+                Log::error('Tembo API Unexpected Response', ['response' => $response]);
             }
         } catch (\Exception $e) {
             // Handle exceptions during API call
@@ -92,6 +104,7 @@ class AgsWallets extends Widget
             Log::error('Tembo API Error', ['error' => $e->getMessage()]);
         }
     }
+
 
 
     public function fetchCellulantBalance()
