@@ -36,12 +36,6 @@
                 align-items: center;
                 justify-content: center;
             }
-            .percentage-badge {
-                padding: 1px 6px;
-                border-radius: 10px;
-                font-size: 0.6rem;
-                font-weight: 500;
-            }
             .card-title {
                 color: #6b7280;
                 font-size: 0.5rem;
@@ -59,13 +53,6 @@
             }
             .dark .card-value {
                 color: #e5e7eb;
-            }
-            .time-period {
-                color: #9ca3af;
-                font-size: 0.6rem;
-            }
-            .dark .time-period {
-                color: #a1a1aa;
             }
             .card-tooltip {
                 visibility: hidden;
@@ -124,18 +111,10 @@
                                 <i class="bx bx-wallet text-xs"></i>
                             </div>
                         </div>
-                        <div class="flex items-center">
-                            @if($statusTembo)
-                                <span class="percentage-badge {{ $statusTembo === 'positive' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }} mr-2">
-                                    {{ $statusTembo === 'positive' ? '+' : '-' }}{{ number_format(abs($percentageChangeTembo), 2) }}%
-                                </span>
-                            @endif
-                            <span class="time-period">WoW</span>
-                        </div>
                     </div>
                     <div class="card-tooltip">
                         <div class="font-semibold mb-1">Tembo Pay</div>
-                        <div>Balance and status of Tembo Pay wallet.</div>
+                        <div>Balance of Tembo Pay wallet.</div>
                     </div>
                 </div>
 
@@ -157,18 +136,10 @@
                                 <i class="bx bx-wallet text-xs"></i>
                             </div>
                         </div>
-                        <div class="flex items-center">
-                            @if($status)
-                                <span class="percentage-badge {{ $status === 'positive' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }} mr-2">
-                                    {{ $status === 'positive' ? '+' : '-' }}{{ number_format(abs($percentageChange), 2) }}%
-                                </span>
-                            @endif
-                            <span class="time-period">WoW</span>
-                        </div>
                     </div>
                     <div class="card-tooltip">
                         <div class="font-semibold mb-1">Terapay</div>
-                        <div>Balance and status of Terapay wallet.</div>
+                        <div>Balance of Terapay wallet.</div>
                     </div>
                 </div>
 
@@ -190,18 +161,10 @@
                                 <i class="bx bx-wallet text-xs"></i>
                             </div>
                         </div>
-                        <div class="flex items-center">
-                            @if($statusCellulant)
-                                <span class="percentage-badge {{ $statusCellulant === 'positive' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }} mr-2">
-                                    {{ $statusCellulant === 'positive' ? '+' : '-' }}{{ number_format(abs($percentageChangeCellulant), 2) }}%
-                                </span>
-                            @endif
-                            <span class="time-period">WoW</span>
-                        </div>
                     </div>
                     <div class="card-tooltip">
                         <div class="font-semibold mb-1">Cellulant</div>
-                        <div>Balance and status of Cellulant wallet.</div>
+                        <div>Balance of Cellulant wallet.</div>
                     </div>
                 </div>
             </div>
