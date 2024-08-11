@@ -136,13 +136,6 @@
                             'iconColor' => 'text-blue-600 dark:text-blue-200',
                             'description' => 'Number of wallets in progress.'
                         ],
-//                        'pending' => [
-//                            'title' => 'Pending Wallets',
-//                            'icon' => 'fas fa-clock',
-//                            'iconBgColor' => 'bg-yellow-100 dark:bg-yellow-700',
-//                            'iconColor' => 'text-yellow-600 dark:text-yellow-200',
-//                            'description' => 'Number of pending wallets.'
-//                        ],
                     ];
                 @endphp
 

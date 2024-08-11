@@ -6,6 +6,7 @@ use App\Filament\Widgets\Interactions;
 use App\Livewire\CustStatsOverview;
 use App\Livewire\CustvalueChart;
 use App\Livewire\HelpDeskChart;
+use App\Livewire\InteractionTrendWidget;
 use App\Livewire\SericeDeskOverview;
 use App\Livewire\TransvalueChart;
 use App\Livewire\UserDemographic;
@@ -21,6 +22,7 @@ class service extends Page
     {
         return [
            HelpDeskChart::class,
+            InteractionTrendWidget::class
 //            \App\Livewire\Interactions::class,
 //             UserDemographic::class
         ];
