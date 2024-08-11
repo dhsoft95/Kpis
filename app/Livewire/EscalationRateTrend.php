@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use App\Models\EscalatedCase;
 use App\Models\UserInteraction;
 use Leandrocfe\FilamentApexCharts\Widgets\ApexChartWidget;
 
@@ -13,7 +14,7 @@ class EscalationRateTrend extends ApexChartWidget
      * @var string
      */
     protected static ?string $chartId = 'escalationRateTrend';
-
+    protected static ?string $heading = 'Escalation Rate Trend';
     protected function getOptions(): array
     {
         $data = $this->getData();
@@ -49,7 +50,7 @@ class EscalationRateTrend extends ApexChartWidget
                 'min' => 0,
                 'max' => 100,
             ],
-            'colors' => ['#f59e0b'], // Amber color for escalation
+            'colors' => ['#f59e0b'],
             'stroke' => [
                 'curve' => 'smooth',
             ],
@@ -78,22 +79,27 @@ class EscalationRateTrend extends ApexChartWidget
         $endDate = now();
         $startDate = now()->subDays(30);
 
-        $dailyStats = UserInteraction::selectRaw('DATE(created_at) as date,
-                                                 COUNT(*) as total_interactions,
-                                                 SUM(CASE WHEN escalation_level > 0 THEN 1 ELSE 0 END) as escalated_interactions')
+        // Get total interactions per day
+        $totalInteractions = UserInteraction::selectRaw('DATE(created_at) as date, COUNT(*) as total')
             ->whereBetween('created_at', [$startDate, $endDate])
             ->groupBy('date')
-            ->orderBy('date')
-            ->get();
+            ->pluck('total', 'date')
+            ->toArray();
 
-        $dates = [];
+        // Get escalated cases per day
+        $escalatedCases = EscalatedCase::selectRaw('DATE(created_at) as date, COUNT(*) as total')
+            ->whereBetween('created_at', [$startDate, $endDate])
+            ->groupBy('date')
+            ->pluck('total', 'date')
+            ->toArray();
+
+        $dates = array_keys($totalInteractions);
         $escalationRates = [];
 
-        foreach ($dailyStats as $stat) {
-            $dates[] = $stat->date;
-            $escalationRates[] = $stat->total_interactions > 0
-                ? round(($stat->escalated_interactions / $stat->total_interactions) * 100, 2)
-                : 0;
+        foreach ($dates as $date) {
+            $total = $totalInteractions[$date] ?? 0;
+            $escalated = $escalatedCases[$date] ?? 0;
+            $escalationRates[] = $total > 0 ? round(($escalated / $total) * 100, 2) : 0;
         }
 
         return [
