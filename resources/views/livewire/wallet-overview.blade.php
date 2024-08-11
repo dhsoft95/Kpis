@@ -114,6 +114,12 @@
                             'iconBgColor' => 'bg-green-100 dark:bg-green-700',
                             'iconColor' => 'text-green-600 dark:text-green-200',
                             'description' => 'Number of active wallets.'
+                        ], 'inactive' => [
+                            'title' => 'inactive Wallets',
+                            'icon' => 'fas fa-wallet',
+                            'iconBgColor' => 'bg-green-100 dark:bg-green-700',
+                            'iconColor' => 'text-green-600 dark:text-green-200',
+                            'description' => 'Number of active wallets.'
                         ],
                         'failed' => [
                             'title' => 'Failed Wallets',
