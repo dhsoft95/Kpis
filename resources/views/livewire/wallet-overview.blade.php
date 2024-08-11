@@ -69,7 +69,7 @@
             }
             .card-tooltip {
                 visibility: hidden;
-                width: 200px;
+                width: 220px;
                 background-color: #27272a;
                 color: #ffffff;
                 text-align: left;
@@ -79,7 +79,7 @@
                 z-index: 1;
                 bottom: 125%;
                 left: 50%;
-                margin-left: -100px;
+                margin-left: -110px;
                 opacity: 0;
                 transition: opacity 0.3s, transform 0.3s;
                 box-shadow: 0 2px 8px rgba(0,0,0,0.15);
@@ -170,6 +170,9 @@
                         <div class="card-tooltip">
                             <div class="font-semibold mb-1">{{ $card['title'] }}</div>
                             <div>{{ $card['description'] }}</div>
+                            <div class="mt-2 text-sm">
+                                <strong>Week-over-Week Change:</strong> This percentage represents the growth or decline in the number of wallets compared to the previous week.
+                            </div>
                         </div>
                     </div>
                 @endforeach
