@@ -114,12 +114,13 @@
                             'iconBgColor' => 'bg-green-100 dark:bg-green-700',
                             'iconColor' => 'text-green-600 dark:text-green-200',
                             'description' => 'Number of active wallets.'
-                        ], 'inactive' => [
-                            'title' => 'inactive Wallets',
+                        ],
+                        'inactive' => [
+                            'title' => 'Inactive Wallets',
                             'icon' => 'fas fa-wallet',
-                            'iconBgColor' => 'bg-green-100 dark:bg-green-700',
-                            'iconColor' => 'text-green-600 dark:text-green-200',
-                            'description' => 'Number of active wallets.'
+                            'iconBgColor' => 'bg-gray-100 dark:bg-gray-700',
+                            'iconColor' => 'text-gray-600 dark:text-gray-200',
+                            'description' => 'Number of inactive wallets.'
                         ],
                         'failed' => [
                             'title' => 'Failed Wallets',
@@ -135,6 +136,13 @@
                             'iconColor' => 'text-blue-600 dark:text-blue-200',
                             'description' => 'Number of wallets in progress.'
                         ],
+                        'pending' => [
+                            'title' => 'Pending Wallets',
+                            'icon' => 'fas fa-clock',
+                            'iconBgColor' => 'bg-yellow-100 dark:bg-yellow-700',
+                            'iconColor' => 'text-yellow-600 dark:text-yellow-200',
+                            'description' => 'Number of pending wallets.'
+                        ],
                     ];
                 @endphp
 
@@ -145,7 +153,7 @@
                                 <div>
                                     <h5 class="card-title mb-1">{{ $card['title'] }}</h5>
                                     <h2 class="card-value" wire:key="count-{{ $key }}">
-                                        {{ number_format($stats[$key]['value'], 2) }}
+                                        {{ number_format($totalCounts[$key], 0) }}
                                     </h2>
                                 </div>
                                 <div class="icon-bg {{ $card['iconBgColor'] }}">
