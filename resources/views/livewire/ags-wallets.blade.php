@@ -32,7 +32,7 @@
                                     <p class="text-white text-xs mb-0.5">Current Balance</p>
                                     @if($balanceTembo !== null)
                                         <h3 class="text-white text-base font-bold">
-                                            {{ number_format((float)$balanceTembo, 2) }} {{ $currencyTembo }}
+                                            {{ number_format((float)$balanceTembo, 2) }}
                                         </h3>
                                     @else
                                         <h3 class="text-white text-xs">Loading...</h3>
