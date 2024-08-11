@@ -2,11 +2,12 @@
 
 namespace App\Livewire;
 
+use AllowDynamicProperties;
 use Filament\Widgets\Widget;
 use Illuminate\Support\Facades\Log;
 use Exception;
 
-class AgsWallets extends Widget
+#[AllowDynamicProperties] class AgsWallets extends Widget
 {
     protected int | string | array $columnSpan = 'full';
     protected static string $view = 'livewire.ags-wallets';
@@ -64,9 +65,10 @@ class AgsWallets extends Widget
 
         if ($response['notification'] === 'success' && isset($response['data'])) {
             $data = $response['data'];
-            $this->balanceTembo = $data->balance ?? null;
-            $this->currencyTembo = $data->currency ?? 'USD';
-            $this->statusTembo = 'available';
+            $this->currentBalanceTembo = $data->currentBalance ?? null;
+            $this->availablecBalanceTembo = $data->availableBalance ?? null;
+            $this->accountStatus = $data->accountStatus ?? 'ACTIVE';
+
         } else {
             $this->errorTembo = $response['message'] ?? 'Unexpected response from Tembo API';
             Log::error('Tembo API Error', $response);
@@ -139,7 +141,7 @@ class AgsWallets extends Widget
             $response = array(
                 "message" => "Main Balance Retrieved",
                 "notification" => "success",
-                "data" => $data
+                "data" => $data,
             );
 
             return $response;
