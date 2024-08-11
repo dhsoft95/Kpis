@@ -5,6 +5,7 @@ namespace App\Filament\Pages;
 use App\Filament\Widgets\Interactions;
 use App\Livewire\CustStatsOverview;
 use App\Livewire\CustvalueChart;
+use App\Livewire\EscalationRateTrend;
 use App\Livewire\HelpDeskChart;
 use App\Livewire\InteractionTrendWidget;
 use App\Livewire\SericeDeskOverview;
@@ -22,7 +23,8 @@ class service extends Page
     {
         return [
            HelpDeskChart::class,
-            InteractionTrendWidget::class
+            InteractionTrendWidget::class,
+            EscalationRateTrend::class
 //            \App\Livewire\Interactions::class,
 //             UserDemographic::class
         ];
