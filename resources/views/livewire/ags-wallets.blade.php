@@ -39,6 +39,16 @@
                                     @endif
                                 </div>
                                 <div class="bg-white/20 p-2 rounded flex-1 text-right">
+                                    <p class="text-white text-xs mb-0.5">Available Balance</p>
+                                    @if($availableBalanceTembo !== null)
+                                        <h3 class="text-white text-base font-bold">
+                                            {{ number_format((float)$availableBalanceTembo, 2) }}
+                                        </h3>
+                                    @else
+                                        <h3 class="text-white text-xs">Loading...</h3>
+                                    @endif
+                                </div>
+                                <div class="bg-white/20 p-2 rounded flex-1 text-right">
                                     <p class="text-white text-xs mb-0.5">Status</p>
                                     <h3 class="text-white text-base font-bold">{{ ucfirst($statusTembo ?? 'Unknown') }}</h3>
                                 </div>
@@ -46,6 +56,7 @@
                         @endif
                     </div>
                 </div>
+
 
                 <!-- Terapay Wallet Balance Card -->
                 <div class="transform hover:scale-105 transition duration-300">
