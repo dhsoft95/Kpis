@@ -3,7 +3,9 @@
 namespace App\Livewire;
 
 use Filament\Widgets\Widget;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 
 class AgsWallets extends Widget
 {
@@ -61,49 +63,47 @@ class AgsWallets extends Widget
         $this->statusTembo = null;
 
         try {
-            // Fetch balance from Tembo API
-            $response = $this->mainBalance();
+            // Prepare API headers
+            $headers = [
+                'x-account-id' => env('TEMBO_ACCOUNT_ID'),
+                'x-secret-key' => env('TEMBO_SECRET_KEY'),
+                'x-request-id' => (string) Str::uuid(), // Generate unique request ID
+                'content-type' => 'application/json',
+            ];
 
-            // Log the raw response
-            Log::info('Tembo API Full Response', ['response' => $response]);
+            // Call the Tembo API to retrieve the main balance
+            $response = Http::withHeaders($headers)->post(env('TEMBO_ENDPOINT') . 'wallet/main-balance');
 
-            // Check if response is successful
-            if ($response['notification'] === 'success') {
-                $data = $response['data'] ?? null;
-                if ($data !== null) {
-                    // Extract balances and status
-                    if (is_object($data) || is_array($data)) {
-                        $this->balanceTembo = isset($data->currentBalance) ? (float)$data->currentBalance : null;
-                        $this->availableBalanceTembo = isset($data->availableBalance) ? (float)$data->availableBalance : null;
-                        $this->statusTembo = $data->accountStatus ?? 'unknown';
+            // Check the status of the response
+            if ($response->status() === 200) {
+                $data = $response->json();
+                Log::info('Tembo API Response Data', ['data' => $data]);
 
-                        // Log the extracted balances and status
-                        Log::info('Tembo API Extracted Balances and Status', [
-                            'balanceTembo' => $this->balanceTembo,
-                            'availableBalanceTembo' => $this->availableBalanceTembo,
-                            'statusTembo' => $this->statusTembo,
-                        ]);
-                    } else {
-                        // Handle unexpected data structure
-                        $this->errorTembo = 'Invalid data structure received from Tembo API';
-                        Log::error('Tembo API Invalid Data Structure', ['data' => $data]);
-                    }
-                } else {
-                    // Handle null data
-                    $this->errorTembo = 'Tembo API returned success but data is null';
-                    Log::warning('Tembo API Null Data', ['response' => $response]);
-                }
+                // Extract balances and status
+                $this->balanceTembo = $data['currentBalance'] ?? null;
+                $this->availableBalanceTembo = $data['availableBalance'] ?? null;
+                $this->statusTembo = $data['accountStatus'] ?? 'unknown';
+
+                // Log the extracted balances and status
+                Log::info('Tembo API Extracted Balances and Status', [
+                    'balanceTembo' => $this->balanceTembo,
+                    'availableBalanceTembo' => $this->availableBalanceTembo,
+                    'statusTembo' => $this->statusTembo,
+                    'accountName' => $data['accountName'] ?? 'unknown',
+                    'accountNo' => $data['accountNo'] ?? 'unknown',
+                ]);
             } else {
-                // Handle API error response
-                $this->errorTembo = $response['message'] ?? 'Unexpected response from Tembo API';
-                Log::error('Tembo API Unexpected Response', ['response' => $response]);
+                // Handle API errors
+                $this->errorTembo = 'Tembo API Permission denied';
+                Log::error('Tembo API Error', ['status' => $response->status(), 'response' => $response->json()]);
             }
         } catch (\Exception $e) {
             // Handle exceptions during API call
             $this->errorTembo = 'Error fetching Tembo balance';
-            Log::error('Tembo API Error', ['error' => $e->getMessage(), 'trace' => $e->getTraceAsString()]);
+            Log::error('Tembo API Exception', ['error' => $e->getMessage()]);
         }
     }
+
 
 
     public function fetchCellulantBalance()
