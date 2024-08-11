@@ -71,10 +71,18 @@ class AgsWallets extends Widget
                 'content-type' => 'application/json',
             ];
 
-            // Call the Tembo API to retrieve the main balance
-            $response = Http::withHeaders($headers)->post(env('TEMBO_ENDPOINT') . 'wallet/main-balance');
+            // Construct the full API endpoint URL
+            $url = env('TEMBO_ENDPOINT') . 'wallet/main-balance';
 
-            // Check the status of the response
+            // Log the URL to debug
+            Log::info('Tembo API URL', ['url' => $url]);
+
+            // Call the Tembo API to retrieve the main balance
+            $response = Http::withHeaders($headers)->post($url);
+
+            // Log the raw response for debugging
+            Log::info('Tembo API Raw Response', ['status' => $response->status(), 'response' => $response->body()]);
+
             if ($response->status() === 200) {
                 $data = $response->json();
                 Log::info('Tembo API Response Data', ['data' => $data]);
@@ -94,7 +102,7 @@ class AgsWallets extends Widget
                 ]);
             } else {
                 // Handle API errors
-                $this->errorTembo = 'Tembo API Permission denied';
+                $this->errorTembo = 'Tembo API returned an error';
                 Log::error('Tembo API Error', ['status' => $response->status(), 'response' => $response->json()]);
             }
         } catch (\Exception $e) {
@@ -103,6 +111,7 @@ class AgsWallets extends Widget
             Log::error('Tembo API Exception', ['error' => $e->getMessage()]);
         }
     }
+
 
 
 
