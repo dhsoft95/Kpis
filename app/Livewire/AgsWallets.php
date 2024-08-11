@@ -2,12 +2,10 @@
 
 namespace App\Livewire;
 
-use AllowDynamicProperties;
 use Filament\Widgets\Widget;
 use Illuminate\Support\Facades\Log;
-use Exception;
 
-#[AllowDynamicProperties] class AgsWallets extends Widget
+class AgsWallets extends Widget
 {
     protected int | string | array $columnSpan = 'full';
     protected static string $view = 'livewire.ags-wallets';
@@ -18,8 +16,8 @@ use Exception;
     public $status;
 
     public $balanceTembo;
+    public $availableBalanceTembo;
     public $errorTembo;
-    public $currencyTembo;
     public $statusTembo;
 
     public $balanceCellulant;
@@ -34,7 +32,7 @@ use Exception;
         $this->fetchCellulantBalance();
     }
 
-    public function fetchDisbursementBalance(): void
+    public function fetchDisbursementBalance()
     {
         $this->error = null;
         $this->balance = null;
@@ -58,26 +56,30 @@ use Exception;
     {
         $this->errorTembo = null;
         $this->balanceTembo = null;
-        $this->currencyTembo = null;
+        $this->availableBalanceTembo = null;
         $this->statusTembo = null;
 
-        $response = $this->mainBalance();
+        try {
+            $response = $this->mainBalance();
 
-        if ($response['notification'] === 'success' && isset($response['data'])) {
-            $data = $response['data'];
-            $this->currentBalanceTembo = $data->currentBalance ?? null;
-            $this->availablecBalanceTembo = $data->availableBalance ?? null;
-            $this->accountStatus = $data->accountStatus ?? 'ACTIVE';
-
-        } else {
-            $this->errorTembo = $response['message'] ?? 'Unexpected response from Tembo API';
-            Log::error('Tembo API Error', $response);
+            if (isset($response['notification']) && $response['notification'] === 'success') {
+                $data = $response['data'];
+                $this->balanceTembo = $data->currentBalance ?? null;
+                $this->availableBalanceTembo = $data->availableBalance ?? null;
+                $this->statusTembo = $data->accountStatus ?? 'unknown';
+            } else {
+                $this->errorTembo = $response['message'] ?? 'Unexpected response from Tembo API';
+                Log::error('Tembo API Unexpected Response', (array)$response);
+            }
+        } catch (\Exception $e) {
+            $this->errorTembo = 'Error fetching Tembo balance';
+            Log::error('Tembo API Error', ['error' => $e->getMessage()]);
         }
     }
 
     public function fetchCellulantBalance()
     {
-
+        // Dummy data for Cellulant
         $this->balanceCellulant = 67;
         $this->currencyCellulant = 'USD';
         $this->statusCellulant = 'available';
@@ -122,31 +124,30 @@ use Exception;
     public function mainBalance()
     {
         try {
-            $accountId = env('TEMBO_ACCOUNT_ID');
-            $secretKey = env('TEMBO_SECRET_KEY');
             $requestId = $this->generateId();
 
-            $headers = [
-                'x-account-id: ' . $accountId,
-                'x-secret-key: ' . $secretKey,
+            $post = '{}';
+            $headers = array(
+                'content-type: application/json',
+                'x-account-id: ' . env('TEMBO_ACCOUNT_ID'),
+                'x-secret-key: ' . env('TEMBO_SECRET_KEY'),
                 'x-request-id: ' . $requestId
-            ];
+            );
 
             $url = env('TEMBO_ENDPOINT') . 'wallet/main-balance';
 
-            $data = $this->processor('{}', $headers, $url);
+            $data = $this->processor($post, $headers, $url);
 
             $data = json_decode($data);
 
             $response = array(
                 "message" => "Main Balance Retrieved",
                 "notification" => "success",
-                "data" => $data,
+                "data" => $data
             );
 
             return $response;
-
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             Log::error('TemboPlus', ['DepositFunds' => $e]);
             return ['message' => "Oops something went wrong", "notification" => "failure"];
         }
@@ -154,6 +155,7 @@ use Exception;
 
     protected function generateId()
     {
+        // Implementation for generating a unique ID
         return uniqid('tembo_', true);
     }
 
@@ -177,8 +179,7 @@ use Exception;
         $response = curl_exec($curl);
 
         if ($error = curl_error($curl)) {
-            Log::error('Curl Error', ['error' => $error]);
-            throw new Exception('Curl error: ' . $error);
+            throw new \Exception("Curl Error: " . $error);
         }
 
         curl_close($curl);
