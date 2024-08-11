@@ -64,12 +64,12 @@ class AgsWallets extends Widget
             // Fetch balance from Tembo API
             $response = $this->mainBalance();
 
-            // Log the raw response data
-            $data = $response['data'] ?? null;
-            Log::info('Tembo API Response Data', ['data' => $data]);
+            // Log the raw response
+            Log::info('Tembo API Full Response', ['response' => $response]);
 
             // Check if response is successful
             if ($response['notification'] === 'success') {
+                $data = $response['data'] ?? null;
                 if ($data !== null) {
                     // Extract balances and status
                     if (is_object($data) || is_array($data)) {
@@ -86,12 +86,12 @@ class AgsWallets extends Widget
                     } else {
                         // Handle unexpected data structure
                         $this->errorTembo = 'Invalid data structure received from Tembo API';
-                        Log::error('Tembo API Invalid Data Structure', ['response' => $response]);
+                        Log::error('Tembo API Invalid Data Structure', ['data' => $data]);
                     }
                 } else {
                     // Handle null data
                     $this->errorTembo = 'Tembo API returned success but data is null';
-                    Log::error('Tembo API Null Data', ['response' => $response]);
+                    Log::warning('Tembo API Null Data', ['response' => $response]);
                 }
             } else {
                 // Handle API error response
@@ -101,10 +101,9 @@ class AgsWallets extends Widget
         } catch (\Exception $e) {
             // Handle exceptions during API call
             $this->errorTembo = 'Error fetching Tembo balance';
-            Log::error('Tembo API Error', ['error' => $e->getMessage()]);
+            Log::error('Tembo API Error', ['error' => $e->getMessage(), 'trace' => $e->getTraceAsString()]);
         }
     }
-
 
 
     public function fetchCellulantBalance()
