@@ -54,28 +54,45 @@ class AgsWallets extends Widget
 
     public function fetchTemboBalance()
     {
+        // Reset state
         $this->errorTembo = null;
         $this->balanceTembo = null;
         $this->availableBalanceTembo = null;
         $this->statusTembo = null;
 
         try {
+            // Fetch balance from Tembo API
             $response = $this->mainBalance();
 
-            if (isset($response['notification']) && $response['notification'] === 'success') {
-                $data = $response['data'];
-                $this->balanceTembo = $data->currentBalance ?? null;
-                $this->availableBalanceTembo = $data->availableBalance ?? null;
+            // Log the raw response data
+            $data = $response['data'] ?? null;
+            Log::info('Tembo API Response Data', ['data' => $data]);
+
+            // Check if response is successful and data structure is valid
+            if (is_object($data) || is_array($data)) {
+                // Extract balances and status
+                $this->balanceTembo = isset($data->currentBalance) ? (float)$data->currentBalance : null;
+                $this->availableBalanceTembo = isset($data->availableBalance) ? (float)$data->availableBalance : null;
                 $this->statusTembo = $data->accountStatus ?? 'unknown';
+
+                // Log the extracted balances and status
+                Log::info('Tembo API Extracted Balances and Status', [
+                    'balanceTembo' => $this->balanceTembo,
+                    'availableBalanceTembo' => $this->availableBalanceTembo,
+                    'statusTembo' => $this->statusTembo,
+                ]);
             } else {
-                $this->errorTembo = $response['message'] ?? 'Unexpected response from Tembo API';
-                Log::error('Tembo API Unexpected Response', (array)$response);
+                // Handle unexpected data structure
+                $this->errorTembo = 'Invalid data structure received from Tembo API';
+                Log::error('Tembo API Invalid Data Structure', ['response' => $response]);
             }
         } catch (\Exception $e) {
+            // Handle exceptions during API call
             $this->errorTembo = 'Error fetching Tembo balance';
             Log::error('Tembo API Error', ['error' => $e->getMessage()]);
         }
     }
+
 
     public function fetchCellulantBalance()
     {
