@@ -38,5 +38,5 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/feedback', [CustomerFeedbackController::class, 'store']);
     Route::get('/feedback/question/{type}', [CustomerFeedbackController::class, 'showQuestion']);
 });
-Route::get('/feedback/questions', [CustomerFeedbackController::class, 'getQuestions']);
+Route::post('/feedback/questions', [CustomerFeedbackController::class, 'getQuestions']);
 Route::post('/feedback/submit-feedback', [CustomerFeedbackController::class, 'submitFeedback']);
