@@ -1,16 +1,14 @@
 <?php
 
-namespace App\Filament\Widgets;
+namespace App\Filament\Widgets\UserWidget;
 
 use App\Models\User;
 use Filament\Widgets\ChartWidget;
-use Carbon\Carbon;
 
 class RegisteredChart extends ChartWidget
 {
     protected static ?string $heading = 'Week-over-Week User Registration Growth';
     protected static ?string $maxHeight = '300px';
-
     protected function getFilters(): ?array
     {
         return [

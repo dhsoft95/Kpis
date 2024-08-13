@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Filament\Widgets;
+namespace App\Filament\Widgets\UserWidget;
 
 use Carbon\Carbon;
+use Exception;
 use Filament\Widgets\ChartWidget;
-use Illuminate\Support\Facades\DB;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 use Illuminate\Support\Facades\Cache;
-use Exception;
+use Illuminate\Support\Facades\DB;
 
 class ChurnChart extends ChartWidget
 {
@@ -39,12 +39,12 @@ class ChurnChart extends ChartWidget
                     [
                         'label' => 'Previous Week',
                         'data' => $previousWeekChurn,
-                        'backgroundColor' => '#4A58EC',
+                        'backgroundColor' => '#584408',
                     ],
                     [
                         'label' => 'Current Week',
                         'data' => $currentWeekChurn,
-                        'backgroundColor' => '#48D3FF',
+                        'backgroundColor' => '#E0B22C',
                     ],
                 ],
                 'labels' => $labels,

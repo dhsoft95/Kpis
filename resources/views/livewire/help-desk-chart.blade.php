@@ -16,20 +16,30 @@
                 max-width: 350px;
             }
             .dark .card {
-                background-color: #1f2937;
+                background-color: #27272a;
                 box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.6), 0 2px 4px -1px rgba(0, 0, 0, 0.4);
             }
-            .card::after {
-                content: '';
-                position: absolute;
-                bottom: 0;
-                left: 0;
-                right: 0;
-                height: 3px;
-                background: #172554;
+            /*.card::after {*/
+            /*    content: '';*/
+            /*    position: absolute;*/
+            /*    bottom: 0;*/
+            /*    left: 0;*/
+            /*    right: 0;*/
+            /*    height: 3px;*/
+            /*    background: #172554;*/
+            /*}*/
+            /*.dark .card::after {*/
+            /*    background: #60a5fa;*/
+            /*}*/
+
+            .time-period {
+                color: #64748b;
+                font-size: 0.75rem;
+                font-weight: 500;
             }
-            .dark .card::after {
-                background: #60a5fa;
+            .card-divider {
+                border-top: 1px solid rgba(196, 159, 62, 0.34);
+                margin: 16px 0;
             }
             .icon-bg {
                 width: 28px;
@@ -76,12 +86,41 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 @php
                     $cards = [
-                        'chats' => ['title' => 'Chats', 'icon' => 'fas fa-comments', 'iconBgColor' => 'bg-blue-100 dark:bg-blue-700', 'iconColor' => 'text-blue-600 dark:text-blue-200'],
-                        'whatsApp' => ['title' => 'WhatsApp Messages', 'icon' => 'fab fa-whatsapp', 'iconBgColor' => 'bg-green-100 dark:bg-green-700', 'iconColor' => 'text-green-600 dark:text-green-200'],
-                        'faq' => ['title' => 'FAQ Views', 'icon' => 'fas fa-question-circle', 'iconBgColor' => 'bg-yellow-100 dark:bg-yellow-700', 'iconColor' => 'text-yellow-600 dark:text-yellow-200'],
-                        'socialMedia' => ['title' => 'Social Media Interactions', 'icon' => 'fas fa-share-alt', 'iconBgColor' => 'bg-pink-100 dark:bg-pink-700', 'iconColor' => 'text-pink-600 dark:text-pink-200'],
-                        'phoneCalls' => ['title' => 'Phone Calls', 'icon' => 'fas fa-phone', 'iconBgColor' => 'bg-red-100 dark:bg-red-700', 'iconColor' => 'text-red-600 dark:text-red-200'],
-                        'email' => ['title' => 'Emails', 'icon' => 'fas fa-envelope', 'iconBgColor' => 'bg-indigo-100 dark:bg-indigo-700', 'iconColor' => 'text-indigo-600 dark:text-indigo-200'],
+                        'chats' =>
+                             [
+                            'title' => 'Chats',
+                             'icon' => 'fas fa-comments',
+                             'iconBgColor' => 'bg-[rgba(220,169,21,0.2)] border border-[rgba(220,169,21,1)]', // Aloe color with low opacity for the background and full opacity for the border
+                            'iconColor' => 'text-[rgba(220,169,21,1)]',
+                               ],
+                        'whatsApp' =>
+                         [
+                             'title' => 'WhatsApp Messages',
+                             'icon' => 'fab fa-whatsapp',
+                             'iconBgColor' => 'bg-[rgba(220,169,21,0.2)] border border-[rgba(220,169,21,1)]',
+                              'iconColor' => 'text-green-600 dark:text-green-200'
+                              ],
+                        'faq' =>
+                        ['title' => 'FAQ Views',
+                         'icon' => 'fas fa-question-circle',
+                           'iconBgColor' => 'bg-[rgba(220,169,21,0.2)] border border-[rgba(220,169,21,1)]', // Aloe color with low opacity for the background and full opacity for the border
+                            'iconColor' => 'text-[rgba(220,169,21,1)]',
+                         ],
+                        'socialMedia' => ['title' => 'Social Media Interactions',
+                         'icon' => 'fas fa-share-alt',
+                            'iconBgColor' => 'bg-[rgba(220,169,21,0.2)] border border-[rgba(220,169,21,1)]', // Aloe color with low opacity for the background and full opacity for the border
+                            'iconColor' => 'text-[rgba(220,169,21,1)]',
+                           ],
+                        'phoneCalls' => ['title' => 'Phone Calls',
+                         'icon' => 'fas fa-phone',
+                            'iconBgColor' => 'bg-[rgba(220,169,21,0.2)] border border-[rgba(220,169,21,1)]', // Aloe color with low opacity for the background and full opacity for the border
+                            'iconColor' => 'text-[rgba(220,169,21,1)]',
+                           ],
+                        'email' => ['title' => 'Emails',
+                         'icon' => 'fas fa-envelope',
+                            'iconBgColor' => 'bg-[rgba(220,169,21,0.2)] border border-[rgba(220,169,21,1)]', // Aloe color with low opacity for the background and full opacity for the border
+                            'iconColor' => 'text-[rgba(220,169,21,1)]',
+                            ],
                     ];
                 @endphp
 
@@ -98,6 +137,7 @@
                                 <i class="{{ $card['icon'] }} {{ $card['iconColor'] }} text-xs"></i>
                             </div>
                         </div>
+                        <div class="card-divider"></div>
                         <div class="flex items-center">
                             @php
                                 $percentageChange = $stats[$key]['percentageChange'];

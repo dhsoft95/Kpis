@@ -10,13 +10,29 @@
             .card {
                 background-color: white;
                 border-radius: 12px;
-                box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
                 position: relative;
                 overflow: hidden;
-                max-width: 350px;
+                max-width: 100%;
+                margin: 0 auto;
+                padding: 16px;
+                transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+            }
+            .time-period {
+                color: #64748b;
+                font-size: 0.75rem;
+                font-weight: 500;
+            }
+            .card-divider {
+                border-top: 1px solid rgba(196, 159, 62, 0.34);
+                margin: 16px 0;
+            }
+            .card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
             }
             .dark .card {
-                background-color: #1f2937; /* Tailwind gray-800 for dark mode */
+                background-color: #27272a; /* Tailwind gray-800 for dark mode */
                 box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.6), 0 2px 4px -1px rgba(0, 0, 0, 0.4);
             }
             .card::after {
@@ -26,10 +42,10 @@
                 left: 0;
                 right: 0;
                 height: 3px;
-                background: #172554; /* Tailwind blue-500 */
+                /*background: #172554; !* Tailwind blue-500 *!*/
             }
             .dark .card::after {
-                background: #60a5fa; /* Tailwind blue-400 for dark mode */
+                /*background: #60a5fa; !* Tailwind blue-400 for dark mode *!*/
             }
             .icon-bg {
                 width: 28px;
@@ -128,21 +144,10 @@
                 position: relative;
             }
             .dark .route-card {
-                background-color: #1f2937;
+                background-color: #27272a;
                 box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.6), 0 2px 4px -1px rgba(0, 0, 0, 0.4);
             }
-            .route-card::after {
-                content: '';
-                position: absolute;
-                bottom: 0;
-                left: 0;
-                right: 0;
-                height: 3px;
-                background: #3b82f6;
-            }
-            .dark .route-card::after {
-                background: #60a5fa;
-            }
+
             .route-title {
                 color: #1f2937;
                 font-size: 0.6rem;
@@ -171,19 +176,19 @@
             }
             .transfer-count {
                 font-weight: 600;
-                color: #3b82f6;
+                color: #27272a;
                 background-color: #eff6ff;
                 padding: 2px 8px;
                 border-radius: 12px;
                 font-size: 0.7rem;
             }
             .dark .transfer-count {
-                color: #60a5fa;
-                background-color: #1e3a8a;
+                color: #27272a;
+                background-color: #27272a;
             }
             .route-icon {
                 margin-right: 8px;
-                color: #6b7280;
+                color: #27272a;
             }
             .dark .route-icon {
                 color: #9ca3af;
@@ -200,18 +205,6 @@
             .dark .mno-card {
                 background-color: #1f2937;
                 box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.6), 0 2px 4px -1px rgba(0, 0, 0, 0.4);
-            }
-            .mno-card::after {
-                content: '';
-                position: absolute;
-                bottom: 0;
-                left: 0;
-                right: 0;
-                height: 3px;
-                background: #3b82f6;
-            }
-            .dark .mno-card::after {
-                background: #60a5fa;
             }
             .mno-title {
                 color: #1f2937;
@@ -241,7 +234,7 @@
             }
             .transfer-count {
                 font-weight: 600;
-                color: #3b82f6;
+                color: #27272a;
                 background-color: #eff6ff;
                 padding: 2px 8px;
                 border-radius: 12px;
@@ -267,70 +260,73 @@
         </style>
 
         <div class="container mx-auto p-1" wire:poll.2s="calculateStats">
+
+            <h3 class="text-xs font-medium mb-2" style="color: #DCA915;">Customer Metrics</h3>
+
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 @php
                     $cards = [
-                        'totalSuccess' => [
+                       'totalSuccess' => [
                             'title' => 'Total Success',
                             'icon' => 'fas fa-check-circle',
-                            'iconBgColor' => 'bg-green-100 dark:bg-green-700',
-                            'iconColor' => 'text-green-600 dark:text-green-200',
+                            'iconBgColor' => 'bg-[rgba(220,169,21,0.2)] border border-[rgba(220,169,21,1)]', // Aloe color with low opacity for the background and full opacity for the border
+                            'iconColor' => 'text-[rgba(220,169,21,1)]',
                             'description' => 'Total number of successful transactions.'
                         ],
                         'failed' => [
                             'title' => 'Failed Transactions',
                             'icon' => 'fas fa-times-circle',
-                            'iconBgColor' => 'bg-red-100 dark:bg-red-700',
-                            'iconColor' => 'text-red-600 dark:text-red-200',
+                              'iconBgColor' => 'bg-[rgba(220,169,21,0.2)] border border-[rgba(220,169,21,1)]', // Aloe color with low opacity for the background and full opacity for the border
+                            'iconColor' => 'text-[rgba(220,169,21,1)]',
                             'description' => 'Total number of failed transactions.'
                         ],
                         'pending' => [
                             'title' => 'Pending Transactions',
                             'icon' => 'fas fa-clock',
-                            'iconBgColor' => 'bg-yellow-100 dark:bg-yellow-700',
-                            'iconColor' => 'text-yellow-600 dark:text-yellow-200',
+                             'iconBgColor' => 'bg-[rgba(220,169,21,0.2)] border border-[rgba(220,169,21,1)]', // Aloe color with low opacity for the background and full opacity for the border
+                            'iconColor' => 'text-[rgba(220,169,21,1)]',
                             'description' => 'Total number of pending transactions.'
                         ],
                         'registered' => [
                             'title' => 'Total Customers',
                             'icon' => 'fas fa-users',
-                            'iconBgColor' => 'bg-yellow-100 dark:bg-yellow-700',
-                            'iconColor' => 'text-yellow-600 dark:text-yellow-200',
+                            'iconBgColor' => 'bg-[rgba(220,169,21,0.2)] border border-[rgba(220,169,21,1)]', // Aloe color with low opacity for the background and full opacity for the border
+                            'iconColor' => 'text-[rgba(220,169,21,1)]',
                             'description' => 'Total number of users who have registered on the Simba Money platform.'
                         ],
                         'active' => [
                             'title' => 'Active Customers',
                             'icon' => 'fas fa-user-check',
-                            'iconBgColor' => 'bg-blue-100 dark:bg-blue-700',
-                            'iconColor' => 'text-blue-600 dark:text-blue-200',
+                             'iconBgColor' => 'bg-[rgba(220,169,21,0.2)] border border-[rgba(220,169,21,1)]', // Aloe color with low opacity for the background and full opacity for the border
+                            'iconColor' => 'text-[rgba(220,169,21,1)]',
                             'description' => 'Users who have engaged in any revenue-generating activity within the last 30 days.'
                         ],
                         'inactive' => [
                             'title' => 'Inactive Customers',
                             'icon' => 'fas fa-user-slash',
-                            'iconBgColor' => 'bg-red-100 dark:bg-red-700',
-                            'iconColor' => 'text-red-600 dark:text-red-200',
+                            'iconBgColor' => 'bg-[rgba(220,169,21,0.2)] border border-[rgba(220,169,21,1)]', // Aloe color with low opacity for the background and full opacity for the border
+                            'iconColor' => 'text-[rgba(220,169,21,1)]',
                             'description' => 'Users who have not engaged in any revenue-generating activities for more than 30 days.'
                         ],
                         'churn' => [
                             'title' => 'Churn Customers',
                             'icon' => 'fas fa-user-slash',
-                            'iconBgColor' => 'bg-orange-100 dark:bg-orange-700',
-                            'iconColor' => 'text-orange-600 dark:text-orange-200',
+                             'iconBgColor' => 'bg-[rgba(220,169,21,0.2)] border border-[rgba(220,169,21,1)]', // Aloe color with low opacity for the background and full opacity for the border
+                            'iconColor' => 'text-[rgba(220,169,21,1)]',
                             'description' => 'Users who have stopped using the platform and whose last activity was more than 30 days ago.'
                         ],
                         'avgValuePerDay' => [
                             'title' => 'Avg Trans Value/Day',
                             'icon' => 'fas fa-dollar-sign',
-                            'iconBgColor' => 'bg-green-100 dark:bg-green-700',
-                            'iconColor' => 'text-green-600 dark:text-green-200',
+                             'iconBgColor' => 'bg-[rgba(220,169,21,0.2)] border border-[rgba(220,169,21,1)]', // Aloe color with low opacity for the background and full opacity for the border
+                            'iconColor' => 'text-[rgba(220,169,21,1)]',
                             'description' => 'Average monetary value of all transactions processed per day on the platform.'
                         ],
                         'avgTransactionPerCustomer' => [
                             'title' => 'Avg Trans/Customer',
                             'icon' => 'fas fa-exchange-alt',
-                            'iconBgColor' => 'bg-purple-100 dark:bg-purple-700',
-                            'iconColor' => 'text-purple-600 dark:text-purple-200',
+                             'iconBgColor' => 'bg-[rgba(220,169,21,0.2)] border border-[rgba(220,169,21,1)]', // Aloe color with low opacity for the background and full opacity for the border
+                            'iconColor' => 'text-[rgba(220,169,21,1)]',
                             'description' => 'Average number of transactions made by each customer on the platform.'
                         ],
                     ];
@@ -352,10 +348,12 @@
                                         @endif
                                     </h2>
                                 </div>
+
                                 <div class="icon-bg {{ $card['iconBgColor'] }}">
                                     <i class="{{ $card['icon'] }} {{ $card['iconColor'] }} text-xs"></i>
                                 </div>
                             </div>
+                            <div class="card-divider"></div>
                             <div class="flex items-center">
                                 @php
                                     $percentageChange = $stats[$key]['percentageChange'] ?? 0;
@@ -374,35 +372,36 @@
                             <div class="tooltip-description">{{ $card['description'] }}</div>
                         </div>
                     </div>
+
                 @endforeach
+                <div style="margin-top: 15px"></div>
             </div>
         </div>
+{{--        <div class="flex flex-row space-x-3" style="margin-top: 20px;">--}}
+{{--            <div class="route-card p-4 w-full md:w-1/2">--}}
+{{--                <h3 class="route-title mb-4">Popular Transfer Routes</h3>--}}
+{{--                <div class="space-y-0">--}}
+{{--                    @foreach($this->getPopularTransfersrouter as $transfers)--}}
+{{--                        <div class="mno-item flex justify-between">--}}
+{{--                            <span><i class="fas fa-exchange-alt route-icon"></i>{{ $transfers['route'] }}</span>--}}
+{{--                            <span class="transfer-count">{{ number_format($transfers['count']) }} transfers</span>--}}
+{{--                        </div>--}}
+{{--                    @endforeach--}}
+{{--                </div>--}}
+{{--            </div>--}}
 
-        <div class="flex flex-row space-x-3" style="margin-top: 20px;">
-            <div class="route-card p-4 w-full md:w-1/2">
-                <h3 class="route-title mb-4">Popular Transfer Routes</h3>
-                <div class="space-y-2">
-                    @foreach($this->getPopularTransfersrouter as $transfers)
-                        <div class="mno-item flex justify-between">
-                            <span><i class="fas fa-exchange-alt route-icon"></i>{{ $transfers['route'] }}</span>
-                            <span class="transfer-count">{{ number_format($transfers['count']) }} transfers</span>
-                        </div>
-                    @endforeach
-                </div>
-            </div>
-
-            <div class="mno-card p-4 w-full md:w-1/2">
-                <h3 class="mno-title mb-4">Popular Transfers to MNOs</h3>
-                <div class="space-y-2">
-                    @foreach($this->popularTransfers as $transfer)
-                        <div class="mno-item flex justify-between">
-                            <span><i class="fas fa-exchange-alt route-icon"></i>{{ $transfer['route'] }}</span>
-                            <span class="transfer-count">{{ number_format($transfer['count']) }} transfers</span>
-                        </div>
-                    @endforeach
-                </div>
-            </div>
-        </div>
+{{--            <div class="mno-card p-4 w-full md:w-1/2">--}}
+{{--                <h3 class="mno-title mb-4">Popular Transfers to MNOs</h3>--}}
+{{--                <div class="space-y-2">--}}
+{{--                    @foreach($this->popularTransfers as $transfer)--}}
+{{--                        <div class="mno-item flex justify-between">--}}
+{{--                            <span><i class="fas fa-exchange-alt route-icon"></i>{{ $transfer['route'] }}</span>--}}
+{{--                            <span class="transfer-count">{{ number_format($transfer['count']) }} transfers</span>--}}
+{{--                        </div>--}}
+{{--                    @endforeach--}}
+{{--                </div>--}}
+{{--            </div>--}}
+{{--        </div>--}}
 
     </x-filament::section>
 

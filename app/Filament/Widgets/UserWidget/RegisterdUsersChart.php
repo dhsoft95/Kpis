@@ -1,9 +1,11 @@
 <?php
 
-namespace App\Filament\Widgets;
+namespace App\Filament\Widgets\UserWidget;
 
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\HtmlString;
+use Illuminate\View\View;
 use Leandrocfe\FilamentApexCharts\Widgets\ApexChartWidget;
 
 class RegisterdUsersChart extends ApexChartWidget
@@ -13,7 +15,11 @@ class RegisterdUsersChart extends ApexChartWidget
     protected static ?string $heading = 'Registered Users Trend';
 
     protected int | string | array $columnSpan = 'full';
-    protected static ?int $contentHeight = 300;
+
+    protected function getContentHeight(): ?int
+    {
+        return 300;
+    }
 
     protected function getOptions(): array
     {
@@ -101,7 +107,7 @@ class RegisterdUsersChart extends ApexChartWidget
                 'width' => 1,
                 'lineCap' => 'round',
             ],
-            'colors' => ['#4a5568', '#718096'],
+            'colors' => ['#E0B22C', '#584408'],
         ];
     }
 

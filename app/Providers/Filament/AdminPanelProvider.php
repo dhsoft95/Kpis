@@ -6,24 +6,21 @@ use App\Filament\Pages\customer;
 use App\Filament\Pages\financial;
 use App\Filament\Pages\oparations;
 use App\Filament\Pages\service;
-use App\Filament\Widgets\ActiveChart;
 use App\Filament\Widgets\ActiveChartAp;
-use App\Filament\Widgets\ChurnChart;
 use App\Filament\Widgets\CustomerMetric;
 use App\Filament\Widgets\CustStatsOverview;
-use App\Filament\Widgets\RegisterdUsersChart;
-use App\Filament\Widgets\RegisteredChart;
 use App\Filament\Widgets\TestOverview;
-use App\Filament\Widgets\testWidget;
-use App\Filament\Widgets\UserPerformance;
-use App\Filament\Widgets\userStatsOverview;
+use App\Filament\Widgets\UserWidget\ActiveChart;
+use App\Filament\Widgets\UserWidget\ChurnChart;
+use App\Filament\Widgets\UserWidget\RegisterdUsersChart;
+use App\Filament\Widgets\UserWidget\userStatsOverview;
 use App\Livewire\devicDown;
 use App\Livewire\MapOverview;
 use App\Livewire\UserGanders;
 use App\Livewire\WalletOverview;
-use Awcodes\FilamentStickyHeader\StickyHeaderPlugin;
 use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
 use Filament\Enums\ThemeMode;
+use Filament\FontProviders\GoogleFontProvider;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
@@ -31,7 +28,6 @@ use Filament\Pages;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
-use Filament\Widgets;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
@@ -50,23 +46,17 @@ class AdminPanelProvider extends PanelProvider
     public function panel(Panel $panel): Panel
     {
         return $panel
+            ->font('Inter', provider: GoogleFontProvider::class)
             ->default()
             ->id('admin')
             ->path('admin')
-            ->login()  ->collapsibleNavigationGroups(true)->sidebarCollapsibleOnDesktop()
+            ->login()  ->collapsibleNavigationGroups(true)  ->font('Sarabun')
             ->brandLogo(asset('asset/images/logo.svg'))->brandLogoHeight('2rem')
             ->favicon(asset('asset/images/favicon.svg')) ->topbar(true)
 //            ->plugin(FilamentSpatieLaravelHealthPlugin::make())
             ->colors([
-                'danger' => Color::Rose,
-                'gray' => Color::Gray,
-                'info' => Color::Sky,
-                'primary' => Color::Indigo,
-                'success' => Color::Emerald,
-                'warning' => Color::Orange,
-            ]) ->defaultThemeMode(ThemeMode::Dark)
-//            ->topNavigation()
 
+            ])->viteTheme('resources/css/filament/admin/theme.css')
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
 //            ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
 //            ->pages([customer::class,financial::class,oparations::class,service::class])
@@ -75,7 +65,6 @@ class AdminPanelProvider extends PanelProvider
             ])
 //            ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
-                WalletOverview::class,
                 userStatsOverview::class,
                 devicDown::class,
                 RegisterdUsersChart::class,
@@ -113,8 +102,8 @@ class AdminPanelProvider extends PanelProvider
                         'sm' => 2,
                     ]),
                 FilamentApexChartsPlugin::make(),
-                FilamentSpatieLaravelHealthPlugin::make()
-                    ->usingPage(HealthCheckResults::class)
+//                FilamentSpatieLaravelHealthPlugin::make()
+//                    ->usingPage(HealthCheckResults::class)
 
             ])
             ->authMiddleware([

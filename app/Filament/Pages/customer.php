@@ -5,14 +5,9 @@ namespace App\Filament\Pages;
 
 use App\Filament\Widgets\ActiveChartAp;
 use App\Filament\Widgets\Custvalue;
-use App\Filament\Widgets\userStatsOverview;
 use App\Livewire\CustStatsOverview;
-use App\Livewire\CustvalueChart;
 use App\Livewire\NPSComponentsChart;
-use App\Livewire\testw;
-use App\Livewire\TransvalueChart;
 use App\Livewire\WeeklyTrendsChart;
-use Filament\Forms\Components\Tabs\Tab;
 use Filament\Pages\Page;
 use Filament\Support\Enums\MaxWidth;
 
@@ -32,7 +27,7 @@ class customer extends Page
     {
         return MaxWidth::Full;
     }
-    protected static ?string $navigationGroup = 'KPIs';
+//    protected static ?string $navigationGroup = 'KPIs';
 
     protected static ?string $title = 'Customer Metric';
 //    protected int | string | array $columnSpan = 'full';

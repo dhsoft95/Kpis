@@ -80,7 +80,6 @@ class CustomerFeedbackController extends Controller
         if ($transactionCount == 0) {
             return response()->json(['message' => 'Telephone number not found in transactions.'], 404);
         }
-
         // Ensure the user has not already answered this question
         $existingAnswer = feedback_answers::where('feedback_question_id', $request->input('feedback_question_id'))
             ->where('sender_phone', $senderPhone)

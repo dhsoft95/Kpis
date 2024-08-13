@@ -104,7 +104,7 @@ class devicDown extends Widget
 
     protected static string $view = 'livewire.devic-down';
 
-
+//    protected int | string | array $columnSpan = 'full';
     public function poll()
     {
         $this->loadAllData();

@@ -6,12 +6,13 @@ use App\Livewire\CustStatsOverview;
 use App\Livewire\CustvalueChart;
 use App\Livewire\financialKpis;
 use App\Livewire\TransvalueChart;
+use App\Livewire\WalletOverview;
 use Filament\Pages\Page;
 
 class financial extends Page
 {
     protected static ?string $title = 'Financial  ';
-    protected static ?string $navigationGroup = 'KPIs';
+//    protected static ?string $navigationGroup = 'KPIs';
     protected static ?string $navigationIcon = 'heroicon-o-currency-dollar';
 
     protected static string $view = 'filament.pages.financial';
@@ -21,7 +22,7 @@ class financial extends Page
     protected function getHeaderWidgets(): array
     {
         return [
-//            financialKpis::class,
+            WalletOverview::class,
         ];
     }
 }

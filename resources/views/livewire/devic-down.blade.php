@@ -1,4 +1,3 @@
-separate male and female count ana make nit look nice but also add  iphone icon and  adroid
 
 <x-filament::widget>
     <x-filament::card>
@@ -7,7 +6,7 @@ separate male and female count ana make nit look nice but also add  iphone icon 
         <div class="space-y-4 p-1" wire:poll.2s>
             <!-- Device Downloads Section -->
             <div class="">
-                <h3 class="text-xs font-medium text-gray-900 dark:text-white mb-2">Device Downloads</h3>
+                <h3 class="text-xs font-medium text-gray-900 dark:text-white mb-2"  style="color: #DCA915;">Device Downloads</h3>
                 <div class="grid grid-cols-2 gap-3">
                     <div class="bg-blue-50 dark:bg-gray-800 rounded-lg p-2">
                         <div class="flex items-center space-x-2">
@@ -33,7 +32,7 @@ separate male and female count ana make nit look nice but also add  iphone icon 
 
             <!-- User Gender Stats Section -->
             <div>
-                <h3 class="text-xs font-medium text-gray-900 dark:text-white mb-2">User Gender Stats</h3>
+                <h3 class="text-xs font-medium text-gray-900 dark:text-white mb-2" style="color: #DCA915;">User Gender Stats</h3>
                 <div class="bg-purple-50 dark:bg-gray-800 rounded-lg p-2">
                     <div class="flex justify-between items-center mb-2">
                         <div class="flex items-center space-x-2">
@@ -71,7 +70,7 @@ separate male and female count ana make nit look nice but also add  iphone icon 
 
             <!-- Age Group Distribution Section -->
             <div>
-                <h3 class="text-xs font-medium text-gray-900 dark:text-white mb-2">Age Group Distribution</h3>
+                <h3 class="text-xs font-medium text-gray-900 dark:text-white mb-2" style="color: #DCA915;">Age Group Distribution</h3>
                 <div class="grid grid-cols-4 gap-2">
                     @foreach(['18-24', '25-34', '35-44', '45+'] as $ageGroup)
                         <div class="bg-orange-50 dark:bg-gray-800 rounded-lg p-2">
@@ -81,7 +80,7 @@ separate male and female count ana make nit look nice but also add  iphone icon 
                                 </div>
                                 <div>
                                     <span class="text-sm font-semibold text-gray-900 dark:text-white">{{ number_format($ageGroupCounts[$ageGroup] ?? 0) }}</span>
-                                    <p class="text-xs text-orange-600 dark:text-orange-400">{{ $ageGroup }}</p>
+                                    <p class="text-xs text-orange-600 " style="color: #DCA915;">{{ $ageGroup }}</p>
                                 </div>
                             </div>
                         </div>
@@ -91,14 +90,14 @@ separate male and female count ana make nit look nice but also add  iphone icon 
 
             <!-- Top User Locations Section -->
             <div>
-                <h3 class="text-xs font-medium text-gray-900 dark:text-white mb-2">Top User Locations</h3>
+                <h3 class="text-xs font-medium text-gray-900 dark:text-white mb-2" style="color: #DCA915;">Top User Locations</h3>
                 <div class="bg-indigo-50 dark:bg-gray-800 rounded-lg p-2">
                     <ul class="space-y-2">
                         @foreach($topCountries as $country => $users)
                             <li class="flex justify-between items-center">
                                 <div class="flex items-center space-x-2">
-                                    <div class="bg-indigo-500 rounded-full p-1.5">
-                                        <x-heroicon-s-map-pin class="w-4 h-4 text-white"/>
+                                    <div class="bg-yellow-400 rounded-full p-1.5"  style="color: #DCA915 !important;">
+                                        <x-heroicon-s-map-pin class="w-4 h-4" style="color: #27272a"/>
                                     </div>
                                     <span class="text-sm text-gray-900 dark:text-white">{{ $country }}</span>
                                 </div>

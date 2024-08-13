@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Filament\Widgets;
+namespace App\Filament\Widgets\UserWidget;
 
 use Carbon\Carbon;
 use Carbon\CarbonPeriod;
-use Filament\Widgets\ChartWidget;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Cache;
 use Exception;
+use Filament\Widgets\ChartWidget;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 
 class ActiveChart extends ChartWidget
 {
@@ -39,12 +39,12 @@ class ActiveChart extends ChartWidget
                     [
                         'label' => 'Active Users',
                         'data' => $data['activeCounts'],
-                        'backgroundColor' => '#4A58EC',
+                        'backgroundColor' => '#584408',
                     ],
                     [
                         'label' => 'Inactive Users',
                         'data' => $data['inactiveCounts'],
-                        'backgroundColor' => '#48D3FF',
+                        'backgroundColor' => '#E0B22C',
                     ],
                 ],
                 'labels' => $data['labels'],

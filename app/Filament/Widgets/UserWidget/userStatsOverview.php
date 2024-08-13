@@ -1,15 +1,15 @@
 <?php
 
-namespace App\Filament\Widgets;
+namespace App\Filament\Widgets\UserWidget;
 
+use Filament\Widgets\Widget;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
-use Filament\Widgets\Widget;
 
 class userStatsOverview extends Widget
 {
     protected static string $view = 'filament.widgets.user-stats-overview';
-
+//    protected int | string | array $columnSpan = 'full';
     public array $popularTransfers = [];
     public array $getPopularTransfersrouter = [];
 

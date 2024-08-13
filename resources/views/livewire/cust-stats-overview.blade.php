@@ -13,21 +13,10 @@
                 max-width: 350px;
             }
             .dark .card {
-                background-color: #1f2937;
+                background-color: #27272a;
                 box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.6), 0 2px 4px -1px rgba(0, 0, 0, 0.4);
             }
-            .card::after {
-                content: '';
-                position: absolute;
-                bottom: 0;
-                left: 0;
-                right: 0;
-                height: 3px;
-                background: #172554;
-            }
-            .dark .card::after {
-                background: #60a5fa;
-            }
+
             .icon-bg {
                 width: 28px;
                 height: 28px;
@@ -35,6 +24,15 @@
                 display: flex;
                 align-items: center;
                 justify-content: center;
+            }
+            .time-period {
+                color: #64748b;
+                font-size: 0.75rem;
+                font-weight: 500;
+            }
+            .card-divider {
+                border-top: 1px solid rgba(196, 159, 62, 0.34);
+                margin: 16px 0;
             }
             .percentage-badge {
                 padding: 1px 6px;
@@ -111,22 +109,22 @@
                         'nps' => [
                             'title' => 'Net Promoter Score (NPS)',
                             'icon' => 'fas fa-chart-line',
-                            'iconBgColor' => 'bg-purple-100 dark:bg-purple-700',
-                            'iconColor' => 'text-purple-600 dark:text-purple-200',
+                            'iconBgColor' => 'bg-[rgba(220,169,21,0.2)] border border-[rgba(220,169,21,1)]', // Aloe color with low opacity for the background and full opacity for the border
+                            'iconColor' => 'text-[rgba(220,169,21,1)]',
                             'description' => 'Measure of customer loyalty and satisfaction. Ranges from -100 to 100.'
                         ],
                         'csat' => [
                             'title' => 'Customer Satisfaction (CSAT)',
                             'icon' => 'fas fa-smile',
-                            'iconBgColor' => 'bg-red-100 dark:bg-red-700',
-                            'iconColor' => 'text-red-600 dark:text-red-200',
+                             'iconBgColor' => 'bg-[rgba(220,169,21,0.2)] border border-[rgba(220,169,21,1)]', // Aloe color with low opacity for the background and full opacity for the border
+                            'iconColor' => 'text-[rgba(220,169,21,1)]',
                             'description' => 'Percentage of customers who rate their experience as satisfactory.'
                         ],
                         'ces' => [
                             'title' => 'Customer Effort Score (CES)',
                             'icon' => 'fas fa-tasks',
-                            'iconBgColor' => 'bg-indigo-100 dark:bg-indigo-700',
-                            'iconColor' => 'text-indigo-600 dark:text-indigo-200',
+                             'iconBgColor' => 'bg-[rgba(220,169,21,0.2)] border border-[rgba(220,169,21,1)]', // Aloe color with low opacity for the background and full opacity for the border
+                            'iconColor' => 'text-[rgba(220,169,21,1)]',
                             'description' => 'Average score of how much effort a customer has to exert to get an issue resolved or a request fulfilled.'
                         ],
                     ];
@@ -142,14 +140,17 @@
                                         {{ number_format($stats[$key]['value'], 2) }}{{ in_array($key, ['nps', 'csat']) ? '%' : '' }}
                                     </h2>
                                 </div>
+                                <div class="card-divider"></div>
                                 <div class="icon-bg {{ $card['iconBgColor'] }}">
                                     <i class="{{ $card['icon'] }} {{ $card['iconColor'] }} text-xs"></i>
                                 </div>
                             </div>
+                            <div class="card-divider"></div>
                             <div class="flex items-center">
-                                <span class="percentage-badge {{ $stats[$key]['isGrowth'] ? 'bg-green-100 dark:bg-green-700 text-green-800 dark:text-green-200' : 'bg-red-100 dark:bg-red-700 text-red-800 dark:text-red-200' }} mr-2">
-                                    {{ $stats[$key]['isGrowth'] ? '+' : '-' }}{{ number_format(abs($stats[$key]['percentageChange']), 2) }}%
-                                </span>
+                             <span class="percentage-badge {{ $stats[$key]['isGrowth'] ? 'bg-green-100 !bg-opacity-30 text-green-800 !text-opacity-70 dark:bg-green-700 dark:!bg-opacity-30 dark:text-green-200 dark:!text-opacity-70' : 'bg-red-100 !bg-opacity-30 text-red-800 !text-opacity-70 dark:bg-red-700 dark:!bg-opacity-30 dark:text-red-200 dark:!text-opacity-70' }} mr-2">
+                                {{ $stats[$key]['isGrowth'] ? '+' : '-' }}{{ number_format(abs($stats[$key]['percentageChange']), 2) }}%
+                            </span>
+
                                 <span class="time-period">WoW</span>
                             </div>
                         </div>
