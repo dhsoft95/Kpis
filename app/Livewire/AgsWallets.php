@@ -36,23 +36,21 @@ class AgsWallets extends Widget
 
     public function fetchDisbursementBalance()
     {
-        $this->error = null;
-        $this->balance = null;
-        $this->currency = null;
         $this->status = null;
 
         $response = self::checkDisbursementBalanceTeraPay();
 
-        if (is_array($response) && !empty($response)) {
+        if (is_array($response) && !empty($response) && isset($response[0])) {
             $data = $response[0];
             $this->balance = $data['currentBalance'] ?? null;
             $this->currency = $data['currency'] ?? 'USD';
             $this->status = $data['status'] ?? 'available';
         } else {
             $this->error = 'Unexpected response format from TeraPay API';
-            Log::error('TeraPay API Unexpected Response', (array)$response);
+            Log::error('TeraPay API Unexpected Response', ['response' => $response]);
         }
     }
+
 
     public function fetchTemboBalance()
     {
