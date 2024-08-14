@@ -13,7 +13,7 @@
                 max-width: 350px;
             }
             .dark .card {
-                background-color: #27272a;
+                background-color: #1f2937;
                 box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.6), 0 2px 4px -1px rgba(0, 0, 0, 0.4);
             }
             .card::after {
