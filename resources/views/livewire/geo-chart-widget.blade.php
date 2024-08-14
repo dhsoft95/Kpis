@@ -4,7 +4,7 @@
             <h3 class="text-lg font-medium">User Locations (Last 30 Days)</h3>
             <div class="mt-4">
                 <div wire:ignore>
-                    <div id="userLocationsChart" class="w-full h-[300px]"></div>
+                    <div id="userLocationsChart" style="width: 100%; height:445px !important;"></div>
                 </div>
             </div>
             @assets
