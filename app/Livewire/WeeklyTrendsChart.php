@@ -22,7 +22,7 @@ class WeeklyTrendsChart extends ApexChartWidget
                     'type' => $this->getType(),
                     'height' => 300,
                 ],
-                'colors' => ['#f59e0b', '#4ade80', '#3b82f6'],
+                'colors' => ['#584408', '#E0B22C', '#F5E5B9'],
                 'stroke' => [
                     'curve' => 'smooth',
                 ],

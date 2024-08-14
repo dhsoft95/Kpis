@@ -14,11 +14,11 @@ class RegisterdUsersChart extends ApexChartWidget
     protected static ?string $loadingIndicator = 'Loading...';
     protected static ?string $heading = 'Registered Users Trend';
 
-    protected int | string | array $columnSpan = 'full';
+//    protected int | string | array $columnSpan = 'full';
 
     protected function getContentHeight(): ?int
     {
-        return 300;
+        return 440;
     }
 
     protected function getOptions(): array
@@ -29,7 +29,7 @@ class RegisterdUsersChart extends ApexChartWidget
         return [
             'chart' => [
                 'type' => 'bar',
-                'height' => 300,
+                'height' => 400,
                 'parentHeightOffset' => 2,
                 'stacked' => true,
                 'toolbar' => [
@@ -154,7 +154,7 @@ class RegisterdUsersChart extends ApexChartWidget
 
         foreach ($registrations as $registration) {
             $weekNumber = $registration['week'];
-            $year = substr($weekNumber, 0, 4);
+            $year = substr($weekNumber, 0, 7);
             $week = substr($weekNumber, -2);
 
             $startOfWeek = Carbon::parse($year)->startOfYear()->addWeeks($week - 1)->startOfWeek();

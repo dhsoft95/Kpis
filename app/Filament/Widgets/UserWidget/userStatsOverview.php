@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\DB;
 class userStatsOverview extends Widget
 {
     protected static string $view = 'filament.widgets.user-stats-overview';
-//    protected int | string | array $columnSpan = 'full';
+    protected int | string | array $columnSpan = 'full';
     public array $popularTransfers = [];
     public array $getPopularTransfersrouter = [];
 

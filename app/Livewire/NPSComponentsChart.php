@@ -51,7 +51,7 @@ class NPSComponentsChart extends ApexChartWidget
                     ],
                 ],
             ],
-            'colors' => ['#28a745', '#E0B22C', '#dc3545'],
+            'colors' => ['#584408', '#E0B22C', '#F5E5B9'],
             'plotOptions' => [
                 'bar' => [
                     'borderRadius' => 1,
