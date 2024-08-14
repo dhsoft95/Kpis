@@ -15,6 +15,7 @@ use App\Filament\Widgets\UserWidget\ChurnChart;
 use App\Filament\Widgets\UserWidget\RegisterdUsersChart;
 use App\Filament\Widgets\UserWidget\userStatsOverview;
 use App\Livewire\devicDown;
+use App\Livewire\GeoChartWidget;
 use App\Livewire\MapOverview;
 use App\Livewire\UserGanders;
 use App\Livewire\WalletOverview;
@@ -24,6 +25,7 @@ use Filament\FontProviders\GoogleFontProvider;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
+use Filament\Navigation\MenuItem;
 use Filament\Pages;
 use Filament\Panel;
 use Filament\PanelProvider;
@@ -48,8 +50,14 @@ class AdminPanelProvider extends PanelProvider
         return $panel
             ->font('Inter', provider: GoogleFontProvider::class)
             ->default()
-            ->id('admin')
-            ->path('admin')
+            ->id('admin')    ->breadcrumbs(false)
+            ->sidebarWidth('17rem')
+//            ->collapsedSidebarWidth('9rem')
+            ->path('admin')->topbar(true)
+            ->userMenuItems([
+                'profile' => MenuItem::make()->label('Edit profile'),
+                'logout' => MenuItem::make()->label('Log out'),
+            ])
             ->login()  ->collapsibleNavigationGroups(true)  ->font('Sarabun')
             ->brandLogo(asset('asset/images/logo.svg'))->brandLogoHeight('2rem')
             ->favicon(asset('asset/images/favicon.svg')) ->topbar(true)
@@ -67,9 +75,11 @@ class AdminPanelProvider extends PanelProvider
             ->widgets([
                 userStatsOverview::class,
                 devicDown::class,
-                RegisterdUsersChart::class,
-                ActiveChart::class,
+                GeoChartWidget::class,
                 ChurnChart::class,
+                ActiveChart::class,
+                RegisterdUsersChart::class,
+
 //                \App\Filament\Widgets\UserDemographic::class
 
 

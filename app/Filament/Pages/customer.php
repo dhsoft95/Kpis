@@ -27,9 +27,12 @@ class customer extends Page
     {
         return MaxWidth::Full;
     }
-//    protected static ?string $navigationGroup = 'KPIs';
 
     protected static ?string $title = 'Customer Metric';
+    protected static ?string $navigationGroup = 'Dashboard';
+
+
+//    protected static ?string $navigationGroup = 'Settings';
 //    protected int | string | array $columnSpan = 'full';
 
 

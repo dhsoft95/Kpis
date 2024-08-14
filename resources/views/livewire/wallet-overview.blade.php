@@ -13,21 +13,21 @@
                 max-width: 350px;
             }
             .dark .card {
-                background-color: #1f2937;
+                background-color: #27272a;
                 box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.6), 0 2px 4px -1px rgba(0, 0, 0, 0.4);
             }
-            .card::after {
-                content: '';
-                position: absolute;
-                bottom: 0;
-                left: 0;
-                right: 0;
-                height: 3px;
-                background: #172554;
-            }
-            .dark .card::after {
-                background: #60a5fa;
-            }
+            /*.card::after {*/
+            /*    content: '';*/
+            /*    position: absolute;*/
+            /*    bottom: 0;*/
+            /*    left: 0;*/
+            /*    right: 0;*/
+            /*    height: 3px;*/
+            /*    background: #172554;*/
+            /*}*/
+            /*.dark .card::after {*/
+            /*    background: #60a5fa;*/
+            /*}*/
             .icon-bg {
                 width: 28px;
                 height: 28px;
@@ -63,6 +63,10 @@
             .time-period {
                 color: #9ca3af;
                 font-size: 0.6rem;
+            }
+            .card-divider {
+                border-top: 1px solid rgba(196, 159, 62, 0.34);
+                margin: 16px 0;
             }
             .dark .time-period {
                 color: #a1a1aa;
@@ -111,29 +115,29 @@
                         'active' => [
                             'title' => 'Active Wallets',
                             'icon' => 'fas fa-wallet',
-                            'iconBgColor' => 'bg-green-100 dark:bg-green-700',
-                            'iconColor' => 'text-green-600 dark:text-green-200',
+                            'iconBgColor' => 'bg-[rgba(220,169,21,0.2)] border border-[rgba(220,169,21,1)]', // Aloe color with low opacity for the background and full opacity for the border
+                            'iconColor' => 'text-[rgba(220,169,21,1)]',
                             'description' => 'Number of active wallets.'
                         ],
                         'inactive' => [
                             'title' => 'Inactive Wallets',
                             'icon' => 'fas fa-wallet',
-                            'iconBgColor' => 'bg-gray-100 dark:bg-gray-700',
-                            'iconColor' => 'text-gray-600 dark:text-gray-200',
+                             'iconBgColor' => 'bg-[rgba(220,169,21,0.2)] border border-[rgba(220,169,21,1)]', // Aloe color with low opacity for the background and full opacity for the border
+                            'iconColor' => 'text-[rgba(220,169,21,1)]',
                             'description' => 'Number of inactive wallets.'
                         ],
                         'failed' => [
                             'title' => 'Failed Wallets',
                             'icon' => 'fas fa-times-circle',
-                            'iconBgColor' => 'bg-red-100 dark:bg-red-700',
-                            'iconColor' => 'text-red-600 dark:text-red-200',
+                             'iconBgColor' => 'bg-[rgba(220,169,21,0.2)] border border-[rgba(220,169,21,1)]', // Aloe color with low opacity for the background and full opacity for the border
+                            'iconColor' => 'text-[rgba(220,169,21,1)]',
                             'description' => 'Number of failed wallets.'
                         ],
                         'inprogress' => [
                             'title' => 'In-Progress Wallets',
                             'icon' => 'fas fa-sync',
-                            'iconBgColor' => 'bg-blue-100 dark:bg-blue-700',
-                            'iconColor' => 'text-blue-600 dark:text-blue-200',
+                            'iconBgColor' => 'bg-[rgba(220,169,21,0.2)] border border-[rgba(220,169,21,1)]', // Aloe color with low opacity for the background and full opacity for the border
+                            'iconColor' => 'text-[rgba(220,169,21,1)]',
                             'description' => 'Number of wallets in progress.'
                         ],
                     ];
@@ -153,6 +157,7 @@
                                     <i class="{{ $card['icon'] }} {{ $card['iconColor'] }} text-xs"></i>
                                 </div>
                             </div>
+                            <div class="card-divider"></div>
                             <div class="flex items-center">
                                 <span class="percentage-badge {{ $stats[$key]['isGrowth'] ? 'bg-green-100 dark:bg-green-700 text-green-800 dark:text-green-200' : 'bg-red-100 dark:bg-red-700 text-red-800 dark:text-red-200' }} mr-2">
                                     {{ $stats[$key]['isGrowth'] ? '+' : '-' }}{{ number_format(abs($stats[$key]['percentageChange']), 2) }}%

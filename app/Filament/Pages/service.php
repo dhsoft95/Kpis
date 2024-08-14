@@ -36,6 +36,11 @@ class service extends Page
     }
 
     protected static ?string $title = 'Service Desk';
+    protected static ?string $navigationParentItem = 'Notifications';
+
+    protected static ?string $navigationGroup = 'Dashboard';
+
+
 
 //    protected static ?string $navigationParentItem = 'Notifications';
 
