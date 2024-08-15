@@ -49,7 +49,7 @@ class InteractionTrendWidget extends ApexChartWidget
                     ],
                 ],
             ],
-            'colors' => ['#3b82f6', '#ef4444', '#10b981'], // Blue for Inquiry, Red for Complaint, Green for Request
+            'colors' => ['#584408', '#E0B22C', '#F5E5B9'],
             'stroke' => [
                 'curve' => 'smooth',
             ],
