@@ -1,19 +1,18 @@
 <?php
 
-use App\Http\Controllers\AuthController;
-use App\Http\Controllers\CustomerFeedbackController;
-use App\Http\Controllers\GoogleAnalyticsController;
-use App\Http\Controllers\GooglePlayController;
-use App\Http\Controllers\GooglePlayReportingController;
-use App\Http\Controllers\UserStatsController;
-use Illuminate\Http\Request;
+use App\Http\Controllers\APIs\CustomerFeedbackController;
+use App\Http\Controllers\APIs\UserStatsConstroller;
+use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\GoogleServices\GoogleAnalyticsController;
+use App\Http\Controllers\GoogleServices\GooglePlayController;
+use App\Http\Controllers\GoogleServices\GooglePlayReportingController;
 use Illuminate\Support\Facades\Route;
 
 //Route::get('/user', function (Request $request) {
 //    return $request->user();
 //})->middleware('auth:sanctum');
 
-Route::get('/user-stats', [UserStatsController::class, 'getWeekOnWeekChange']);
+Route::get('/user-stats', [UserStatsConstroller::class, 'getWeekOnWeekChange']);
 
 
 Route::get('/metrics/crash-rate-metadata', [GooglePlayController::class, 'getCrashRateMetricSet']);

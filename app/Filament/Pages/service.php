@@ -3,17 +3,13 @@
 namespace App\Filament\Pages;
 
 use App\Filament\Widgets\Interactions;
-use App\Livewire\CustStatsOverview;
-use App\Livewire\CustvalueChart;
+use App\Livewire\AppInteractions\HelpDeskChart;
+use App\Livewire\AppInteractions\InteractionTrendWidget;
 use App\Livewire\EscalationRateTrend;
-use App\Livewire\HelpDeskChart;
-use App\Livewire\InteractionTrendWidget;
 use App\Livewire\SericeDeskOverview;
-use App\Livewire\TransvalueChart;
 use App\Livewire\UserDemographic;
 use Filament\Pages\Page;
 use Filament\Support\Enums\MaxWidth;
-use BezhanSalleh\FilamentGoogleAnalytics\Widgets;
 
 
 class service extends Page

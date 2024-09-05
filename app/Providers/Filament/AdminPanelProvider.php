@@ -14,13 +14,13 @@ use App\Filament\Widgets\UserWidget\ActiveChart;
 use App\Filament\Widgets\UserWidget\ChurnChart;
 use App\Filament\Widgets\UserWidget\RegisterdUsersChart;
 use App\Filament\Widgets\UserWidget\userStatsOverview;
-use App\Livewire\devicDown;
-use App\Livewire\GeoChartWidget;
+use App\Livewire\CustomerMetric\ActiveAndInactive;
+use App\Livewire\CustomerMetric\ChurnUsers;
+use App\Livewire\GoogleAnalytics\GeoChartWidget;
+use App\Livewire\GoogleAnalytics\NumberOfDownloads;
 use App\Livewire\MapOverview;
 use App\Livewire\UserGanders;
-use App\Livewire\WalletOverview;
 use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
-use Filament\Enums\ThemeMode;
 use Filament\FontProviders\GoogleFontProvider;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -29,7 +29,6 @@ use Filament\Navigation\MenuItem;
 use Filament\Pages;
 use Filament\Panel;
 use Filament\PanelProvider;
-use Filament\Support\Colors\Color;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
@@ -38,8 +37,6 @@ use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Leandrocfe\FilamentApexCharts\FilamentApexChartsPlugin;
-use ShuvroRoy\FilamentSpatieLaravelHealth\FilamentSpatieLaravelHealthPlugin;
-use ShuvroRoy\FilamentSpatieLaravelHealth\Pages\HealthCheckResults;
 
 
 class AdminPanelProvider extends PanelProvider
@@ -48,7 +45,7 @@ class AdminPanelProvider extends PanelProvider
     public function panel(Panel $panel): Panel
     {
         return $panel
-            ->font('Inter', provider: GoogleFontProvider::class)
+            ->font('Inter', provider: GoogleFontProvider::class)->spa()
             ->default()
             ->id('admin')    ->breadcrumbs(false)
             ->sidebarWidth('17rem')
@@ -74,11 +71,11 @@ class AdminPanelProvider extends PanelProvider
 //            ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
                 userStatsOverview::class,
-                devicDown::class,
+                NumberOfDownloads::class,
                 GeoChartWidget::class,
-                ChurnChart::class,
-                ActiveChart::class,
                 RegisterdUsersChart::class,
+                ActiveAndInactive::class,
+                ChurnUsers::class,
 
 //                \App\Filament\Widgets\UserDemographic::class
 

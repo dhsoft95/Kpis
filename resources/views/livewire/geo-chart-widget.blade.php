@@ -25,7 +25,7 @@
                     const isDarkMode = document.querySelector('html').classList.contains('dark');
 
                     const options = {
-                        colorAxis: { colors: ['#DCA915', '#584408'] },
+                        colorAxis: { colors: [ '#E0B22C','#584408'] },
                         backgroundColor: isDarkMode ? '#18181a' : '#FFFFFF',
                         datalessRegionColor: isDarkMode ? '#ffffff' : '#E5E7EB',
                         defaultColor: isDarkMode ? '#18181a' : '#F3F4F6',

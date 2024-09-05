@@ -5,8 +5,8 @@ namespace App\Filament\Pages;
 
 use App\Filament\Widgets\ActiveChartAp;
 use App\Filament\Widgets\Custvalue;
-use App\Livewire\CustStatsOverview;
-use App\Livewire\NPSComponentsChart;
+use App\Livewire\AppInteractions\NPSComponentsChart;
+use App\Livewire\CustomerMetric\CustStatsOverview;
 use App\Livewire\WeeklyTrendsChart;
 use Filament\Pages\Page;
 use Filament\Support\Enums\MaxWidth;

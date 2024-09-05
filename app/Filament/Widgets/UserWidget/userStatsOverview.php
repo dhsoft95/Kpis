@@ -5,14 +5,15 @@ namespace App\Filament\Widgets\UserWidget;
 use Filament\Widgets\Widget;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class userStatsOverview extends Widget
 {
     protected static string $view = 'filament.widgets.user-stats-overview';
     protected int | string | array $columnSpan = 'full';
+
     public array $popularTransfers = [];
     public array $getPopularTransfersrouter = [];
-
     public array $stats = [
         'registered' => ['count' => 0, 'percentageChange' => 0, 'isGrowth' => true],
         'active' => ['count' => 0, 'percentageChange' => 0, 'isGrowth' => true],
@@ -20,7 +21,7 @@ class userStatsOverview extends Widget
         'churn' => ['count' => 0, 'percentageChange' => 0, 'isGrowth' => true],
         'avgValuePerDay' => ['value' => 0, 'percentageChange' => 0, 'isGrowth' => true],
         'avgTransactionPerCustomer' => ['value' => 0, 'percentageChange' => 0, 'isGrowth' => true],
-        'totalSuccess' => ['count' => 110, 'percentageChange' => 0, 'isGrowth' => true],
+        'totalSuccess' => ['count' => 0, 'percentageChange' => 0, 'isGrowth' => true],
         'failed' => ['count' => 0, 'percentageChange' => 0, 'isGrowth' => true],
         'pending' => ['count' => 0, 'percentageChange' => 0, 'isGrowth' => true],
     ];
@@ -36,14 +37,17 @@ class userStatsOverview extends Widget
     {
         $now = Carbon::now();
         $oneWeekAgo = $now->copy()->subWeek();
-        $thirtyDaysAgo = $now->copy()->subDays(30);
+        $twoWeeksAgo = $now->copy()->subWeeks(2);
 
         $this->calculateRegisteredUsers($now, $oneWeekAgo);
-        $this->calculateActiveUsers($now, $oneWeekAgo, $thirtyDaysAgo);
-        $this->calculateInactiveUsers($now, $oneWeekAgo, $thirtyDaysAgo);
-        $this->calculateChurnUsers($now);
-        $this->calculateAdditionalStats($now, $oneWeekAgo, $thirtyDaysAgo);
+        $this->calculateActiveUsers($now, $oneWeekAgo, $twoWeeksAgo);
+        $this->calculateInactiveUsers($now, $oneWeekAgo, $twoWeeksAgo);
+        $this->calculateChurnUsers($now, $oneWeekAgo, $twoWeeksAgo);
+
+        $this->calculateAdditionalStats($now, $oneWeekAgo, $twoWeeksAgo);
         $this->calculateTransactionStats($now, $oneWeekAgo);
+
+        Log::info('User Stats', $this->stats);
     }
 
     private function calculateRegisteredUsers(Carbon $now, Carbon $oneWeekAgo): void
@@ -55,226 +59,292 @@ class userStatsOverview extends Widget
         $countNow = DB::connection('mysql_second')->table('users')->count();
 
         $this->updateStat('registered', $countNow, $countOneWeekAgo);
-    }
 
-    private function calculateActiveUsers(Carbon $now, Carbon $oneWeekAgo, Carbon $thirtyDaysAgo): void
-    {
-        $currentCount = $this->getActiveUsersCount($thirtyDaysAgo);
-        $previousCount = $this->getActiveUsersCount($oneWeekAgo);
-
-        $this->updateStat('active', $currentCount, $previousCount);
-    }
-
-    private function calculateInactiveUsers(Carbon $now, Carbon $oneWeekAgo, Carbon $thirtyDaysAgo): void
-    {
-        $totalUsersCurrent = DB::connection('mysql_second')->table('users')->count();
-        $activeUsersCurrent = $this->getActiveUsersCount($thirtyDaysAgo);
-
-        $totalUsersPrevious = DB::connection('mysql_second')->table('users')
-            ->where('created_at', '<', $oneWeekAgo)
-            ->count();
-        $activeUsersPrevious = $this->getActiveUsersCount($oneWeekAgo);
-
-        $inactiveUsersCurrent = $totalUsersCurrent - $activeUsersCurrent;
-        $inactiveUsersPrevious = $totalUsersPrevious - $activeUsersPrevious;
-
-        $this->updateStat('inactive', $inactiveUsersCurrent, $inactiveUsersPrevious);
-    }
-
-    private function calculateChurnUsers(Carbon $now): void
-    {
-        $thirtyDaysAgo = $now->copy()->subDays(30);
-        $sevenDaysAgo = $now->copy()->subDays(7);
-
-        $currentChurn = $this->getChurnUsersCount($thirtyDaysAgo);
-        $previousChurn = $this->getChurnUsersCount($sevenDaysAgo);
-
-        $this->updateStat('churn', $currentChurn, $previousChurn);
-    }
-
-    private function calculateAdditionalStats(Carbon $now, Carbon $oneWeekAgo, Carbon $thirtyDaysAgo): void
-    {
-        $this->stats['avgValuePerDay'] = $this->calculateAverageValuePerDay($now, $oneWeekAgo, $thirtyDaysAgo);
-        $this->stats['avgTransactionPerCustomer'] = $this->calculateAverageTransactionPerCustomer($now, $oneWeekAgo, $thirtyDaysAgo);
-    }
-
-    private function calculateTransactionStats(Carbon $now, Carbon $oneWeekAgo): void
-    {
-        $currentTotalSuccess = $this->getTransactionCount($oneWeekAgo, $now, 3);
-        $previousTotalSuccess = $this->getTransactionCount($oneWeekAgo->copy()->subWeek(), $oneWeekAgo, 3);
-        $this->updateStat('totalSuccess', $currentTotalSuccess, $previousTotalSuccess);
-
-        $currentFailed = $this->getTransactionCount($oneWeekAgo, $now, 4);
-        $previousFailed = $this->getTransactionCount($oneWeekAgo->copy()->subWeek(), $oneWeekAgo, 4);
-        $this->updateStat('failed', $currentFailed, $previousFailed);
-
-        $currentPending = $this->getTransactionCount($oneWeekAgo, $now, 1);
-        $previousPending = $this->getTransactionCount($oneWeekAgo->copy()->subWeek(), $oneWeekAgo, 1);
-        $this->updateStat('pending', $currentPending, $previousPending);
-
-        \Log::info('Transaction Stats', [
-            'currentTotalSuccess' => $currentTotalSuccess,
-            'previousTotalSuccess' => $previousTotalSuccess,
-            'currentFailed' => $currentFailed,
-            'previousFailed' => $previousFailed,
-            'currentPending' => $currentPending,
-            'previousPending' => $previousPending,
+        Log::info('Registered Users', [
+            'current' => $countNow,
+            'previous' => $countOneWeekAgo,
+            'period' => [$oneWeekAgo->toDateTimeString(), $now->toDateTimeString()],
         ]);
     }
 
-    private function calculateAverageValuePerDay(Carbon $now, Carbon $oneWeekAgo, Carbon $thirtyDaysAgo): array
+    private function calculateActiveUsers(Carbon $now, Carbon $oneWeekAgo, Carbon $twoWeeksAgo): void
     {
-        $currentValue = $this->getAverageTransactionValuePerDay($thirtyDaysAgo);
-        $previousValue = $this->getAverageTransactionValuePerDay($oneWeekAgo);
+        $currentCount = $this->getActiveUsersCount($oneWeekAgo, $now);
+        $previousCount = $this->getActiveUsersCount($twoWeeksAgo, $oneWeekAgo);
 
-        return $this->calculateStatArray($currentValue, $previousValue);
+        $this->updateStat('active', $currentCount, $previousCount);
+
+        Log::info('Active Users', [
+            'current' => $currentCount,
+            'previous' => $previousCount,
+            'current_period' => [$oneWeekAgo->toDateTimeString(), $now->toDateTimeString()],
+            'previous_period' => [$twoWeeksAgo->toDateTimeString(), $oneWeekAgo->toDateTimeString()],
+        ]);
+    }
+    private function calculateInactiveUsers(Carbon $now, Carbon $oneWeekAgo, Carbon $twoWeeksAgo): void
+    {
+        $currentCount = $this->getInactiveUsersCount($oneWeekAgo, $now);
+        $previousCount = $this->getInactiveUsersCount($twoWeeksAgo, $oneWeekAgo);
+
+        $this->updateStat('inactive', $currentCount, $previousCount);
+
+        Log::info('Inactive Users', [
+            'current' => $currentCount,
+            'previous' => $previousCount,
+            'current_period' => [$oneWeekAgo->toDateTimeString(), $now->toDateTimeString()],
+            'previous_period' => [$twoWeeksAgo->toDateTimeString(), $oneWeekAgo->toDateTimeString()],
+        ]);
     }
 
-    private function getAverageTransactionValuePerDay(Carbon $fromDate): float
+    private function calculateChurnUsers(Carbon $now, Carbon $oneWeekAgo, Carbon $twoWeeksAgo): void
     {
-        $query = "
-            SELECT AVG(daily_transaction_count) as average_transactions_per_day
-            FROM (
-                SELECT SUM(sender_amount) as daily_transaction_count
-                FROM tbl_transactions
-                WHERE created_at >= ? AND status = '3'
-                GROUP BY DATE(created_at)
-            ) as daily_transactions
-        ";
+        $currentCount = $this->getChurnUsersCount($oneWeekAgo, $now);
+        $previousCount = $this->getChurnUsersCount($twoWeeksAgo, $oneWeekAgo);
 
-        $result = DB::connection('mysql_second')
-            ->select($query, [$fromDate->toDateString()]);
+        $this->updateStat('churn', $currentCount, $previousCount);
 
-        return $result[0]->average_transactions_per_day ?? 0;
+        Log::info('Churn Users', [
+            'current' => $currentCount,
+            'previous' => $previousCount,
+            'current_period' => [$oneWeekAgo->toDateTimeString(), $now->toDateTimeString()],
+            'previous_period' => [$twoWeeksAgo->toDateTimeString(), $oneWeekAgo->toDateTimeString()],
+        ]);
     }
 
-    private function calculateAverageTransactionPerCustomer(Carbon $now, Carbon $oneWeekAgo, Carbon $thirtyDaysAgo): array
+    private function calculateAdditionalStats(Carbon $now, Carbon $oneWeekAgo, Carbon $twoWeeksAgo): void
     {
-        $currentValue = $this->getAverageTransactionPerCustomer($thirtyDaysAgo);
-        $previousValue = $this->getAverageTransactionPerCustomer($oneWeekAgo);
-
-        return $this->calculateStatArray($currentValue, $previousValue);
+        $this->stats['avgValuePerDay'] = $this->calculateAverageValuePerDay($now, $oneWeekAgo, $twoWeeksAgo);
+        $this->stats['avgTransactionPerCustomer'] = $this->calculateAverageTransactionPerCustomer($now, $oneWeekAgo, $twoWeeksAgo);
     }
 
-    private function getAverageTransactionPerCustomer(Carbon $fromDate): float
+
+
+    private function calculateTransactionStats(Carbon $now, Carbon $oneWeekAgo): void
     {
-        $query = "
-            SELECT AVG(daily_transaction_count) as average_transactions_per_customer
-            FROM (
-                SELECT COUNT(sender_amount) as daily_transaction_count
-                FROM tbl_transactions
-                WHERE created_at >= ? AND status = '3'
-                GROUP BY sender_phone
-            ) as daily_transactions
-        ";
+        $currentTotalSuccess = $this->getTransactionCount($oneWeekAgo, $now, 'received');
+        $previousTotalSuccess = $this->getTransactionCount($oneWeekAgo->copy()->subWeek(), $oneWeekAgo, 'received');
+        $this->updateStat('totalSuccess', $currentTotalSuccess, $previousTotalSuccess);
 
-        $result = DB::connection('mysql_second')
-            ->select($query, [$fromDate->toDateString()]);
+        $currentFailed = $this->getTransactionCount($oneWeekAgo, $now, 'failed');
+        $previousFailed = $this->getTransactionCount($oneWeekAgo->copy()->subWeek(), $oneWeekAgo, 'failed');
+        $this->updateStat('failed', $currentFailed, $previousFailed);
 
-        return $result[0]->average_transactions_per_customer ?? 0;
+        $currentPending = $this->getTransactionCount($oneWeekAgo, $now, 'pending');
+        $previousPending = $this->getTransactionCount($oneWeekAgo->copy()->subWeek(), $oneWeekAgo, 'pending');
+        $this->updateStat('pending', $currentPending, $previousPending);
+
+        Log::info('Transaction Stats', [
+            'success' => ['current' => $currentTotalSuccess, 'previous' => $previousTotalSuccess],
+            'failed' => ['current' => $currentFailed, 'previous' => $previousFailed],
+            'pending' => ['current' => $currentPending, 'previous' => $previousPending],
+        ]);
     }
 
-    private function getActiveUsersCount(Carbon $fromDate): int
+    private function getActiveUsersCount(Carbon $startDate, Carbon $endDate): int
     {
-        return DB::connection('mysql_second')->table('users')
-            ->whereIn('phone_number', function ($query) use ($fromDate) {
-                $query->select('sender_phone')
-                    ->from('tbl_transactions')
-                    ->where('created_at', '>=', $fromDate);
-            })
-            ->count();
-    }
+        DB::connection('mysql_second')->enableQueryLog();
 
-    private function getChurnUsersCount(Carbon $date): int
-    {
-        return DB::connection('mysql_second')->table('users')
-            ->whereIn('phone_number', function ($query) use ($date) {
-                $query->select('sender_phone')
-                    ->from('tbl_transactions')
-                    ->groupBy('sender_phone')
-                    ->havingRaw('MAX(created_at) < ?', [$date]);
-            })
-            ->count();
-    }
+        $count = DB::connection('mysql_second')
+            ->table('simba_transactions')
+            ->whereBetween('created_at', [$startDate, $endDate])
+            ->where('status', 'received')
+            ->distinct('user_id')
+            ->count('user_id');
 
-    private function getTransactionCount(Carbon $fromDate, Carbon $toDate, int $status): int
-    {
-        $count = DB::connection('mysql_second')->table('tbl_transactions')
-            ->whereBetween('created_at', [$fromDate, $toDate])
-            ->where('status', $status)
-            ->count();
+        $queryLog = DB::connection('mysql_second')->getQueryLog();
+        DB::connection('mysql_second')->disableQueryLog();
 
-        \Log::info('Query Params', [
-            'fromDate' => $fromDate,
-            'toDate' => $toDate,
-            'status' => $status,
-            'count' => $count
+        Log::info('Active Users Query', [
+            'query' => $queryLog,
+            'count' => $count,
+            'period' => [$startDate->toDateTimeString(), $endDate->toDateTimeString()],
         ]);
 
         return $count;
     }
 
-    private function updateStat(string $key, $currentValue, $previousValue): void
+
+    private function getInactiveUsersCount(Carbon $startDate, Carbon $endDate): int
     {
-        $percentageChange = $this->calculatePercentageChange($previousValue, $currentValue);
-        $this->stats[$key] = [
-            'count' => $currentValue,
-            'percentageChange' => $percentageChange,
-            'isGrowth' => $percentageChange >= 0,
-        ];
+        DB::connection('mysql_second')->enableQueryLog();
+
+        $activeUsers = DB::connection('mysql_second')
+            ->table('simba_transactions')
+            ->whereBetween('created_at', [$startDate, $endDate])
+            ->where('status', 'received')
+            ->distinct('user_id')
+            ->pluck('user_id');
+
+        $count = DB::connection('mysql_second')
+            ->table('users')
+            ->whereNotIn('id', $activeUsers)
+            ->where('created_at', '<', $endDate)
+            ->count();
+
+        $queryLog = DB::connection('mysql_second')->getQueryLog();
+        DB::connection('mysql_second')->disableQueryLog();
+
+        Log::info('Inactive Users Query', [
+            'query' => $queryLog,
+            'count' => $count,
+            'period' => [$startDate->toDateTimeString(), $endDate->toDateTimeString()],
+        ]);
+
+        return $count;
     }
 
-    private function calculateStatArray($currentValue, $previousValue): array
+    private function getChurnUsersCount(Carbon $startDate, Carbon $endDate): int
     {
-        $percentageChange = $this->calculatePercentageChange($previousValue, $currentValue);
+        DB::connection('mysql_second')->enableQueryLog();
+
+        $activeUsersCurrentWeek = DB::connection('mysql_second')
+            ->table('simba_transactions')
+            ->whereBetween('created_at', [$startDate, $endDate])
+            ->where('status', 'received')
+            ->distinct('user_id')
+            ->pluck('user_id');
+
+        $count = DB::connection('mysql_second')
+            ->table('simba_transactions')
+            ->where('created_at', '<', $startDate)
+            ->where('status', 'received')
+            ->whereNotIn('user_id', $activeUsersCurrentWeek)
+            ->distinct('user_id')
+            ->count('user_id');
+
+        $queryLog = DB::connection('mysql_second')->getQueryLog();
+        DB::connection('mysql_second')->disableQueryLog();
+
+        Log::info('Churn Users Query', [
+            'query' => $queryLog,
+            'count' => $count,
+            'period' => [$startDate->toDateTimeString(), $endDate->toDateTimeString()],
+        ]);
+
+        return $count;
+    }
+
+    private function calculateAverageValuePerDay(Carbon $now, Carbon $oneWeekAgo, Carbon $twoWeeksAgo): array
+    {
+        $currentValue = $this->getAverageTransactionValuePerDay($oneWeekAgo, $now);
+        $previousValue = $this->getAverageTransactionValuePerDay($twoWeeksAgo, $oneWeekAgo);
+
+        return $this->calculateStatArray($currentValue, $previousValue);
+    }
+
+    private function getAverageTransactionValuePerDay(Carbon $startDate, Carbon $endDate): float
+    {
+        $result = DB::connection('mysql_second')
+            ->table('simba_transactions')
+            ->select(DB::raw('AVG(daily_total) as avg_daily_value'))
+            ->fromSub(function ($query) use ($startDate, $endDate) {
+                $query->select(DB::raw('DATE(created_at) as date, SUM(credit_amount) as daily_total'))
+                    ->from('simba_transactions')
+                    ->whereBetween('created_at', [$startDate, $endDate])
+                    ->where('status', 'received')
+                    ->groupBy(DB::raw('DATE(created_at)'));
+            }, 'daily_totals')
+            ->first();
+
+        return $result->avg_daily_value ?? 0;
+    }
+
+    private function calculateAverageTransactionPerCustomer(Carbon $now, Carbon $oneWeekAgo, Carbon $twoWeeksAgo): array
+    {
+        $currentValue = $this->getAverageTransactionPerCustomer($oneWeekAgo, $now);
+        $previousValue = $this->getAverageTransactionPerCustomer($twoWeeksAgo, $oneWeekAgo);
+
+        return $this->calculateStatArray($currentValue, $previousValue);
+    }
+
+    private function getAverageTransactionPerCustomer(Carbon $startDate, Carbon $endDate): float
+    {
+        $result = DB::connection('mysql_second')
+            ->table('simba_transactions')
+            ->select(DB::raw('AVG(transaction_count) as avg_transactions_per_user'))
+            ->fromSub(function ($query) use ($startDate, $endDate) {
+                $query->select(DB::raw('user_id, COUNT(*) as transaction_count'))
+                    ->from('simba_transactions')
+                    ->whereBetween('created_at', [$startDate, $endDate])
+                    ->where('status', 'received')
+                    ->groupBy('user_id');
+            }, 'user_transactions')
+            ->first();
+
+        return $result->avg_transactions_per_user ?? 0;
+    }
+
+    private function getTransactionCount(Carbon $startDate, Carbon $endDate, string $status): int
+    {
+        DB::connection('mysql_second')->enableQueryLog();
+
+        $count = DB::connection('mysql_second')
+            ->table('simba_transactions')
+            ->whereBetween('created_at', [$startDate, $endDate])
+            ->where('status', $status)
+            ->count();
+
+        $queryLog = DB::connection('mysql_second')->getQueryLog();
+        DB::connection('mysql_second')->disableQueryLog();
+
+        Log::info("Transaction Count for status: $status", [
+            'query' => $queryLog,
+            'count' => $count,
+            'period' => [$startDate->toDateTimeString(), $endDate->toDateTimeString()],
+        ]);
+
+        return $count;
+    }
+
+    private function updateStat(string $key, int $currentCount, int $previousCount): void
+    {
+        $percentageChange = $previousCount > 0
+            ? (($currentCount - $previousCount) / $previousCount) * 100
+            : ($currentCount > 0 ? 100 : 0);
+
+        $isGrowth = $percentageChange >= 0;
+
+        $this->stats[$key]['count'] = $currentCount;
+        $this->stats[$key]['percentageChange'] = round($percentageChange, 2);
+        $this->stats[$key]['isGrowth'] = $isGrowth;
+    }
+
+    private function calculateStatArray(float $currentValue, float $previousValue): array
+    {
+        $percentageChange = $previousValue > 0
+            ? (($currentValue - $previousValue) / $previousValue) * 100
+            : ($currentValue > 0 ? 100 : 0);
+
+        $isGrowth = $percentageChange >= 0;
+
         return [
-            'value' => $currentValue,
-            'percentageChange' => $percentageChange,
-            'isGrowth' => $percentageChange >= 0,
+            'value' => round($currentValue, 2),
+            'percentageChange' => round($percentageChange, 2),
+            'isGrowth' => $isGrowth,
         ];
     }
-
-    public function getPopularTransfers()
+    public function getPopularTransfers(): array
     {
         return DB::connection('mysql_second')
-            ->table('tbl_transactions')
-            ->select('sender_channel_name', 'receiver_channel_name', DB::raw('COUNT(*) AS transaction_count'))
-            ->groupBy('sender_channel_name', 'receiver_channel_name')
-            ->orderBy('transaction_count', 'DESC')
-            ->limit(2)
+            ->table('simba_transactions')
+            ->select('sender_currency', DB::raw('COUNT(*) as transfer_count'))
+            ->whereNotNull('sender_currency')
+            ->groupBy('sender_currency')
+            ->orderBy('transfer_count', 'desc')
             ->get()
-            ->map(function ($item) {
-                return [
-                    'route' => $item->sender_channel_name . ' → ' . $item->receiver_channel_name,
-                    'count' => $item->transaction_count
-                ];
-            })->toArray();
-    }
-
-    public function getPopularTransfersrouter()
-    {
-        return DB::connection('mysql_second')
-            ->table('tbl_transactions')
-            ->select('sender_channel_country', 'receiver_channel_country', DB::raw('COUNT(*) AS Popular_transfers_router'))
-            ->groupBy('sender_channel_country', 'receiver_channel_country')
-            ->orderBy('Popular_transfers_router', 'DESC')
-            ->limit(2)
-            ->get()
-            ->map(function ($item) {
-                return [
-                    'route' => $item->sender_channel_country . ' → ' . $item->receiver_channel_country,
-                    'count' => $item->Popular_transfers_router
-                ];
-            })
             ->toArray();
     }
 
-    private function calculatePercentageChange($previous, $current): float
+    public function getPopularTransfersrouter(): array
     {
-        if ($previous == 0) {
-            return $current == 0 ? 0 : 100;
-        }
-
-        return (($current - $previous) / $previous) * 100;
+        return DB::connection('mysql_second')
+            ->table('simba_transactions')
+            ->select('transaction_type', DB::raw('COUNT(*) as transfer_count'))
+            ->whereNotNull('transaction_type')
+            ->groupBy('transaction_type')
+            ->orderBy('transfer_count', 'desc')
+            ->get()
+            ->toArray();
     }
 }
+

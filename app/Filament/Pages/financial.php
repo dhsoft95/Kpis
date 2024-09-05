@@ -2,10 +2,6 @@
 
 namespace App\Filament\Pages;
 
-use App\Livewire\CustStatsOverview;
-use App\Livewire\CustvalueChart;
-use App\Livewire\financialKpis;
-use App\Livewire\TransvalueChart;
 use App\Livewire\WalletOverview;
 use Filament\Pages\Page;
 

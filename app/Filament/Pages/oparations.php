@@ -2,11 +2,8 @@
 
 namespace App\Filament\Pages;
 
-use App\Livewire\AgsWallets;
+use App\Livewire\WalletsBallance\PartersBallance;
 use Filament\Pages\Page;
-
-
-
 
 
 class oparations extends Page
@@ -29,7 +26,7 @@ class oparations extends Page
         return [
 
 //            \App\Livewire\MnoWallets::class,
-            AgsWallets::class,
+            PartersBallance::class,
         ];
     }
 
