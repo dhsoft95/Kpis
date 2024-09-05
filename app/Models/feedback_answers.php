@@ -14,7 +14,7 @@ class feedback_answers extends Model
 
     protected $fillable = [
         'feedback_question_id',
-        'sender_phone',
+        'user_id',
         'rating',
         'answer'
     ];
@@ -22,5 +22,10 @@ class feedback_answers extends Model
     public function feedbackQuestion(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(feedbackQuestions::class, 'feedback_question_id');
+    }
+
+    public function transaction(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(trans::class, 'user_id', 'user_id');
     }
 }

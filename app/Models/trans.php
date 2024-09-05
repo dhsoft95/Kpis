@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 class trans extends Model
 {
     use HasFactory;
-    protected $table="tbl_transactions";
+    protected $table="tbl_simba_transactions";
     protected $connection = 'mysql_second';
 
 
