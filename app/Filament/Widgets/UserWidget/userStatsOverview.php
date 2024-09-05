@@ -145,7 +145,7 @@ class userStatsOverview extends Widget
         DB::connection('mysql_second')->enableQueryLog();
 
         $count = DB::connection('mysql_second')
-            ->table('simba_transactions')
+            ->table('tbl_simba_transactions')
             ->whereBetween('created_at', [$startDate, $endDate])
             ->where('status', 'received')
             ->distinct('user_id')
@@ -169,7 +169,7 @@ class userStatsOverview extends Widget
         DB::connection('mysql_second')->enableQueryLog();
 
         $activeUsers = DB::connection('mysql_second')
-            ->table('simba_transactions')
+            ->table('tbl_simba_transactions')
             ->whereBetween('created_at', [$startDate, $endDate])
             ->where('status', 'received')
             ->distinct('user_id')
@@ -198,14 +198,14 @@ class userStatsOverview extends Widget
         DB::connection('mysql_second')->enableQueryLog();
 
         $activeUsersCurrentWeek = DB::connection('mysql_second')
-            ->table('simba_transactions')
+            ->table('tbl_simba_transactions')
             ->whereBetween('created_at', [$startDate, $endDate])
             ->where('status', 'received')
             ->distinct('user_id')
             ->pluck('user_id');
 
         $count = DB::connection('mysql_second')
-            ->table('simba_transactions')
+            ->table('tbl_simba_transactions')
             ->where('created_at', '<', $startDate)
             ->where('status', 'received')
             ->whereNotIn('user_id', $activeUsersCurrentWeek)
@@ -235,11 +235,11 @@ class userStatsOverview extends Widget
     private function getAverageTransactionValuePerDay(Carbon $startDate, Carbon $endDate): float
     {
         $result = DB::connection('mysql_second')
-            ->table('simba_transactions')
+            ->table('tbl_simba_transactions')
             ->select(DB::raw('AVG(daily_total) as avg_daily_value'))
             ->fromSub(function ($query) use ($startDate, $endDate) {
                 $query->select(DB::raw('DATE(created_at) as date, SUM(credit_amount) as daily_total'))
-                    ->from('simba_transactions')
+                    ->from('tbl_simba_transactions')
                     ->whereBetween('created_at', [$startDate, $endDate])
                     ->where('status', 'received')
                     ->groupBy(DB::raw('DATE(created_at)'));
@@ -260,11 +260,11 @@ class userStatsOverview extends Widget
     private function getAverageTransactionPerCustomer(Carbon $startDate, Carbon $endDate): float
     {
         $result = DB::connection('mysql_second')
-            ->table('simba_transactions')
+            ->table('tbl_simba_transactions')
             ->select(DB::raw('AVG(transaction_count) as avg_transactions_per_user'))
             ->fromSub(function ($query) use ($startDate, $endDate) {
                 $query->select(DB::raw('user_id, COUNT(*) as transaction_count'))
-                    ->from('simba_transactions')
+                    ->from('tbl_simba_transactions')
                     ->whereBetween('created_at', [$startDate, $endDate])
                     ->where('status', 'received')
                     ->groupBy('user_id');
@@ -279,7 +279,7 @@ class userStatsOverview extends Widget
         DB::connection('mysql_second')->enableQueryLog();
 
         $count = DB::connection('mysql_second')
-            ->table('simba_transactions')
+            ->table('tbl_simba_transactions')
             ->whereBetween('created_at', [$startDate, $endDate])
             ->where('status', $status)
             ->count();
@@ -326,7 +326,7 @@ class userStatsOverview extends Widget
     public function getPopularTransfers(): array
     {
         return DB::connection('mysql_second')
-            ->table('simba_transactions')
+            ->table('tbl_simba_transactions')
             ->select('sender_currency', DB::raw('COUNT(*) as transfer_count'))
             ->whereNotNull('sender_currency')
             ->groupBy('sender_currency')
@@ -338,7 +338,7 @@ class userStatsOverview extends Widget
     public function getPopularTransfersrouter(): array
     {
         return DB::connection('mysql_second')
-            ->table('simba_transactions')
+            ->table('tbl_simba_transactions')
             ->select('transaction_type', DB::raw('COUNT(*) as transfer_count'))
             ->whereNotNull('transaction_type')
             ->groupBy('transaction_type')

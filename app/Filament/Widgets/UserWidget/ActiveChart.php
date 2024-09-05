@@ -126,7 +126,7 @@ class ActiveChart extends ChartWidget
     protected function getActiveUserCount(Carbon $start, Carbon $end): int
     {
         return DB::connection('mysql_second')
-            ->table('tbl_transactions')
+            ->table(' tbl_simba_transactions')
             ->whereBetween('created_at', [$start, $end])
             ->where('status', 3)
             ->whereNotNull('sender_amount')

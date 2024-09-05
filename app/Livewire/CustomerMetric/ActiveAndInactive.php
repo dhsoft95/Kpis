@@ -83,10 +83,10 @@ class ActiveAndInactive extends ApexChartWidget
                 ->where('created_at', '<=', $endDate)
                 ->count();
             $activeUsersCount = DB::connection('mysql_second')->table('users')
-                ->join('simba_transactions', 'users.id', '=', 'simba_transactions.user_id')
+                ->join('tbl_simba_transactions', 'users.id', '=', 'tbl_simba_transactions.user_id')
                 ->where('users.created_at', '<=', $endDate)
-                ->where('simba_transactions.created_at', '>=', $startDate)
-                ->where('simba_transactions.created_at', '<=', $endDate)
+                ->where('tbl_simba_transactions.created_at', '>=', $startDate)
+                ->where('tbl_simba_transactions.created_at', '<=', $endDate)
                 ->distinct('users.id')
                 ->count('users.id');
 

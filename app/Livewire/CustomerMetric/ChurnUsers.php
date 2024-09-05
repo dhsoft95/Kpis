@@ -6,8 +6,6 @@ use Leandrocfe\FilamentApexCharts\Widgets\ApexChartWidget;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 
-
-
 class ChurnUsers extends ApexChartWidget
 {
     protected static ?string $chartId = 'churnUsers';
@@ -87,11 +85,11 @@ class ChurnUsers extends ApexChartWidget
                 ->count();
 
             $churnCount = DB::connection('mysql_second')->table('users')
-                ->leftJoin('simba_transactions', 'users.id', '=', 'simba_transactions.user_id')
+                ->leftJoin('tbl_simba_transactions', 'users.id', '=', 'tbl_simba_transactions.user_id')
                 ->where('users.created_at', '<=', $endDate)
                 ->where(function ($query) use ($endDate) {
-                    $query->whereNull('simba_transactions.created_at')
-                        ->orWhere('simba_transactions.created_at', '<=', $endDate->copy()->subDays(30));
+                    $query->whereNull('tbl_simba_transactions.created_at')
+                        ->orWhere('tbl_simba_transactions.created_at', '<=', $endDate->copy()->subDays(30));
                 })
                 ->distinct('users.id')
                 ->count('users.id');
