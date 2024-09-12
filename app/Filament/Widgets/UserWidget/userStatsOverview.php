@@ -121,16 +121,16 @@ class userStatsOverview extends Widget
 
     private function calculateTransactionStats(Carbon $now, Carbon $oneWeekAgo): void
     {
-        $currentTotalSuccess = $this->getTransactionCount($oneWeekAgo, $now, 'received');
-        $previousTotalSuccess = $this->getTransactionCount($oneWeekAgo->copy()->subWeek(), $oneWeekAgo, 'received');
+        $currentTotalSuccess = $this->getTransactionCount($oneWeekAgo, $now, ['deposited', 'sent', 'received']);
+        $previousTotalSuccess = $this->getTransactionCount($oneWeekAgo->copy()->subWeek(), $oneWeekAgo, ['deposited', 'sent', 'received']);
         $this->updateStat('totalSuccess', $currentTotalSuccess, $previousTotalSuccess);
 
-        $currentFailed = $this->getTransactionCount($oneWeekAgo, $now, 'failed');
-        $previousFailed = $this->getTransactionCount($oneWeekAgo->copy()->subWeek(), $oneWeekAgo, 'failed');
+        $currentFailed = $this->getTransactionCount($oneWeekAgo, $now, ['failed']);
+        $previousFailed = $this->getTransactionCount($oneWeekAgo->copy()->subWeek(), $oneWeekAgo, ['failed']);
         $this->updateStat('failed', $currentFailed, $previousFailed);
 
-        $currentPending = $this->getTransactionCount($oneWeekAgo, $now, 'pending');
-        $previousPending = $this->getTransactionCount($oneWeekAgo->copy()->subWeek(), $oneWeekAgo, 'pending');
+        $currentPending = $this->getTransactionCount($oneWeekAgo, $now, ['pending']);
+        $previousPending = $this->getTransactionCount($oneWeekAgo->copy()->subWeek(), $oneWeekAgo, ['pending']);
         $this->updateStat('pending', $currentPending, $previousPending);
 
         Log::info('Transaction Stats', [
@@ -140,6 +140,28 @@ class userStatsOverview extends Widget
         ]);
     }
 
+    private function getTransactionCount(Carbon $startDate, Carbon $endDate, array $statuses): int
+    {
+        DB::connection('mysql_second')->enableQueryLog();
+
+        $count = DB::connection('mysql_second')
+            ->table('tbl_simba_transactions')
+            ->whereBetween('created_at', [$startDate, $endDate])
+            ->whereIn('status', $statuses)
+            ->count();
+
+        $queryLog = DB::connection('mysql_second')->getQueryLog();
+        DB::connection('mysql_second')->disableQueryLog();
+
+        Log::info("Transaction Count for statuses: " . implode(', ', $statuses), [
+            'query' => $queryLog,
+            'count' => $count,
+            'period' => [$startDate->toDateTimeString(), $endDate->toDateTimeString()],
+        ]);
+
+        return $count;
+    }
+
     private function getActiveUsersCount(Carbon $startDate, Carbon $endDate): int
     {
         DB::connection('mysql_second')->enableQueryLog();
@@ -147,7 +169,7 @@ class userStatsOverview extends Widget
         $count = DB::connection('mysql_second')
             ->table('tbl_simba_transactions')
             ->whereBetween('created_at', [$startDate, $endDate])
-            ->where('status', 'received')
+            ->whereIn('status', ['deposited', 'sent', 'received'])
             ->distinct('user_id')
             ->count('user_id');
 
@@ -274,27 +296,7 @@ class userStatsOverview extends Widget
         return $result->avg_transactions_per_user ?? 0;
     }
 
-    private function getTransactionCount(Carbon $startDate, Carbon $endDate, string $status): int
-    {
-        DB::connection('mysql_second')->enableQueryLog();
 
-        $count = DB::connection('mysql_second')
-            ->table('tbl_simba_transactions')
-            ->whereBetween('created_at', [$startDate, $endDate])
-            ->where('status', $status)
-            ->count();
-
-        $queryLog = DB::connection('mysql_second')->getQueryLog();
-        DB::connection('mysql_second')->disableQueryLog();
-
-        Log::info("Transaction Count for status: $status", [
-            'query' => $queryLog,
-            'count' => $count,
-            'period' => [$startDate->toDateTimeString(), $endDate->toDateTimeString()],
-        ]);
-
-        return $count;
-    }
 
     private function updateStat(string $key, int $currentCount, int $previousCount): void
     {
