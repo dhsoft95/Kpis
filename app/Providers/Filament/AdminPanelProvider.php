@@ -37,6 +37,7 @@ use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Leandrocfe\FilamentApexCharts\FilamentApexChartsPlugin;
+use Vormkracht10\TwoFactorAuth\TwoFactorAuthPlugin;
 
 
 class AdminPanelProvider extends PanelProvider
@@ -79,7 +80,6 @@ class AdminPanelProvider extends PanelProvider
 
 //                \App\Filament\Widgets\UserDemographic::class
 
-
             ])
             ->middleware([
                 EncryptCookies::class,
@@ -109,8 +109,7 @@ class AdminPanelProvider extends PanelProvider
                         'sm' => 2,
                     ]),
                 FilamentApexChartsPlugin::make(),
-//                FilamentSpatieLaravelHealthPlugin::make()
-//                    ->usingPage(HealthCheckResults::class)
+//               TwoFactorAuthPlugin::make()
 
             ])
             ->authMiddleware([

@@ -2,6 +2,10 @@
 
 namespace App\Filament\Pages;
 
+use App\Livewire\FinancialOverview;
+use App\Livewire\MonthlyTransactionsChart;
+use App\Livewire\TransactionsValueChart;
+use App\Livewire\TransvalueChart;
 use App\Livewire\WalletOverview;
 use Filament\Pages\Page;
 
@@ -19,6 +23,9 @@ class financial extends Page
     {
         return [
             WalletOverview::class,
+//            FinancialOverview::class,
+            TransactionsValueChart::class,
+            MonthlyTransactionsChart::class
         ];
     }
 }

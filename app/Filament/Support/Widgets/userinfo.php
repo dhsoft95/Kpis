@@ -3,16 +3,15 @@
 namespace App\Filament\Support\Widgets;
 
 use App\Models\AppUser;
-use App\Models\User;
 use Filament\Forms;
 use Filament\Tables;
+use Filament\Tables\Columns\SelectColumn;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Filament\Widgets\TableWidget as BaseWidget;
 
 class UserInfo extends BaseWidget
 {
-//    protected static ?int $sort = 2;
-
     protected int | string | array $columnSpan = 'full';
 
     public function table(Table $table): Table
@@ -23,11 +22,8 @@ class UserInfo extends BaseWidget
                 Tables\Columns\TextColumn::make('first_name')
                     ->searchable()
                     ->sortable()
-                    ->wrap(),  Tables\Columns\TextColumn::make('first_name')
-                    ->searchable()
-                    ->sortable()
                     ->wrap(),
-                Tables\Columns\TextColumn::make('last_name')
+                Tables\Columns\TextColumn::make('last_wename')
                     ->searchable()
                     ->sortable()
                     ->wrap(),
@@ -42,28 +38,48 @@ class UserInfo extends BaseWidget
                     ->boolean()
                     ->label('Phone Verified')
                     ->sortable(),
+//                Tables\Columns\TextColumn::make('identity_type')
+//                    ->sortable(),
+                SelectColumn::make('identity_type')
+                    ->options([
+                        '0' => 'Other',
+                        '1' => 'Nida',
+                        '2' => 'Driving licence',
+                    ]),
                 Tables\Columns\TextColumn::make('identity_value')
                     ->sortable()
-                    ->wrap(), Tables\Columns\TextColumn::make('status')
+                    ->wrap(),
+                Tables\Columns\TextColumn::make('status')
                     ->sortable()
                     ->wrap(),
-                Tables\Columns\ToggleColumn::make('is_active')
+                Tables\Columns\IconColumn::make('is_active')
+                    ->boolean()
                     ->label('Active'),
+                Tables\Columns\TextColumn::make('wallet_status')
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('account_no')
+                    ->searchable()
+                    ->wrap(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true)
-                    ->wrap(),
+                    ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
                 Tables\Filters\SelectFilter::make('status')
                     ->options([
+                        'unverified' => 'Unverified',
                         'active' => 'Active',
                         'inactive' => 'Inactive',
                         'suspended' => 'Suspended',
                     ]),
                 Tables\Filters\TernaryFilter::make('is_active')
                     ->label('Active Status'),
+                Tables\Filters\SelectFilter::make('wallet_status')
+                    ->options([
+                        'active' => 'Active',
+                        'inactive' => 'Inactive',
+                    ]),
             ])
             ->actions([
                 Tables\Actions\EditAction::make()
@@ -76,14 +92,24 @@ class UserInfo extends BaseWidget
                             ->maxLength(255),
                         Forms\Components\TextInput::make('email')
                             ->email()
-                            ->required()
                             ->maxLength(255),
                         Forms\Components\TextInput::make('phone_number')
                             ->tel()
-                            ->maxLength(255),
+                            ->required()
+                            ->maxLength(20),
                         Forms\Components\DateTimePicker::make('phone_verified_at'),
+                        Forms\Components\Select::make('identity_type')
+                            ->options([
+                                0=> 'Type 0',
+                                1 => 'Type 1',
+                                // Add more options as needed
+                            ])
+                            ->required(),
+                        Forms\Components\TextInput::make('identity_value')
+                            ->maxLength(255),
                         Forms\Components\Select::make('status')
                             ->options([
+                                'unverified' => 'Unverified',
                                 'active' => 'Active',
                                 'inactive' => 'Inactive',
                                 'suspended' => 'Suspended',
@@ -91,6 +117,14 @@ class UserInfo extends BaseWidget
                             ->required(),
                         Forms\Components\Toggle::make('is_active')
                             ->label('Active'),
+                        Forms\Components\Select::make('wallet_status')
+                            ->options([
+                                'active' => 'Active',
+                                'inactive' => 'Inactive',
+                            ])
+                            ->required(),
+                        Forms\Components\TextInput::make('account_no')
+                            ->maxLength(60),
                     ]),
                 Tables\Actions\DeleteAction::make(),
             ])
@@ -101,6 +135,4 @@ class UserInfo extends BaseWidget
             ])
             ->striped();
     }
-
-
 }

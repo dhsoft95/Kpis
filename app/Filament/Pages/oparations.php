@@ -2,6 +2,7 @@
 
 namespace App\Filament\Pages;
 
+use App\Livewire\FinancialOverview;
 use App\Livewire\WalletsBallance\PartersBallance;
 use Filament\Pages\Page;
 
@@ -27,6 +28,7 @@ class oparations extends Page
 
 //            \App\Livewire\MnoWallets::class,
             PartersBallance::class,
+
         ];
     }
 
