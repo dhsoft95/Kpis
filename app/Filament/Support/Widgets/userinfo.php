@@ -23,7 +23,7 @@ class UserInfo extends BaseWidget
                     ->searchable()
                     ->sortable()
                     ->wrap(),
-                Tables\Columns\TextColumn::make('last_wename')
+                Tables\Columns\TextColumn::make('last_name')
                     ->searchable()
                     ->sortable()
                     ->wrap(),

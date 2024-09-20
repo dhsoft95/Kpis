@@ -16,7 +16,7 @@ use Filament\Infolists\Components\Fieldset;
 
 class TransactionsResource extends Resource
 {
-    protected static ?string $model = Transactions::class;
+    protected static ?string $model = transactions::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-arrow-down-on-square-stack';
 
