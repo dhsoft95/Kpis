@@ -1,13 +1,13 @@
 <?php
 
+// File: app/Livewire/WalletOverview.php
+
 namespace App\Livewire;
 
+use App\Models\WalletBalance;
 use Filament\Widgets\Widget;
 use Livewire\Attributes\Computed;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Str;
 use Carbon\Carbon;
 
 class WalletOverview extends Widget
@@ -125,93 +125,27 @@ class WalletOverview extends Widget
 
     public function fetchPartnerBalances(): void
     {
-        $this->fetchTeraPay();
-        $this->fetchTembo();
-        $this->fetchCellulant();
-    }
+        $teraPay = WalletBalance::where('partner', 'TeraPay')->first();
+        $tembo = WalletBalance::where('partner', 'Tembo')->first();
+        $cellulant = WalletBalance::where('partner', 'Cellulant')->first();
 
-    private function fetchTeraPay(): void
-    {
-        $response = $this->checkDisbursementBalanceTeraPay();
-
-        if (is_array($response) && !empty($response) && isset($response[0])) {
-            $data = $response[0];
-            $this->balanceTeraPay = $data['currentBalance'] ?? null;
-            $this->currencyTeraPay = $data['currency'] ?? 'USD';
-            $this->statusTeraPay = $data['status'] ?? 'available';
-        } else {
-            Log::error('TeraPay API Unexpected Response', ['response' => $response]);
+        if ($teraPay) {
+            $this->balanceTeraPay = $teraPay->balance;
+            $this->currencyTeraPay = $teraPay->currency;
+            $this->statusTeraPay = $teraPay->status;
         }
-    }
 
-    private function fetchTembo(): void
-    {
-        try {
-            $headers = [
-                'x-account-id' => env('TEMBO_ACCOUNT_ID'),
-                'x-secret-key' => env('TEMBO_SECRET_KEY'),
-                'x-request-id' => (string) Str::uuid(),
-                'content-type' => 'application/json',
-            ];
-
-            $url = env('TEMBO_ENDPOINT') . 'wallet/main-balance';
-
-            $response = Http::withHeaders($headers)->post($url);
-
-            if ($response->successful()) {
-                $data = $response->json();
-                $this->balanceTembo = $data['currentBalance'] ?? null;
-                $this->availableBalanceTembo = $data['availableBalance'] ?? null;
-                $this->statusTembo = $data['accountStatus'] ?? 'unknown';
-            } else {
-                Log::error('Tembo API Error', ['status' => $response->status(), 'response' => $response->json()]);
-            }
-        } catch (\Exception $e) {
-            Log::error('Tembo API Exception', ['error' => $e->getMessage()]);
+        if ($tembo) {
+            $this->balanceTembo = $tembo->balance;
+            $this->availableBalanceTembo = $tembo->available_balance;
+            $this->statusTembo = $tembo->status;
         }
-    }
 
-    private function fetchCellulant()
-    {
-        // Dummy data for Cellulant
-        $this->balanceCellulant = 67;
-        $this->currencyCellulant = 'USD';
-        $this->statusCellulant = 'available';
-    }
-
-    private function checkDisbursementBalanceTeraPay()
-    {
-        $username = env('TERAPAY_USERNAME');
-        $password = env('TERAPAY_PASSWORD');
-        $headers = [
-            'X-USERNAME: ' . $username,
-            'X-PASSWORD: ' . $password,
-            'X-DATE: ' . now()->format('Y-m-d H:i:s'),
-            'X-ORIGINCOUNTRY: TZ',
-            'Content-Type: application/json'
-        ];
-
-        $curl = curl_init();
-
-        curl_setopt_array($curl, array(
-            CURLOPT_URL => 'https://vpnconnect.terrapay.com:21211/eig/gsma/accounts/all/balance',
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_ENCODING => '',
-            CURLOPT_MAXREDIRS => 10,
-            CURLOPT_TIMEOUT => 30,
-            CURLOPT_FOLLOWLOCATION => true,
-            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-            CURLOPT_CUSTOMREQUEST => 'GET',
-            CURLOPT_SSL_VERIFYPEER => false,
-            CURLOPT_SSL_VERIFYHOST => false,
-            CURLOPT_HTTPHEADER => $headers,
-        ));
-
-        $response = json_decode(curl_exec($curl), true);
-
-        curl_close($curl);
-
-        return $response;
+        if ($cellulant) {
+            $this->balanceCellulant = $cellulant->balance;
+            $this->currencyCellulant = $cellulant->currency;
+            $this->statusCellulant = $cellulant->status;
+        }
     }
 
     public function fetchTransactionData(): void

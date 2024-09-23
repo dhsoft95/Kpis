@@ -5,4 +5,5 @@ return [
     App\Providers\Filament\AdminPanelProvider::class,
     App\Providers\Filament\SupportPanelProvider::class,
     App\Providers\FortifyServiceProvider::class,
+    App\Providers\ScheduleServiceProvider::class,
 ];

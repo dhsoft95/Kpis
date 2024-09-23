@@ -105,7 +105,7 @@
                             'icon' => 'fas fa-money-bill-wave',
                             'iconBgColor' => 'bg-[rgba(220,169,21,0.2)] border border-[rgba(220,169,21,1)]',
                             'iconColor' => 'text-[rgba(220,169,21,1)]',
-                            'amount' => $balanceTembo ?? '33,754.00',
+                            'amount' => $balanceTembo ?? 'unavailable',
                             'currency' => 'TSH',
                             'description' => 'Tembo Pay transactions.'
                         ],
@@ -114,7 +114,7 @@
                             'icon' => 'fas fa-credit-card',
                             'iconBgColor' => 'bg-[rgba(220,169,21,0.2)] border border-[rgba(220,169,21,1)]',
                             'iconColor' => 'text-[rgba(220,169,21,1)]',
-                            'amount' => $balanceTeraPay ?? '33.16',
+                            'amount' => $balanceTeraPay ?? 'unavailable',
                             'currency' => $currencyTeraPay ?? 'USD',
                             'description' => 'Terapay transactions.'
                         ],

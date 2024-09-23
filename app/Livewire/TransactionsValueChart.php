@@ -12,6 +12,7 @@ class TransactionsValueChart extends ApexChartWidget
     protected static ?string $chartId = 'transactionsValueChart';
     protected static ?string $heading = 'Value of Transactions (since Inception)';
     protected int $height = 300;
+    protected int | string | array $columnSpan = 'full';
     protected static ?string $pollingInterval = null;
 
     protected function getOptions(): array
@@ -45,6 +46,9 @@ class TransactionsValueChart extends ApexChartWidget
                 'bar' => [
                     'horizontal' => false,
                 ],
+            ],
+            'dataLabels' => [
+                'enabled' => false,
             ],
 
         ];
