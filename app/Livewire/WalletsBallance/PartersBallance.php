@@ -34,7 +34,7 @@ class PartersBallance extends Widget
         $this->fetchCellulantBalance();
     }
 
-    public function fetchDisbursementBalance()
+    public function fetchDisbursementBalance(): void
     {
         $this->status = null;
 

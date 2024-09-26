@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\APIs\CurrencyController;
 use App\Http\Controllers\APIs\CustomerFeedbackController;
 use App\Http\Controllers\APIs\UserStatsConstroller;
 use App\Http\Controllers\Auth\AuthController;
@@ -39,3 +40,6 @@ Route::middleware('auth:sanctum')->group(function () {
 });
 Route::post('/feedback/questions', [CustomerFeedbackController::class, 'getQuestions']);
 Route::post('/feedback/submit-feedback', [CustomerFeedbackController::class, 'submitFeedback']);
+
+Route::post('/convert', [CurrencyController::class, 'convertFromBase']);
+Route::get('/currencies', [CurrencyController::class, 'getSupportedCurrencies']);

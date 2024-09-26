@@ -166,9 +166,11 @@ class userStatsOverview extends Widget
     {
         DB::connection('mysql_second')->enableQueryLog();
 
+        $fiveWeeksAgo = $endDate->copy()->subWeeks(5);
+
         $count = DB::connection('mysql_second')
             ->table('tbl_simba_transactions')
-            ->whereBetween('created_at', [$startDate, $endDate])
+            ->whereBetween('created_at', [$fiveWeeksAgo, $endDate])
             ->whereIn('status', ['deposited', 'sent', 'received'])
             ->distinct('user_id')
             ->count('user_id');
@@ -180,6 +182,7 @@ class userStatsOverview extends Widget
             'query' => $queryLog,
             'count' => $count,
             'period' => [$startDate->toDateTimeString(), $endDate->toDateTimeString()],
+            'activity_period' => [$fiveWeeksAgo->toDateTimeString(), $endDate->toDateTimeString()],
         ]);
 
         return $count;
@@ -190,17 +193,19 @@ class userStatsOverview extends Widget
     {
         DB::connection('mysql_second')->enableQueryLog();
 
+        $fiveWeeksAgo = $endDate->copy()->subWeeks(5);
+
         $activeUsers = DB::connection('mysql_second')
             ->table('tbl_simba_transactions')
-            ->whereBetween('created_at', [$startDate, $endDate])
-            ->where('status', 'received')
+            ->whereBetween('created_at', [$fiveWeeksAgo, $endDate])
+            ->whereIn('status', ['deposited', 'sent', 'received'])
             ->distinct('user_id')
             ->pluck('user_id');
 
         $count = DB::connection('mysql_second')
             ->table('users')
+            ->where('created_at', '<=', $endDate)
             ->whereNotIn('id', $activeUsers)
-            ->where('created_at', '<', $endDate)
             ->count();
 
         $queryLog = DB::connection('mysql_second')->getQueryLog();
@@ -210,6 +215,7 @@ class userStatsOverview extends Widget
             'query' => $queryLog,
             'count' => $count,
             'period' => [$startDate->toDateTimeString(), $endDate->toDateTimeString()],
+            'activity_period' => [$fiveWeeksAgo->toDateTimeString(), $endDate->toDateTimeString()],
         ]);
 
         return $count;

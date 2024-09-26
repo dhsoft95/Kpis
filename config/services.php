@@ -42,5 +42,10 @@ return [
             'channel' => env('SLACK_BOT_USER_DEFAULT_CHANNEL'),
         ],
     ],
+    'currency_api' => [
+        'api_key' => env('CURRENCY_API_KEY'),
+        'base_currency' => env('CURRENCY_API_BASE_CURRENCY', 'TZS'),
+        'usd_determinant' => env('CURRENCY_API_USD_DETERMINANT', 0.04),
+    ],
 
 ];

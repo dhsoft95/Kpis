@@ -2,8 +2,12 @@
 
 namespace App\Filament\Pages;
 
+use App\Livewire\BasedOnDateOverview;
 use App\Livewire\FinancialOverview;
+use App\Livewire\MonthlyComparisionOverview;
 use App\Livewire\MonthlyTransactionsChart;
+use App\Livewire\SinceInceptionOverview;
+use App\Livewire\TotalAmountByTransactionType;
 use App\Livewire\TransactionsValueChart;
 use App\Livewire\TransvalueChart;
 use App\Livewire\WalletOverview;
@@ -22,10 +26,14 @@ class financial extends Page
     protected function getHeaderWidgets(): array
     {
         return [
-            WalletOverview::class,
+//            WalletOverview::class,
+            SinceInceptionOverview::class,
+            BasedOnDateOverview::class,
+            MonthlyComparisionOverview::class,
 //            FinancialOverview::class,
             TransactionsValueChart::class,
-            MonthlyTransactionsChart::class
+            MonthlyTransactionsChart::class,
+            TotalAmountByTransactionType::class
         ];
     }
 }

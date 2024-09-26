@@ -117,7 +117,6 @@
                         <div>Balance of Tembo Pay wallet.</div>
                     </div>
                 </div>
-
                 <!-- Terapay Wallet Balance Card -->
                 <div class="card-container relative">
                     <div class="card p-4 gradient-terapay shadow-md">

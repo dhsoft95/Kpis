@@ -75,20 +75,16 @@ class ActiveAndInactive extends ApexChartWidget
         $inactiveUsers = [];
 
         for ($i = 4; $i >= 0; $i--) {
-            $startDate = Carbon::now()->subWeeks($i)->startOfWeek();
             $endDate = Carbon::now()->subWeeks($i)->endOfWeek();
+            $startDate = $endDate->copy()->startOfWeek();
 
             $weeks[] = $startDate->format('M d') . ' - ' . $endDate->format('M d');
+
             $totalUsers = DB::connection('mysql_second')->table('users')
                 ->where('created_at', '<=', $endDate)
                 ->count();
-            $activeUsersCount = DB::connection('mysql_second')->table('users')
-                ->join('tbl_simba_transactions', 'users.id', '=', 'tbl_simba_transactions.user_id')
-                ->where('users.created_at', '<=', $endDate)
-                ->where('tbl_simba_transactions.created_at', '>=', $startDate)
-                ->where('tbl_simba_transactions.created_at', '<=', $endDate)
-                ->distinct('users.id')
-                ->count('users.id');
+
+            $activeUsersCount = $this->getActiveUsersCount($startDate, $endDate);
 
             $activeUsers[] = $activeUsersCount;
             $inactiveUsers[] = $totalUsers - $activeUsersCount;
@@ -99,5 +95,15 @@ class ActiveAndInactive extends ApexChartWidget
             'active' => $activeUsers,
             'inactive' => $inactiveUsers,
         ];
+    }
+
+    private function getActiveUsersCount(Carbon $startDate, Carbon $endDate): int
+    {
+        return DB::connection('mysql_second')
+            ->table('tbl_simba_transactions')
+            ->whereBetween('created_at', [$startDate, $endDate])
+            ->whereIn('status', ['deposited', 'sent', 'received'])
+            ->distinct('user_id')
+            ->count('user_id');
     }
 }

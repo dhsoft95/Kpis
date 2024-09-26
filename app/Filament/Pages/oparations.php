@@ -13,6 +13,7 @@ class oparations extends Page
     protected static ?string $title = 'Operations  ';
 
     protected static ?string $navigationGroup = 'Dashboard';
+
     protected static ?string $navigationIcon = 'heroicon-o-cog';
 
 

@@ -20,10 +20,12 @@
         "laravel/framework": "^11.9",
         "laravel/passport": "^12.0",
         "laravel/sanctum": "^4.0",
+        "laravel/slack-notification-channel": "^3.3",
         "laravel/tinker": "^2.9",
         "lcobucci/jwt": "^5.3",
         "leandrocfe/filament-apex-charts": "^3.1",
         "shuvroroy/filament-spatie-laravel-health": "^2.0",
+        "solution-forest/filament-access-management": "^2.2",
         "stephenjude/filament-two-factor-authentication": "^0.0.4",
         "vormkracht10/filament-2fa": "^1.4"
     },

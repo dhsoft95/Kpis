@@ -95,9 +95,9 @@
                 transform: translateY(0);
             }
         </style>
-
         <div class="container mx-auto p-1" wire:poll.4s="calculateStats">
-            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            <h1 class="widget-title">Financial Performance Since Inception</h1>
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4" style="margin-top: 23px">
                 @php
                     $cards = [
                         'tembopay' => [
@@ -118,51 +118,13 @@
                             'currency' => $currencyTeraPay ?? 'USD',
                             'description' => 'Terapay transactions.'
                         ],
-
                         'total_transactions' => [
-                            'title' => 'Total Transactions',
+                            'title' => 'Total Transactions Count',
                             'icon' => 'fas fa-exchange-alt',
                             'iconBgColor' => 'bg-[rgba(220,169,21,0.2)] border border-[rgba(220,169,21,1)]',
                             'iconColor' => 'text-[rgba(220,169,21,1)]',
                             'amount' => number_format($totalTransactions),
                             'description' => 'Number of Transactions (since Inception)'
-                        ],
-                         'monthly_transaction_value' => [
-                            'title' => 'Monthly Transaction Value',
-                            'icon' => 'fas fa-chart-line',
-                            'iconBgColor' => 'bg-[rgba(220,169,21,0.2)] border border-[rgba(220,169,21,1)]',
-                            'iconColor' => 'text-[rgba(220,169,21,1)]',
-                            'amount' => number_format($monthlyTransactionValue, 2),
-                            'currency' => $defaultCurrency,
-                            'description' => 'Value of Transactions (This Month)'
-                        ],
-                        'active' => [
-                            'title' => 'Active Wallets',
-                            'icon' => 'fas fa-wallet',
-                            'iconBgColor' => 'bg-[rgba(220,169,21,0.2)] border border-[rgba(220,169,21,1)]',
-                            'iconColor' => 'text-[rgba(220,169,21,1)]',
-                            'description' => 'Number of active wallets.'
-                        ],
-                        'inactive' => [
-                            'title' => 'Inactive Wallets',
-                            'icon' => 'fas fa-wallet',
-                            'iconBgColor' => 'bg-[rgba(220,169,21,0.2)] border border-[rgba(220,169,21,1)]',
-                            'iconColor' => 'text-[rgba(220,169,21,1)]',
-                            'description' => 'Number of inactive wallets.'
-                        ],
-                        'failed' => [
-                            'title' => 'Failed Wallets',
-                            'icon' => 'fas fa-times-circle',
-                            'iconBgColor' => 'bg-[rgba(220,169,21,0.2)] border border-[rgba(220,169,21,1)]',
-                            'iconColor' => 'text-[rgba(220,169,21,1)]',
-                            'description' => 'Number of failed wallets.'
-                        ],
-                        'inprogress' => [
-                            'title' => 'In-Progress Wallets',
-                            'icon' => 'fas fa-sync',
-                            'iconBgColor' => 'bg-[rgba(220,169,21,0.2)] border border-[rgba(220,169,21,1)]',
-                            'iconColor' => 'text-[rgba(220,169,21,1)]',
-                            'description' => 'Number of wallets in progress.'
                         ],
                         'total_transaction_value' => [
                             'title' => 'Total Transaction Value',
@@ -173,31 +135,29 @@
                             'currency' => $defaultCurrency,
                             'description' => 'Value of Transactions (since Inception)'
                         ],
-                        'monthly_transactions' => [
-                            'title' => 'Monthly Transactions',
-                            'icon' => 'fas fa-calendar-alt',
-                            'iconBgColor' => 'bg-[rgba(220,169,21,0.2)] border border-[rgba(220,169,21,1)]',
-                            'iconColor' => 'text-[rgba(220,169,21,1)]',
-                            'amount' => number_format($monthlyTransactions),
-                            'description' => 'Number of Transactions (This Month)'
-                        ],
-
-                        'active_users' => [
-                            'title' => 'Active Users',
+                        'total_accounts' => [
+                            'title' => 'Total Accounts',
                             'icon' => 'fas fa-users',
                             'iconBgColor' => 'bg-[rgba(220,169,21,0.2)] border border-[rgba(220,169,21,1)]',
                             'iconColor' => 'text-[rgba(220,169,21,1)]',
-                            'amount' => number_format($activeUsers),
-                            'description' => 'Users who made a successful revenue-generating transaction (deposited, sent, or received) in the last 60 days'
+                            'amount' => number_format($totalAccounts),
+                            'description' => 'Total number of accounts (since inception)'
                         ],
-                        'avg_transaction_value' => [
-                            'title' => 'Avg Transaction Value',
-                            'icon' => 'fas fa-chart-bar',
+                        'active_accounts' => [
+                            'title' => 'Active Accounts',
+                            'icon' => 'fas fa-user-check',
                             'iconBgColor' => 'bg-[rgba(220,169,21,0.2)] border border-[rgba(220,169,21,1)]',
                             'iconColor' => 'text-[rgba(220,169,21,1)]',
-                            'amount' => number_format($avgTransactionValuePerActiveCustomer, 2),
-                            'currency' => $defaultCurrency,
-                            'description' => 'Average Transaction Value per Active Customer'
+                            'amount' => number_format($activeAccounts),
+                            'description' => 'Number of active accounts'
+                        ],
+                        'inactive_accounts' => [
+                            'title' => 'Inactive Accounts',
+                            'icon' => 'fas fa-user-times',
+                            'iconBgColor' => 'bg-[rgba(220,169,21,0.2)] border border-[rgba(220,169,21,1)]',
+                            'iconColor' => 'text-[rgba(220,169,21,1)]',
+                            'amount' => number_format($inactiveAccounts),
+                            'description' => 'Number of inactive accounts'
                         ],
                     ];
                 @endphp
@@ -208,18 +168,14 @@
                                 <div>
                                     <h5 class="card-title mb-1">{{ $card['title'] }}</h5>
                                     <h2 class="card-value" wire:key="count-{{ $key }}">
-                                        @if(isset($card['amount']))
-                                            {{ $card['amount'] }} {{ $card['currency'] ?? '' }}
-                                        @else
-                                            {{ number_format($totalCounts[$key] ?? 0, 0) }}
-                                        @endif
+                                        {{ $card['amount'] }} {{ $card['currency'] ?? '' }}
                                     </h2>
                                 </div>
                                 <div class="icon-bg {{ $card['iconBgColor'] }}">
                                     <i class="{{ $card['icon'] }} {{ $card['iconColor'] }} text-xs"></i>
                                 </div>
                             </div>
-                            @if(!isset($card['amount']) && isset($stats[$key]))
+                            @if(isset($stats[$key]))
                                 <div class="card-divider"></div>
                                 <div class="flex items-center">
                                     <span class="percentage-badge {{ $stats[$key]['isGrowth'] ? 'bg-green-100 dark:bg-green-700 text-green-800 dark:text-green-200' : 'bg-red-100 dark:bg-red-700 text-red-800 dark:text-red-200' }} mr-2">
@@ -232,9 +188,9 @@
                         <div class="card-tooltip">
                             <div class="font-semibold mb-1">{{ $card['title'] }}</div>
                             <div>{{ $card['description'] }}</div>
-                            @if(!isset($card['amount']) && isset($stats[$key]))
+                            @if(isset($stats[$key]))
                                 <div class="mt-2 text-sm">
-                                    <strong>Week-over-Week Change:</strong> This percentage represents the growth or decline in the number of wallets compared to the previous week.
+                                    <strong>Week-over-Week Change:</strong> This percentage represents the growth or decline compared to the previous week.
                                 </div>
                             @endif
                         </div>

@@ -37,6 +37,7 @@ use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Leandrocfe\FilamentApexCharts\FilamentApexChartsPlugin;
+use SolutionForest\FilamentAccessManagement\FilamentAccessManagementPanel;
 use Vormkracht10\TwoFactorAuth\TwoFactorAuthPlugin;
 
 
@@ -77,8 +78,7 @@ class AdminPanelProvider extends PanelProvider
                 RegisterdUsersChart::class,
                 ActiveAndInactive::class,
                 ChurnUsers::class,
-
-//                \App\Filament\Widgets\UserDemographic::class
+      //          \App\Filament\Widgets\UserDemographic::class
 
             ])
             ->middleware([
@@ -92,25 +92,10 @@ class AdminPanelProvider extends PanelProvider
                 DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,
             ]) ->plugins([
-                FilamentShieldPlugin::make()
-                    ->gridColumns([
-                        'default' => 1,
-                        'sm' => 2,
-                        'lg' => 3
-                    ])
-                    ->sectionColumnSpan(1)
-                    ->checkboxListColumns([
-                        'default' => 1,
-                        'sm' => 2,
-                        'lg' => 4,
-                    ])
-                    ->resourceCheckboxListColumns([
-                        'default' => 1,
-                        'sm' => 2,
-                    ]),
                 FilamentApexChartsPlugin::make(),
-//               TwoFactorAuthPlugin::make()
-
+//                TwoFactorAuthPlugin::make(),
+                FilamentAccessManagementPanel::make(),
+                
             ])
             ->authMiddleware([
                 Authenticate::class,
