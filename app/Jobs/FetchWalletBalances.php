@@ -148,7 +148,7 @@ class FetchWalletBalances implements ShouldQueue
     private function updateDatabase(string $partner, array $data): void
     {
         try {
-            DB::connection('mysql_second')->table('wallet_balances')->updateOrInsert(
+            DB::table('wallet_balances')->updateOrInsert(
                 ['partner' => $partner],
                 array_merge($data, ['updated_at' => now()])
             );
