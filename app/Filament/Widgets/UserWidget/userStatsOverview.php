@@ -81,6 +81,7 @@ class userStatsOverview extends Widget
             'previous_period' => [$twoWeeksAgo->toDateTimeString(), $oneWeekAgo->toDateTimeString()],
         ]);
     }
+
     private function calculateInactiveUsers(Carbon $now, Carbon $oneWeekAgo, Carbon $twoWeeksAgo): void
     {
         $currentCount = $this->getInactiveUsersCount($oneWeekAgo, $now);
@@ -116,8 +117,6 @@ class userStatsOverview extends Widget
         $this->stats['avgValuePerDay'] = $this->calculateAverageValuePerDay($now, $oneWeekAgo, $twoWeeksAgo);
         $this->stats['avgTransactionPerCustomer'] = $this->calculateAverageTransactionPerCustomer($now, $oneWeekAgo, $twoWeeksAgo);
     }
-
-
 
     private function calculateTransactionStats(Carbon $now, Carbon $oneWeekAgo): void
     {
@@ -166,11 +165,9 @@ class userStatsOverview extends Widget
     {
         DB::connection('mysql_second')->enableQueryLog();
 
-        $fiveWeeksAgo = $endDate->copy()->subWeeks(5);
-
         $count = DB::connection('mysql_second')
             ->table('tbl_simba_transactions')
-            ->whereBetween('created_at', [$fiveWeeksAgo, $endDate])
+            ->whereBetween('created_at', [$startDate, $endDate])
             ->whereIn('status', ['deposited', 'sent', 'received'])
             ->distinct('user_id')
             ->count('user_id');
@@ -182,43 +179,41 @@ class userStatsOverview extends Widget
             'query' => $queryLog,
             'count' => $count,
             'period' => [$startDate->toDateTimeString(), $endDate->toDateTimeString()],
-            'activity_period' => [$fiveWeeksAgo->toDateTimeString(), $endDate->toDateTimeString()],
         ]);
 
         return $count;
     }
 
-
     private function getInactiveUsersCount(Carbon $startDate, Carbon $endDate): int
     {
         DB::connection('mysql_second')->enableQueryLog();
 
-        $fiveWeeksAgo = $endDate->copy()->subWeeks(5);
-
         $activeUsers = DB::connection('mysql_second')
             ->table('tbl_simba_transactions')
-            ->whereBetween('created_at', [$fiveWeeksAgo, $endDate])
+            ->whereBetween('created_at', [$startDate, $endDate])
             ->whereIn('status', ['deposited', 'sent', 'received'])
             ->distinct('user_id')
             ->pluck('user_id');
 
-        $count = DB::connection('mysql_second')
+        $totalUsers = DB::connection('mysql_second')
             ->table('users')
             ->where('created_at', '<=', $endDate)
-            ->whereNotIn('id', $activeUsers)
             ->count();
+
+        $inactiveCount = $totalUsers - count($activeUsers);
 
         $queryLog = DB::connection('mysql_second')->getQueryLog();
         DB::connection('mysql_second')->disableQueryLog();
 
         Log::info('Inactive Users Query', [
             'query' => $queryLog,
-            'count' => $count,
+            'total_users' => $totalUsers,
+            'active_users' => count($activeUsers),
+            'inactive_count' => $inactiveCount,
             'period' => [$startDate->toDateTimeString(), $endDate->toDateTimeString()],
-            'activity_period' => [$fiveWeeksAgo->toDateTimeString(), $endDate->toDateTimeString()],
         ]);
 
-        return $count;
+        return $inactiveCount;
     }
 
     private function getChurnUsersCount(Carbon $startDate, Carbon $endDate): int
@@ -302,8 +297,6 @@ class userStatsOverview extends Widget
         return $result->avg_transactions_per_user ?? 0;
     }
 
-
-
     private function updateStat(string $key, int $currentCount, int $previousCount): void
     {
         $percentageChange = $previousCount > 0
@@ -331,6 +324,7 @@ class userStatsOverview extends Widget
             'isGrowth' => $isGrowth,
         ];
     }
+
     public function getPopularTransfers(): array
     {
         return DB::connection('mysql_second')
@@ -355,4 +349,3 @@ class userStatsOverview extends Widget
             ->toArray();
     }
 }
-
