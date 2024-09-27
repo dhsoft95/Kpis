@@ -16,6 +16,7 @@ use App\Filament\Widgets\UserWidget\RegisterdUsersChart;
 use App\Filament\Widgets\UserWidget\userStatsOverview;
 use App\Livewire\CustomerMetric\ActiveAndInactive;
 use App\Livewire\CustomerMetric\ChurnUsers;
+use App\Livewire\Dawasa;
 use App\Livewire\GoogleAnalytics\GeoChartWidget;
 use App\Livewire\GoogleAnalytics\NumberOfDownloads;
 use App\Livewire\MapOverview;
@@ -65,13 +66,12 @@ class AdminPanelProvider extends PanelProvider
 
             ])->viteTheme('resources/css/filament/admin/theme.css')
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
-//            ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
-//            ->pages([customer::class,financial::class,oparations::class,service::class])
             ->pages([
                 Pages\Dashboard::class,customer::class,service::class,oparations::class,financial::class,
             ])
 //            ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
+
                 userStatsOverview::class,
                 NumberOfDownloads::class,
                 GeoChartWidget::class,
@@ -95,7 +95,7 @@ class AdminPanelProvider extends PanelProvider
                 FilamentApexChartsPlugin::make(),
 //                TwoFactorAuthPlugin::make(),
                 FilamentAccessManagementPanel::make(),
-                
+
             ])
             ->authMiddleware([
                 Authenticate::class,

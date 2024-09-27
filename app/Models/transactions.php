@@ -9,6 +9,5 @@ class transactions extends Model
 {
     use HasFactory;
     protected $connection ='mysql_second';
-
     protected $table="tbl_simba_transactions";
 }

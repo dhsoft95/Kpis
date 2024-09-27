@@ -41,7 +41,7 @@ class FinancialOverview extends Widget
         $this->monthlyTransactions = $monthlyTotals->count;
         $this->monthlyTransactionValue = $monthlyTotals->total;
 
-        // Fetch active users in the last 60 days
+
         $this->activeUsers = DB::connection('mysql_second')->table('tbl_simba_transactions')
             ->where('created_at', '>=', Carbon::now()->subDays(60))
             ->whereIn('status', ['deposited', 'sent', 'received'])

@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class WalletBalance extends Model
 {
-    protected $connection ='mysql_second';
+
 
     use HasFactory;
     protected $fillable = [

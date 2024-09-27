@@ -69,7 +69,7 @@ class CustomerFeedbackController extends Controller
         Log::info('submitFeedback request data: ' . json_encode($request->all()));
 
         $validator = Validator::make($request->all(), [
-            'user_id' => 'required|integer|exists:transactions,user_id',
+            'user_id' => 'required|integer|exists:mysql_second.tbl_simba_transactions,user_id',
             'feedback_question_id' => 'required|exists:feedback_questions,id',
             'rating' => 'required|integer|min:1|max:10',
             'answer' => 'nullable|string',

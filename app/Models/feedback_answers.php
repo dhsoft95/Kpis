@@ -16,7 +16,8 @@ class feedback_answers extends Model
         'feedback_question_id',
         'user_id',
         'rating',
-        'answer'
+        'answer',
+        'sender_phone'
     ];
 
     public function feedbackQuestion(): \Illuminate\Database\Eloquent\Relations\BelongsTo

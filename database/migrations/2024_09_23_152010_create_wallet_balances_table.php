@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-     Schema::connection('mysql_second')->create('wallet_balances', function (Blueprint $table) {
+     Schema::create('wallet_balances', function (Blueprint $table) {
          $table->id();
          $table->string('partner');
          $table->decimal('balance', 15, 2)->nullable();
