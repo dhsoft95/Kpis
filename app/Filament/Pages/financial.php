@@ -12,6 +12,7 @@ use App\Livewire\TransactionsValueChart;
 use App\Livewire\TransvalueChart;
 use App\Livewire\WalletOverview;
 use Filament\Pages\Page;
+use Filament\Support\Enums\MaxWidth;
 
 class financial extends Page
 {
@@ -21,7 +22,10 @@ class financial extends Page
 
     protected static string $view = 'filament.pages.financial';
 
-
+    public function getMaxContentWidth(): MaxWidth
+    {
+        return MaxWidth::Full;
+    }
 
     protected function getHeaderWidgets(): array
     {
