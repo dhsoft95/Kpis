@@ -24,10 +24,12 @@
         "laravel/tinker": "^2.9",
         "lcobucci/jwt": "^5.3",
         "leandrocfe/filament-apex-charts": "^3.1",
+        "rap2hpoutre/laravel-log-viewer": "^2.4",
+        "sentry/sentry-laravel": "^4.9",
         "shuvroroy/filament-spatie-laravel-health": "^2.0",
         "solution-forest/filament-access-management": "^2.2",
         "stephenjude/filament-two-factor-authentication": "^0.0.4",
-        "vormkracht10/filament-2fa": "^1.4"
+        "zendesk/zendesk_api_client_php": "^3.0"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",

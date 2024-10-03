@@ -116,7 +116,7 @@
                             'iconBgColor' => 'bg-[rgba(220,169,21,0.2)] border border-[rgba(220,169,21,1)]', // Aloe color with low opacity for the background and full opacity for the border
                             'iconColor' => 'text-[rgba(220,169,21,1)]',
                            ],
-                        'email' => ['title' => 'Emails',
+                        'zendesk' => ['title' => 'zendesk',
                          'icon' => 'fas fa-envelope',
                             'iconBgColor' => 'bg-[rgba(220,169,21,0.2)] border border-[rgba(220,169,21,1)]', // Aloe color with low opacity for the background and full opacity for the border
                             'iconColor' => 'text-[rgba(220,169,21,1)]',

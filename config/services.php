@@ -48,4 +48,17 @@ return [
         'usd_determinant' => env('CURRENCY_API_USD_DETERMINANT', 0.04),
     ],
 
+    'zendesk' => [
+        'subdomain' => env('ZENDESK_SUBDOMAIN'),
+        'username' => env('ZENDESK_USERNAME'),
+        'token' => env('ZENDESK_TOKEN'),
+        'fetch_minutes' => env('ZENDESK_FETCH_MINUTES', 2),
+    ],
+//    'zendesk' => [
+//        'subdomain' => env('ZENDESK_SUBDOMAIN', 'simbamoneylimited'),
+//        'username' => env('ZENDESK_USERNAME', 'your_username'),
+//        'token' => env('ZENDESK_API_TOKEN', 'your_api_token'),
+//    ],
+
+
 ];

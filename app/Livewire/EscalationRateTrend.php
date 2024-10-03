@@ -2,32 +2,39 @@
 
 namespace App\Livewire;
 
-use App\Models\EscalatedCase;
-use App\Models\UserInteraction;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use Leandrocfe\FilamentApexCharts\Widgets\ApexChartWidget;
+use Carbon\Carbon;
 
 class EscalationRateTrend extends ApexChartWidget
 {
-    /**
-     * Chart Id
-     *
-     * @var string
-     */
     protected static ?string $chartId = 'escalationRateTrend';
     protected static ?string $heading = 'Escalation Rate Trend';
+
     protected function getOptions(): array
     {
         $data = $this->getData();
 
         return [
             'chart' => [
-                'type' => 'area',
+                'type' => 'bar',
                 'height' => 300,
+                'toolbar' => [
+                    'show' => false,
+                ],
             ],
             'series' => [
                 [
                     'name' => 'Escalation Rate',
                     'data' => $data['escalationRates'],
+                ],
+            ],
+            'plotOptions' => [
+                'bar' => [
+                    'horizontal' => false,
+                    'columnWidth' => '55%',
+                    'endingShape' => 'rounded',
                 ],
             ],
             'xaxis' => [
@@ -39,32 +46,23 @@ class EscalationRateTrend extends ApexChartWidget
                 ],
             ],
             'yaxis' => [
+                'title' => [
+                    'text' => 'Escalation Rate (%)',
+                ],
                 'labels' => [
                     'style' => [
                         'fontFamily' => 'inherit',
                     ],
                 ],
-                'title' => [
-                    'text' => 'Escalation Rate (%)',
-                ],
                 'min' => 0,
                 'max' => 100,
             ],
             'colors' => ['#f59e0b'],
-            'stroke' => [
-                'curve' => 'smooth',
-            ],
             'dataLabels' => [
                 'enabled' => false,
             ],
             'fill' => [
-                'type' => 'gradient',
-                'gradient' => [
-                    'shadeIntensity' => 1,
-                    'opacityFrom' => 0.7,
-                    'opacityTo' => 0.9,
-                    'stops' => [0, 90, 100],
-                ],
+                'opacity' => 1,
             ],
             'tooltip' => [
                 'y' => [
@@ -79,28 +77,54 @@ class EscalationRateTrend extends ApexChartWidget
         $endDate = now();
         $startDate = now()->subDays(30);
 
-        // Get total interactions per day
-        $totalInteractions = UserInteraction::selectRaw('DATE(created_at) as date, COUNT(*) as total')
-            ->whereBetween('created_at', [$startDate, $endDate])
-            ->groupBy('date')
-            ->pluck('total', 'date')
-            ->toArray();
+        $totalInteractions = array_fill(0, 30, 0);
+        $escalatedCases = array_fill(0, 30, 0);
+        $dates = [];
 
-        // Get escalated cases per day
-        $escalatedCases = EscalatedCase::selectRaw('DATE(created_at) as date, COUNT(*) as total')
-            ->whereBetween('created_at', [$startDate, $endDate])
-            ->groupBy('date')
-            ->pluck('total', 'date')
-            ->toArray();
-
-        $dates = array_keys($totalInteractions);
-        $escalationRates = [];
-
-        foreach ($dates as $date) {
-            $total = $totalInteractions[$date] ?? 0;
-            $escalated = $escalatedCases[$date] ?? 0;
-            $escalationRates[] = $total > 0 ? round(($escalated / $total) * 100, 2) : 0;
+        for ($i = 0; $i < 30; $i++) {
+            $dates[] = $startDate->copy()->addDays($i)->format('Y-m-d');
         }
+
+        try {
+            $response = Http::withBasicAuth(config('services.zendesk.username'), config('services.zendesk.token'))
+                ->get("https://" . config('services.zendesk.subdomain') . ".zendesk.com/api/v2/ticket_metrics.json", [
+                    'start_time' => $startDate->toIso8601String(),
+                ]);
+
+            if ($response->successful()) {
+                $responseData = $response->json();
+//                Log::info('Zendesk API Response:', $responseData);
+
+                $ticketMetrics = $responseData['ticket_metrics'] ?? [];
+
+                foreach ($ticketMetrics as $metric) {
+                    $createdAt = Carbon::parse($metric['created_at'])->format('Y-m-d');
+                    $index = array_search($createdAt, $dates);
+
+                    if ($index !== false) {
+                        $totalInteractions[$index]++;
+
+                        // Check if the ticket was escalated
+                        if ($metric['reopens'] > 0 || $metric['replies'] > 3) {
+                            $escalatedCases[$index]++;
+                        }
+                    }
+                }
+            } else {
+                Log::error('Zendesk API request failed', [
+                    'status' => $response->status(),
+                    'body' => $response->body(),
+                ]);
+            }
+        } catch (\Exception $e) {
+            Log::error('Error fetching data from Zendesk API', [
+                'error' => $e->getMessage(),
+            ]);
+        }
+
+        $escalationRates = array_map(function ($total, $escalated) {
+            return $total > 0 ? round(($escalated / $total) * 100, 2) : 0;
+        }, $totalInteractions, $escalatedCases);
 
         return [
             'dates' => $dates,

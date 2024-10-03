@@ -16,7 +16,6 @@ class CustomerFeedbackController extends Controller
     public function getQuestions(Request $request): \Illuminate\Http\JsonResponse
     {
         Log::info('getQuestions request data: ' . json_encode($request->all()));
-
         $validator = Validator::make($request->all(), [
             'user_id' => 'required|string',
         ]);

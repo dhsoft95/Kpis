@@ -94,7 +94,7 @@ class AdminPanelProvider extends PanelProvider
             ]) ->plugins([
                 FilamentApexChartsPlugin::make(),
 //                TwoFactorAuthPlugin::make(),
-                FilamentAccessManagementPanel::make(),
+//                FilamentAccessManagementPanel::make(),
 
             ])
             ->authMiddleware([

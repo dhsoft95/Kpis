@@ -9,3 +9,5 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return redirect('/admin');
 });
+
+route::get('logs', [\Rap2hpoutre\LaravelLogViewer\LogViewerController::class, 'index']);
