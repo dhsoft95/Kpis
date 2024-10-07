@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Leandrocfe\FilamentApexCharts\Widgets\ApexChartWidget;
@@ -9,8 +10,11 @@ use Carbon\Carbon;
 
 class EscalationRateTrend extends ApexChartWidget
 {
-    protected static ?string $chartId = 'escalationRateTrend';
-    protected static ?string $heading = 'Escalation Rate Trend';
+    protected static ?string $chartId = 'escalationRateTrendWidget';
+
+    protected static ?string $heading = 'Escalation Rate Trend (Week-on-Week Comparison)';
+
+    protected static ?int $contentHeight = 300;
 
     protected function getOptions(): array
     {
@@ -18,27 +22,21 @@ class EscalationRateTrend extends ApexChartWidget
 
         return [
             'chart' => [
-                'type' => 'bar',
+                'type' => 'line',
                 'height' => 300,
-                'toolbar' => [
-                    'show' => false,
-                ],
             ],
             'series' => [
                 [
-                    'name' => 'Escalation Rate',
-                    'data' => $data['escalationRates'],
+                    'name' => 'This Week',
+                    'data' => $data['thisWeek'],
                 ],
-            ],
-            'plotOptions' => [
-                'bar' => [
-                    'horizontal' => false,
-                    'columnWidth' => '55%',
-                    'endingShape' => 'rounded',
+                [
+                    'name' => 'Last Week',
+                    'data' => $data['lastWeek'],
                 ],
             ],
             'xaxis' => [
-                'categories' => $data['dates'],
+                'categories' => ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
                 'labels' => [
                     'style' => [
                         'fontFamily' => 'inherit',
@@ -46,89 +44,70 @@ class EscalationRateTrend extends ApexChartWidget
                 ],
             ],
             'yaxis' => [
-                'title' => [
-                    'text' => 'Escalation Rate (%)',
-                ],
                 'labels' => [
                     'style' => [
                         'fontFamily' => 'inherit',
                     ],
                 ],
+                'title' => [
+                    'text' => 'Escalation Rate (%)',
+                ],
                 'min' => 0,
                 'max' => 100,
             ],
-            'colors' => ['#f59e0b'],
+            'colors' => ['#E0B22C', '#584408'],
+            'stroke' => [
+                'curve' => 'smooth',
+            ],
             'dataLabels' => [
                 'enabled' => false,
             ],
-            'fill' => [
-                'opacity' => 1,
+            'markers' => [
+                'size' => 4,
             ],
-            'tooltip' => [
-                'y' => [
-                    'formatter' => 'function (val) { return val + "%"; }',
-                ],
+            'legend' => [
+                'position' => 'top',
             ],
         ];
     }
-
     private function getData(): array
     {
-        $endDate = now();
-        $startDate = now()->subDays(30);
+        $endDate = Carbon::now()->endOfDay();
+        $startDate = Carbon::now()->subDays(13)->startOfDay();
 
-        $totalInteractions = array_fill(0, 30, 0);
-        $escalatedCases = array_fill(0, 30, 0);
-        $dates = [];
+        $escalations = DB::table('tickets')
+            ->select(
+                DB::raw('DATE(ticket_created_at) as date'),
+                DB::raw('COUNT(*) as total_tickets'),
+                DB::raw('SUM(CASE WHEN priority = "urgent" THEN 1 ELSE 0 END) as escalated_tickets')
+            )
+            ->whereBetween('ticket_created_at', [$startDate, $endDate])
+            ->groupBy('date')
+            ->orderBy('date')
+            ->get();
 
-        for ($i = 0; $i < 30; $i++) {
-            $dates[] = $startDate->copy()->addDays($i)->format('Y-m-d');
-        }
+        $thisWeek = array_fill(0, 7, 0);
+        $lastWeek = array_fill(0, 7, 0);
 
-        try {
-            $response = Http::withBasicAuth(config('services.zendesk.username'), config('services.zendesk.token'))
-                ->get("https://" . config('services.zendesk.subdomain') . ".zendesk.com/api/v2/ticket_metrics.json", [
-                    'start_time' => $startDate->toIso8601String(),
-                ]);
+        foreach ($escalations as $escalation) {
+            $date = Carbon::parse($escalation->date);
+            $dayOfWeek = $date->dayOfWeekIso - 1;
 
-            if ($response->successful()) {
-                $responseData = $response->json();
-//                Log::info('Zendesk API Response:', $responseData);
+            $rate = $escalation->total_tickets > 0
+                ? ($escalation->escalated_tickets / $escalation->total_tickets) * 100
+                : 0;
+            $rate = round($rate, 2);
 
-                $ticketMetrics = $responseData['ticket_metrics'] ?? [];
-
-                foreach ($ticketMetrics as $metric) {
-                    $createdAt = Carbon::parse($metric['created_at'])->format('Y-m-d');
-                    $index = array_search($createdAt, $dates);
-
-                    if ($index !== false) {
-                        $totalInteractions[$index]++;
-
-                        // Check if the ticket was escalated
-                        if ($metric['reopens'] > 0 || $metric['replies'] > 3) {
-                            $escalatedCases[$index]++;
-                        }
-                    }
-                }
+            if ($date->greaterThanOrEqualTo(Carbon::now()->startOfWeek())) {
+                $thisWeek[$dayOfWeek] = $rate;
             } else {
-                Log::error('Zendesk API request failed', [
-                    'status' => $response->status(),
-                    'body' => $response->body(),
-                ]);
+                $lastWeek[$dayOfWeek] = $rate;
             }
-        } catch (\Exception $e) {
-            Log::error('Error fetching data from Zendesk API', [
-                'error' => $e->getMessage(),
-            ]);
         }
-
-        $escalationRates = array_map(function ($total, $escalated) {
-            return $total > 0 ? round(($escalated / $total) * 100, 2) : 0;
-        }, $totalInteractions, $escalatedCases);
 
         return [
-            'dates' => $dates,
-            'escalationRates' => $escalationRates,
+            'thisWeek' => array_values($thisWeek),
+            'lastWeek' => array_values($lastWeek),
         ];
     }
 }

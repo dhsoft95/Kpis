@@ -2,18 +2,16 @@
 
 namespace App\Livewire\AppInteractions;
 
-use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Leandrocfe\FilamentApexCharts\Widgets\ApexChartWidget;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class InteractionTrendWidget extends ApexChartWidget
 {
     protected static ?string $chartId = 'interactionTrendWidget';
 
-    protected static ?string $heading = 'Interaction Trends (Last 10 Days)';
-
-
+    protected static ?string $heading = 'Interaction Trends (Week-on-Week Comparison)';
 
     protected static ?int $contentHeight = 300;
 
@@ -23,31 +21,23 @@ class InteractionTrendWidget extends ApexChartWidget
 
         return [
             'chart' => [
-                'type' => 'line',
+                'type' => 'bar',
                 'height' => 300,
-                'toolbar' => [
-                    'show' => false,
-                ],
-                'zoom' => [
-                    'enabled' => false,
-                ],
+                'stackType' => '100%',
+                'stacked' => true,
             ],
             'series' => [
                 [
-                    'name' => 'Inquiry',
-                    'data' => $data['inquiry'],
+                    'name' => 'This Week',
+                    'data' => $data['thisWeek'],
                 ],
                 [
-                    'name' => 'Complaint',
-                    'data' => $data['complaint'],
-                ],
-                [
-                    'name' => 'Request',
-                    'data' => $data['request'],
+                    'name' => 'Last Week',
+                    'data' => $data['lastWeek'],
                 ],
             ],
             'xaxis' => [
-                'categories' => $data['dates'],
+                'categories' => ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
                 'labels' => [
                     'style' => [
                         'fontFamily' => 'inherit',
@@ -60,105 +50,49 @@ class InteractionTrendWidget extends ApexChartWidget
                         'fontFamily' => 'inherit',
                     ],
                 ],
-                'title' => [
-                    'text' => 'Number of Interactions',
-                ],
             ],
-            'colors' => ['#584408', '#E0B22C', '#F5E5B9'],
-            'stroke' => [
-                'curve' => 'smooth',
-                'width' => 2,
+            'colors' => ['#E0B22C', '#584408'],
+            'plotOptions' => [
+                'bar' => [
+                    'borderRadius' => 3,
+                    'horizontal' => true,
+                    'columnWidth' => '55%',
+                ],
             ],
             'legend' => [
                 'position' => 'top',
-                'horizontalAlign' => 'center',
-            ],
-            'responsive' => [
-                [
-                    'breakpoint' => 480,
-                    'options' => [
-                        'legend' => [
-                            'position' => 'bottom',
-                            'offsetY' => 10,
-                        ],
-                    ],
-                ],
-            ],
-            'tooltip' => [
-                'shared' => true,
-                'intersect' => false,
             ],
         ];
     }
 
     private function getData(): array
     {
-        $endDate = now();
-        $startDate = now()->subDays(9);
+        $endDate = Carbon::now()->endOfDay();
+        $startDate = Carbon::now()->subDays(13)->startOfDay();
 
-        $data = [
-            'inquiry' => array_fill(0, 10, 0),
-            'complaint' => array_fill(0, 10, 0),
-            'request' => array_fill(0, 10, 0),
-            'dates' => [],
-        ];
+        $interactions = DB::table('tickets')
+            ->select(DB::raw('DATE(ticket_created_at) as date'), DB::raw('COUNT(*) as count'))
+            ->whereBetween('ticket_created_at', [$startDate, $endDate])
+            ->groupBy('date')
+            ->get();
 
-        for ($i = 0; $i < 10; $i++) {
-            $data['dates'][] = $startDate->copy()->addDays($i)->format('M d');
-        }
+        $thisWeek = array_fill(0, 7, 0);
+        $lastWeek = array_fill(0, 7, 0);
 
-        try {
-            $response = Http::withHeaders([
-                'Authorization' => 'Basic ' . base64_encode(config('services.zendesk.username') . '/token:' . config('services.zendesk.token')),
-            ])->get("https://" . config('services.zendesk.subdomain') . ".zendesk.com/api/v2/search.json", [
-                'query' => 'type:ticket created_between:' . $startDate->toIso8601String() . '..' . $endDate->toIso8601String(),
-                'group_by' => 'created_at,tags',
-                'group_by_type' => 'day',
-                'sort_by' => 'created_at',
-                'sort_order' => 'asc',
-            ]);
+        foreach ($interactions as $interaction) {
+            $date = Carbon::parse($interaction->date);
+            $dayOfWeek = $date->dayOfWeekIso - 1; // 0 for Monday, 6 for Sunday
 
-            if ($response->successful()) {
-                $responseData = $response->json();
-                $results = $responseData['results'] ?? [];
-
-                foreach ($results as $result) {
-                    $createdAt = Carbon::parse($result['created_at']);
-                    $dayIndex = $createdAt->diffInDays($startDate);
-
-                    if ($dayIndex >= 0 && $dayIndex < 10) {
-                        $count = $result['count'] ?? 0;
-                        $tags = $result['tags'] ?? [];
-
-                        if (in_array('enquiries', $tags)) {
-                            $data['inquiry'][$dayIndex] += $count;
-                        } elseif (in_array('complaint', $tags)) {
-                            $data['complaint'][$dayIndex] += $count;
-                        } elseif (in_array('request', $tags)) {
-                            $data['request'][$dayIndex] += $count;
-                        } else {
-                            // Default to 'request' if no matching tag is found
-                            $data['request'][$dayIndex] += $count;
-                        }
-                    }
-                }
+            if ($date->greaterThanOrEqualTo(Carbon::now()->startOfWeek())) {
+                $thisWeek[$dayOfWeek] = $interaction->count;
             } else {
-                Log::error('Zendesk API request failed', [
-                    'status' => $response->status(),
-                    'body' => $response->body(),
-                    'url' => $response->effectiveUri(),
-                    'headers' => $response->headers(),
-                ]);
+                $lastWeek[$dayOfWeek] = $interaction->count;
             }
-        } catch (\Exception $e) {
-            Log::error('Error fetching data from Zendesk API', [
-                'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString(),
-            ]);
         }
 
-        return $data;
+        return [
+            'thisWeek' => array_values($thisWeek),
+            'lastWeek' => array_values($lastWeek),
+        ];
     }
-
-
 }

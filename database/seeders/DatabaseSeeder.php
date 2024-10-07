@@ -16,7 +16,10 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             FeedbackAnswersSeeder::class,
-//            TransSeeder::class,
+
+            CurrencyRatesSeeder::class,
+            CurrencySettingsSeeder::class,
+
         ]);
     }
 

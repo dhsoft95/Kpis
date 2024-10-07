@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Models\Ticket;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -23,11 +24,55 @@ class FetchWalletBalances implements ShouldQueue
             $this->fetchTeraPay();
             $this->fetchTembo();
             $this->fetchCellulant();
+            $this->fetchZendeskTickets();
             $this->failSafeLog('FetchWalletBalances job completed successfully');
         } catch (\Exception $e) {
             $this->failSafeLog('FetchWalletBalances job failed: ' . $e->getMessage() . "\n" . $e->getTraceAsString());
         }
     }
+    private function fetchZendeskTickets(): void
+    {
+        $this->failSafeLog('Fetching Zendesk tickets');
+        try {
+
+            $subdomain = config('services.zendesk.subdomain');
+            $username = config('services.zendesk.username');
+            $token = config('services.zendesk.token');
+
+            $url = "https://{$subdomain}.zendesk.com/api/v2/tickets.json";
+
+            $response = Http::withBasicAuth($username . '/token', $token)
+                ->get($url);
+
+            if ($response->successful()) {
+                $tickets = $response->json()['tickets'];
+                $this->failSafeLog('Zendesk tickets fetched successfully', ['count' => count($tickets)]);
+
+                foreach ($tickets as $ticket) {
+                    Ticket::updateOrCreate(
+                        ['zendesk_id' => $ticket['id']],
+                        [
+                            'subject' => $ticket['subject'],
+                            'description' => $ticket['description'],
+                            'status' => $ticket['status'],
+                            'priority' => $ticket['priority'],
+                            'requester_id' => $ticket['requester_id'],
+                            'assignee_id' => $ticket['assignee_id'],
+                            'ticket_created_at' => $ticket['created_at'],
+                            'ticket_updated_at' => $ticket['updated_at'],
+                        ]
+                    );
+                }
+
+                $this->failSafeLog('Zendesk tickets stored in database');
+            } else {
+                $this->failSafeLog('Zendesk API Error', ['status' => $response->status(), 'response' => $response->body()]);
+            }
+        } catch (\Exception $e) {
+            $this->failSafeLog('Error in fetchZendeskTickets', ['error' => $e->getMessage(), 'trace' => $e->getTraceAsString()]);
+        }
+    }
+
 
     private function fetchTeraPay(): void
     {

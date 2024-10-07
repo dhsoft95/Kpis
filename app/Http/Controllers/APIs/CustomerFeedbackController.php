@@ -3,11 +3,15 @@
 namespace App\Http\Controllers\APIs;
 
 use App\Http\Controllers\Controller;
+use App\Models\AppUser;
+use App\Models\CustomerFeedback;
 use App\Models\feedback_answers;
 use App\Models\feedbackQuestions;
 
 use App\Models\trans;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
 
@@ -68,10 +72,11 @@ class CustomerFeedbackController extends Controller
         Log::info('submitFeedback request data: ' . json_encode($request->all()));
 
         $validator = Validator::make($request->all(), [
-            'user_id' => 'required|integer|exists:mysql_second.tbl_simba_transactions,user_id',
+            'user_id' => 'required|exists:mysql_second.tbl_simba_transactions,user_id',
             'feedback_question_id' => 'required|exists:feedback_questions,id',
             'rating' => 'required|integer|min:1|max:10',
             'answer' => 'nullable|string',
+            'sender_phone' => 'nullable|string',
         ]);
 
         if ($validator->fails()) {
@@ -80,32 +85,31 @@ class CustomerFeedbackController extends Controller
 
         $userId = $request->input('user_id');
 
-        // Check if the user has any transactions
-        $transactionCount = trans::where('user_id', $userId)->count();
-
-        if ($transactionCount == 0) {
-            return response()->json(['message' => 'No transactions found for this user.'], 404);
-        }
-
-        // Ensure the user has not already answered this question
-        $existingAnswer = feedback_answers::where('feedback_question_id', $request->input('feedback_question_id'))
-            ->where('user_id', $userId)
-            ->first();
-
-        if ($existingAnswer) {
-            return response()->json(['message' => 'You have already answered this question.'], 400);
-        }
-
         try {
+            DB::beginTransaction();
+
+            // Ensure the user has not already answered this question
+            $existingAnswer = feedback_answers::where('feedback_question_id', $request->input('feedback_question_id'))
+                ->where('user_id', $userId)
+                ->first();
+
+            if ($existingAnswer) {
+                DB::rollBack();
+                return response()->json(['message' => 'You have already answered this question.'], 400);
+            }
+
             feedback_answers::create([
                 'feedback_question_id' => $request->input('feedback_question_id'),
                 'user_id' => $userId,
                 'rating' => $request->input('rating'),
-                'answer' => $request->input('answer')
+                'answer' => $request->input('answer'),
+                'sender_phone' => $request->input('sender_phone')
             ]);
 
+            DB::commit();
             return response()->json(['message' => 'Feedback submitted successfully.']);
         } catch (\Exception $e) {
+            DB::rollBack();
             Log::error('Error submitting feedback: ' . $e->getMessage());
             return response()->json(['message' => 'An error occurred while submitting feedback.'], 500);
         }

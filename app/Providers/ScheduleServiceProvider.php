@@ -28,6 +28,6 @@ class ScheduleServiceProvider extends ServiceProvider
      */
     protected function scheduleJobs(): void
     {
-        Schedule::job(new \App\Jobs\FetchWalletBalances())->everyMinute();
+        // Schedule::job(new \App\Jobs\FetchWalletBalances())->everyMinute();
     }
 }

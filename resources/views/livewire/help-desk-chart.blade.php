@@ -111,8 +111,8 @@
                             'iconBgColor' => 'bg-[rgba(220,169,21,0.2)] border border-[rgba(220,169,21,1)]', // Aloe color with low opacity for the background and full opacity for the border
                             'iconColor' => 'text-[rgba(220,169,21,1)]',
                            ],
-                        'phoneCalls' => ['title' => 'Phone Calls',
-                         'icon' => 'fas fa-phone',
+                        'totalTickets' => ['title' => 'totalTickets ',
+                         'icon' => 'fas fa-ticket-alt',
                             'iconBgColor' => 'bg-[rgba(220,169,21,0.2)] border border-[rgba(220,169,21,1)]', // Aloe color with low opacity for the background and full opacity for the border
                             'iconColor' => 'text-[rgba(220,169,21,1)]',
                            ],

@@ -3,9 +3,9 @@
 namespace App\Livewire\AppInteractions;
 
 use App\Models\UserInteraction;
+use App\Models\Ticket;
 use Filament\Widgets\Widget;
 use Illuminate\Support\Facades\Log;
-use Zendesk\API\HttpClient as ZendeskAPI;
 
 class HelpDeskChart extends Widget
 {
@@ -28,7 +28,7 @@ class HelpDeskChart extends Widget
             ? (($currentWeekInteractions - $lastWeekInteractions) / $lastWeekInteractions) * 100
             : 100;
 
-        // Fetch Zendesk tickets
+        // Fetch Zendesk tickets from local database
         $zendeskStats = $this->getZendeskStats();
 
         $this->stats = [
@@ -42,65 +42,56 @@ class HelpDeskChart extends Widget
             'chats' => ['value' => 850, 'percentageChange' => 3.2, 'isGrowth' => true],
             'faq' => ['value' => 1200, 'percentageChange' => 7.5, 'isGrowth' => true],
             'socialMedia' => ['value' => 300, 'percentageChange' => 4.2, 'isGrowth' => true],
-            'phoneCalls' => ['value' => 500, 'percentageChange' => -2.1, 'isGrowth' => false],
-            'zendesk' => $zendeskStats,
-
+            'zendesk' => $zendeskStats['weekly'],
+            'totalTickets' => $zendeskStats['total'],
         ];
     }
 
     private function getZendeskStats(): array
     {
-        $subdomain = config('services.zendesk.subdomain');
-        $username = config('services.zendesk.username');
-        $token = config('services.zendesk.token');
-
-        Log::info('Zendesk API Config:', [
-            'subdomain' => $subdomain,
-            'username' => $username,
-            'token_length' => strlen($token)
-        ]);
-
-        $client = new ZendeskAPI($subdomain);
-        $client->setAuth('basic', ['username' => $username, 'token' => $token]);
-
         try {
-            Log::info('Fetching current week tickets...');
-            $currentWeekTickets = $client->tickets()->findAll([
-                'start_time' => now()->startOfWeek()->toIso8601String(),
-                'end_time' => now()->toIso8601String()
-            ]);
-            Log::info('Current week tickets response:', ['response' => json_encode($currentWeekTickets)]);
+            Log::info('Fetching Zendesk tickets from local database...');
 
-            Log::info('Fetching last week tickets...');
-            $lastWeekTickets = $client->tickets()->findAll([
-                'start_time' => now()->subWeek()->startOfWeek()->toIso8601String(),
-                'end_time' => now()->subWeek()->endOfWeek()->toIso8601String()
-            ]);
-            Log::info('Last week tickets response:', ['response' => json_encode($lastWeekTickets)]);
-
-            $currentWeekCount = count($currentWeekTickets->tickets);
-            $lastWeekCount = count($lastWeekTickets->tickets);
+            $currentWeekCount = Ticket::whereBetween('ticket_created_at', [now()->startOfWeek(), now()])->count();
+            $lastWeekCount = Ticket::whereBetween('ticket_created_at', [now()->subWeek()->startOfWeek(), now()->subWeek()->endOfWeek()])->count();
+            $totalTickets = Ticket::count();
 
             Log::info('Ticket counts:', [
                 'currentWeekCount' => $currentWeekCount,
-                'lastWeekCount' => $lastWeekCount
+                'lastWeekCount' => $lastWeekCount,
+                'totalTickets' => $totalTickets
             ]);
 
-            $percentageChange = $lastWeekCount > 0
+            $weeklyPercentageChange = $lastWeekCount > 0
                 ? (($currentWeekCount - $lastWeekCount) / $lastWeekCount) * 100
                 : 100;
 
+            $lastWeekTotalTickets = Ticket::where('ticket_created_at', '<', now()->subWeek()->startOfWeek())->count();
+            $totalPercentageChange = $lastWeekTotalTickets > 0
+                ? (($totalTickets - $lastWeekTotalTickets) / $lastWeekTotalTickets) * 100
+                : 100;
+
             return [
-                'value' => $currentWeekCount,
-                'percentageChange' => round($percentageChange, 2),
-                'isGrowth' => $percentageChange >= 0,
+                'weekly' => [
+                    'value' => $currentWeekCount,
+                    'percentageChange' => round($weeklyPercentageChange, 2),
+                    'isGrowth' => $weeklyPercentageChange >= 0,
+                ],
+                'total' => [
+                    'value' => $totalTickets,
+                    'percentageChange' => round($totalPercentageChange, 2),
+                    'isGrowth' => $totalPercentageChange >= 0,
+                ]
             ];
         } catch (\Exception $e) {
-            Log::error('Zendesk API Error:', [
+            Log::error('Error fetching Zendesk tickets from database:', [
                 'message' => $e->getMessage(),
                 'trace' => $e->getTraceAsString()
             ]);
-            return ['value' => 0, 'percentageChange' => 0, 'isGrowth' => false];
+            return [
+                'weekly' => ['value' => 0, 'percentageChange' => 0, 'isGrowth' => false],
+                'total' => ['value' => 0, 'percentageChange' => 0, 'isGrowth' => false]
+            ];
         }
     }
 }

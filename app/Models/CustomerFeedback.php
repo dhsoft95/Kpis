@@ -10,7 +10,7 @@ class CustomerFeedback extends Model
 {
     use HasFactory;
 
-    protected $connection ='mysql_second';
+//    protected $connection ='mysql_second';
 
     protected $table="customer_feedbacks";
 
@@ -35,7 +35,7 @@ class CustomerFeedback extends Model
      */
     public function user(): BelongsTo
     {
-        return $this->belongsTo(AppUser::class);
+        return $this->belongsTo(User::class);
     }
 
 

@@ -2,302 +2,132 @@
 
 namespace App\Services;
 
-use Illuminate\Support\Facades\Http;
+use App\Models\Currency;
+use App\Models\ExchangeRate;
+use App\Models\ConversionLog;
+use App\Models\PercentageAdjustment;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class CurrencyExchangeService
 {
-    private string $apiKey;
-    private string $baseUrl;
-    private string $baseCurrency;
-    private ?float $usdDeterminant = null;
+    private const BASE_CURRENCY = 'TZS';
+    private const INTERMEDIATE_CURRENCY = 'USD';
 
-    public function __construct()
-    {
-        $this->apiKey = Config::get('services.currency_api.api_key');
-        $this->baseUrl = 'https://api.currencyapi.com/v3';
-        $this->baseCurrency = Config::get('services.currency_api.base_currency', 'TZS');
-    }
-
-    /**
-     * Get the USD determinant from the database.
-     *
-     * @return float
-     * @throws \Exception
-     */
-    private function getUsdDeterminant(): float
-    {
-        if ($this->usdDeterminant === null) {
-            try {
-                $result = DB::connection('mysql_second')->table('currency_settings')
-                    ->where('key', 'usd_determinant')
-                    ->select('value')
-                    ->first();
-
-                if ($result && is_numeric($result->value)) {
-                    $this->usdDeterminant = (float) $result->value;
-                } else {
-                    throw new \Exception('USD determinant not found or invalid in database.');
-                }
-            } catch (\Exception $e) {
-                Log::error('Failed to fetch USD determinant: ' . $e->getMessage());
-                throw new \Exception('Failed to fetch USD determinant. Please try again later.');
-            }
-        }
-        return $this->usdDeterminant;
-    }
-
-    /**
-     * Fetch and cache currency exchange rates.
-     *
-     * @return array
-     * @throws \Exception
-     */
-    public function getRates(): array
-    {
-        return Cache::remember('currency_rates', 3600, function () {
-            try {
-                $response = Http::withHeaders(['apikey' => $this->apiKey])
-                    ->get("{$this->baseUrl}/latest");
-
-                $response->throw();
-                $data = $response->json();
-                $rates = $this->processRates($data['data']);
-
-                Log::info('Fetched currency rates', $rates);
-
-                return $rates;
-            } catch (\Exception $e) {
-                Log::error('Failed to fetch currency rates: ' . $e->getMessage());
-                throw new \Exception('Failed to fetch currency rates. Please try again later.');
-            }
-        });
-    }
-
-    /**
-     * Process and calculate currency rates.
-     *
-     * @param array $rawRates
-     * @return array
-     */
-    private function processRates(array $rawRates): array
-    {
-        $rates = [];
-
-        foreach ($rawRates as $currency => $info) {
-            $rates["USD_{$currency}"] = $info['value'];
-            $rates["{$currency}_USD"] = 1 / $info['value'];
-        }
-
-        // Calculate cross rates
-        foreach ($rates as $pair => $rate) {
-            [$from, $to] = explode('_', $pair);
-            if ($from !== 'USD' && $to !== 'USD') {
-                $rates["{$from}_{$to}"] = $rates["{$from}_USD"] * $rates["USD_{$to}"];
-            }
-        }
-
-        return $rates;
-    }
-
-    /**
-     * Convert an amount from the base currency to a target currency.
-     *
-     * @param float $amount
-     * @param string $toCurrency
-     * @return array
-     * @throws \Exception
-     */
-    public function convertFromBase(float $amount, string $toCurrency): array
+    public function convert(float $amount, string $toCurrency): array
     {
         try {
-            $rates = $this->getRates();
-            $usdDeterminant = $this->getUsdDeterminant();
+            // Get the government tax for TZS
+            $tzsGovTax = $this->getGovernmentTax(self::BASE_CURRENCY);
 
-            $baseToUsdRate = $rates["{$this->baseCurrency}_USD"] ?? null;
-            $usdToDestRate = $rates["USD_{$toCurrency}"] ?? null;
+            // Calculate total amount with tax
+            $totalAmountWithTax = $amount * (1 + $tzsGovTax / 100);
 
-            $this->validateRates($baseToUsdRate, $usdToDestRate, $toCurrency);
+            $tzsToUsdRate = $this->getExchangeRate(self::BASE_CURRENCY, self::INTERMEDIATE_CURRENCY);
+            $tzsToUsdRate['rate'] = $tzsToUsdRate['rate'] < 1 ? 1 / $tzsToUsdRate['rate'] : $tzsToUsdRate['rate'];
+            $usdAmount = $totalAmountWithTax / $tzsToUsdRate['rate'];
 
-            $usdEquivalent = $amount * $baseToUsdRate;
-            $adjustedUsdAmount = $usdEquivalent * $usdDeterminant;
-            $finalAmount = $adjustedUsdAmount * $usdToDestRate;
+            if ($toCurrency !== self::INTERMEDIATE_CURRENCY) {
+                $usdToTargetRate = $this->getExchangeRate(self::INTERMEDIATE_CURRENCY, $toCurrency);
+                $usdToTargetRate['rate'] = $usdToTargetRate['rate'] < 1 ? 1 / $usdToTargetRate['rate'] : $usdToTargetRate['rate'];
+                $targetAmount = $usdAmount * $usdToTargetRate['rate'];
+                $effectiveRate = $tzsToUsdRate['rate'] / $usdToTargetRate['rate'];
+            } else {
+                $targetAmount = $usdAmount;
+                $effectiveRate = $tzsToUsdRate['rate'];
+            }
 
-            $this->logConversionDetails($amount, $toCurrency, $baseToUsdRate, $usdEquivalent, $adjustedUsdAmount, $usdToDestRate, $finalAmount);
+            $this->logConversion($totalAmountWithTax, self::BASE_CURRENCY, $toCurrency, $targetAmount, 1 / $effectiveRate);
 
-            return [
-                'usdEquivalent' => $usdEquivalent,
-                'adjustedUsdAmount' => $adjustedUsdAmount,
-                'finalAmount' => $finalAmount,
-                'baseToUsdRate' => $baseToUsdRate,
-                'usdToDestRate' => $usdToDestRate
+            $response = [
+                "status" => "success",
+                "data" => [
+                    "entered_amount" => $amount,
+                    "currency" => self::BASE_CURRENCY,
+                    "government_tax_percentage" => round($tzsGovTax, 2),
+                    "total_amount_with_tax" => round($totalAmountWithTax, 2),
+                    "results" => [
+                        "change_to_usd" => [
+                            "amount" => round($usdAmount, 2),
+                            "currency" => "USD"
+                        ],
+                        "final_conversion" => [
+                            "amount" => round($targetAmount, 2),
+                            "currency" => $toCurrency
+                        ]
+                    ],
+                    "exchange_rates" => [
+                        self::BASE_CURRENCY . "_USD" => [
+                            "TZS_per_1_USD" => round($tzsToUsdRate['rate'], 4),
+                            "USD_per_1_TZS" => round(1 / $tzsToUsdRate['rate'], 6),
+                        ],
+                    ],
+                    "metadata" => [
+                        "timestamp" => Carbon::now()->toIso8601String(),
+                        "source" => "Simba Money Limited"
+                    ]
+                ]
             ];
+
+            if ($toCurrency !== self::INTERMEDIATE_CURRENCY) {
+                $response['data']['exchange_rates'][self::BASE_CURRENCY . "_{$toCurrency}"] = [
+                    self::BASE_CURRENCY . "_per_1_{$toCurrency}" => round($effectiveRate, 4),
+                    "{$toCurrency}_per_1_" . self::BASE_CURRENCY => round(1 / $effectiveRate, 6),
+                ];
+            }
+
+            return $response;
         } catch (\Exception $e) {
             Log::error('Conversion failed: ' . $e->getMessage());
-            throw new \Exception('Currency conversion failed. Please try again later.');
+            return [
+                "status" => "error",
+                "message" => "Currency conversion failed: " . $e->getMessage()
+            ];
         }
     }
 
-    /**
-     * Validate the exchange rates.
-     *
-     * @param float|null $baseToUsdRate
-     * @param float|null $usdToDestRate
-     * @param string $toCurrency
-     * @throws \Exception
-     */
-    private function validateRates(?float $baseToUsdRate, ?float $usdToDestRate, string $toCurrency): void
+    private function getExchangeRate(string $fromCurrency, string $toCurrency): array
     {
-        if ($baseToUsdRate === null) {
-            throw new \Exception("Exchange rate not available for {$this->baseCurrency} to USD");
-        }
-        if ($usdToDestRate === null) {
-            throw new \Exception("Exchange rate not available for USD to {$toCurrency}");
-        }
-    }
+        return Cache::remember("{$fromCurrency}_to_{$toCurrency}_rate", 3600, function () use ($fromCurrency, $toCurrency) {
+            $baseCurrency = Currency::where('code', $fromCurrency)->firstOrFail();
+            $targetCurrency = Currency::where('code', $toCurrency)->firstOrFail();
 
-    /**
-     * Log conversion details for debugging.
-     *
-     * @param float $amount
-     * @param string $toCurrency
-     * @param float $baseToUsdRate
-     * @param float $usdEquivalent
-     * @param float $adjustedUsdAmount
-     * @param float $usdToDestRate
-     * @param float $finalAmount
-     */
-    private function logConversionDetails(
-        float $amount,
-        string $toCurrency,
-        float $baseToUsdRate,
-        float $usdEquivalent,
-        float $adjustedUsdAmount,
-        float $usdToDestRate,
-        float $finalAmount
-    ): void {
-        Log::info('Conversion details', [
-            'amount' => $amount,
-            'toCurrency' => $toCurrency,
-            'baseToUsdRate' => $baseToUsdRate,
-            'usdEquivalent' => $usdEquivalent,
-            'adjustedUsdAmount' => $adjustedUsdAmount,
-            'usdToDestRate' => $usdToDestRate,
-            'finalAmount' => $finalAmount
-        ]);
-    }
+            $rate = ExchangeRate::where('base_currency_id', $baseCurrency->id)
+                ->where('target_currency_id', $targetCurrency->id)
+                ->where('effective_date', '<=', Carbon::now())
+                ->orderBy('effective_date', 'desc')
+                ->firstOrFail();
 
-    /**
-     * Generate a quotation for currency exchange from base currency.
-     *
-     * @param float $amount
-     * @param string $toCurrency
-     * @return array
-     * @throws \Exception
-     */
-    public function exchangeFromBase(float $amount, string $toCurrency): array
-    {
-        $conversionResult = $this->convertFromBase($amount, $toCurrency);
-        $usdDeterminant = $this->getUsdDeterminant();
-
-        return [
-            'quotation' => [
-                'timestamp' => now()->toIso8601String(),
-                'reference' => 'QUO-' . now()->format('Ymd-His'),
-                'description' => 'Currency Exchange Quotation',
-                'exchange_details' => $this->getExchangeDetails($amount, $toCurrency, $conversionResult),
-                'exchange_rates' => $this->getExchangeRates($amount, $toCurrency, $conversionResult),
-                'usd_determinant' => $usdDeterminant
-            ]
-        ];
-    }
-
-    /**
-     * Get exchange details for the quotation.
-     *
-     * @param float $amount
-     * @param string $toCurrency
-     * @param array $conversionResult
-     * @return array
-     */
-    private function getExchangeDetails(float $amount, string $toCurrency, array $conversionResult): array
-    {
-        return [
-            'source' => [
-                'amount' => $amount,
-                'currency' => $this->baseCurrency,
-                'description' => $this->getCurrencyDescription($this->baseCurrency)
-            ],
-            'usd_equivalent' => [
-                'amount' => round($conversionResult['usdEquivalent'], 2),
-                'currency' => 'USD',
-                'description' => 'USD equivalent before applying determinant'
-            ],
-            'adjusted_usd' => [
-                'amount' => round($conversionResult['adjustedUsdAmount'], 3),
-                'currency' => 'USD',
-                'description' => 'USD amount after applying determinant'
-            ],
-            'destination' => [
-                'amount' => round($conversionResult['finalAmount'], 2),
-                'currency' => $toCurrency,
-                'description' => $this->getCurrencyDescription($toCurrency)
-            ]
-        ];
-    }
-
-    /**
-     * Get exchange rates for the quotation.
-     *
-     * @param float $amount
-     * @param string $toCurrency
-     * @param array $conversionResult
-     * @return array
-     */
-    private function getExchangeRates(float $amount, string $toCurrency, array $conversionResult): array
-    {
-        return [
-            "{$this->baseCurrency}_USD" => round($conversionResult['baseToUsdRate'], 6),
-            "USD_{$toCurrency}" => round($conversionResult['usdToDestRate'], 6),
-            'effective_rate' => round($conversionResult['finalAmount'] / $amount, 6),
-        ];
-    }
-
-    /**
-     * Get the description for a currency code.
-     *
-     * @param string $currencyCode
-     * @return string
-     */
-    private function getCurrencyDescription(string $currencyCode): string
-    {
-        return Config::get("currencies.{$currencyCode}", 'Unknown Currency');
-    }
-
-    /**
-     * Get supported currencies.
-     *
-     * @return array
-     * @throws \Exception
-     */
-    public function getSupportedCurrencies(): array
-    {
-        return Cache::remember('supported_currencies', 86400, function () {
-            try {
-                $response = Http::withHeaders(['apikey' => $this->apiKey])
-                    ->get("{$this->baseUrl}/currencies");
-
-                $response->throw();
-
-                $currencies = $response->json()['data'];
-                return array_keys($currencies);
-            } catch (\Exception $e) {
-                Log::error('Failed to fetch supported currencies: ' . $e->getMessage());
-                throw new \Exception('Failed to fetch supported currencies. Please try again later.');
-            }
+            return [
+                'rate' => $rate->sml_rate,
+                'tax' => 0  // We're not applying tax here anymore
+            ];
         });
+    }
+
+    private function getGovernmentTax(string $currencyCode): float
+    {
+        return Cache::remember("government_tax_{$currencyCode}", 3600, function () use ($currencyCode) {
+            $taxAdjustment = PercentageAdjustment::where('is_government_tax', true)
+                ->where('currency_code', $currencyCode)
+                ->first();
+
+            return $taxAdjustment ? $taxAdjustment->percentage : 0;
+        });
+    }
+
+    private function logConversion(float $amount, string $fromCurrency, string $toCurrency, float $convertedAmount, float $usedRate): void
+    {
+        ConversionLog::create([
+            'from_currency_id' => Currency::where('code', $fromCurrency)->first()->id,
+            'to_currency_id' => Currency::where('code', $toCurrency)->first()->id,
+            'amount' => $amount,
+            'converted_amount' => $convertedAmount,
+            'used_rate' => $usedRate,
+            'rate_type' => 'SML',
+            'conversion_date' => Carbon::now(),
+            'user_id' => auth()->id() ?? null,
+        ]);
     }
 }

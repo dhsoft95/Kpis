@@ -16,7 +16,7 @@ class UserManagement extends Page
     protected int | string | array $columnSpan = 'full';
 
     protected static ?string $navigationGroup = 'User Management';
-    protected static ?string $navigationIcon = 'heroicon-o-users';
+    protected static ?string $navigationIcon = 'heroicon-o-user-group';
     protected static ?string $navigationLabel = 'Users';
 
 
