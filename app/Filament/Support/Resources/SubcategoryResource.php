@@ -4,8 +4,10 @@ namespace App\Filament\Support\Resources;
 
 use App\Filament\Support\Resources\SubcategoryResource\Pages;
 use App\Filament\Support\Resources\SubcategoryResource\RelationManagers;
+use App\Models\Category;
 use App\Models\Subcategory;
 use Filament\Forms;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -31,9 +33,10 @@ class SubcategoryResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('category_id')
-                    ->required()
-                    ->numeric(),
+                Select::make('category')
+                    ->label('Category')
+                    ->options(category::all()->pluck('name', 'id'))
+                    ->searchable()->required(),
                 Forms\Components\TextInput::make('name')
                     ->required()
                     ->maxLength(100),
