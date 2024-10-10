@@ -56,4 +56,4 @@ Route::prefix('v1')->group(function () {
 
 
 Route::post('/charges', [TransactionChargeController::class, 'getChargesByService']);
-Route::get('/Services', [TransactionChargeController::class, 'GetServices']);
+Route::get('/services', [TransactionChargeController::class, 'GetServices']);
