@@ -51,58 +51,22 @@ class TransactionChargeController extends Controller
     private function formatChargeData(TransactionCharge $charge)
     {
         return [
-            'service' => [
-//                'id' => $charge->subcategory->id,
-                'name' => $charge->subcategory->name,
-            ],
-            'charge' => [
-//                'id' => $charge->id,
-                'type' => $charge->charge_type,
-                'details' => $this->getChargeDetails($charge),
-                'total_value' => $this->calculateTotalCharge($charge),
-            ],
-            'currency' => [
-//                'id' => $charge->currency->id,
-                'code' => $charge->currency->code,
-                'name' => $charge->currency->name,
+            $charge->subcategory->name => [
+                'charge_type' => $charge->charge_type,
+                'charging_rate' => $charge->charge_type === 'fixed' ? 0 : $charge->percentage,
+                'charging_fixed_amount' => $charge->charge_type === 'percentage' ? 0 : $charge->fixed_amount,
             ],
         ];
     }
 
-    private function getChargeDetails(TransactionCharge $charge)
+    private function successResponse($data, $code = 200)
     {
-        $details = [];
-
-        if (in_array($charge->charge_type, ['percentage', 'both'])) {
-            $details['percentage'] = [
-                'value' => $charge->percentage,
-                'formatted' => number_format($charge->percentage, 2) . '%',
-            ];
-        }
-
-        if (in_array($charge->charge_type, ['fixed', 'both'])) {
-            $details['fixed'] = [
-                'value' => $charge->fixed_amount,
-                'formatted' => number_format($charge->fixed_amount, 2),
-            ];
-        }
-
-        return $details;
+        return response()->json([
+            'status' => 'success',
+            'data' => $data,
+        ], $code);
     }
 
-    private function calculateTotalCharge(TransactionCharge $charge)
-    {
-        switch ($charge->charge_type) {
-            case 'percentage':
-                return $charge->percentage;
-            case 'fixed':
-                return $charge->fixed_amount;
-            case 'both':
-                return $charge->percentage + $charge->fixed_amount;
-            default:
-                return 0;
-        }
-    }
 
     public function GetServices(): \Illuminate\Http\JsonResponse
     {
@@ -124,13 +88,7 @@ class TransactionChargeController extends Controller
         ]);
     }
 
-    private function successResponse($data, $code = 200)
-    {
-        return response()->json([
-            'status' => 'success',
-            'data' => $data,
-        ], $code);
-    }
+
 
     private function errorResponse($message, $code)
     {
