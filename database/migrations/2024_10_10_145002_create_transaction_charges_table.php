@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('transaction_charges', function (Blueprint $table) {
             $table->id();
-            $table->string('service_name');
+            $table->unsignedBigInteger('service_id');
             $table->enum('charge_type', ['fixed', 'percentage', 'both']);
             $table->decimal('fixed_amount', 10, 4)->nullable();
             $table->decimal('percentage', 5, 2)->nullable();

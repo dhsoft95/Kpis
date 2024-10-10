@@ -5,6 +5,7 @@ namespace App\Filament\Support\Resources;
 use App\Filament\Support\Resources\TransactionChargeResource\Pages;
 use App\Filament\Support\Resources\TransactionChargeResource\RelationManagers;
 use App\Models\Currency;
+use App\Models\Subcategory;
 use App\Models\TransactionCharge;
 use Filament\Forms;
 use Filament\Forms\Components\Select;
@@ -27,9 +28,11 @@ class TransactionChargeResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('service_name')
-                    ->required()
-                    ->maxLength(255),
+
+                Select::make('service_id')
+                    ->label('Service')
+                    ->options(Subcategory::all()->pluck('name', 'id'))
+                    ->searchable(),
                 Select::make('charge_type')
                     ->options([
                         'fixed' => 'Fixed',
@@ -53,7 +56,7 @@ class TransactionChargeResource extends Resource
                 Select::make('currency_id')
                     ->label('Currency')
                     ->options(Currency::all()->pluck('name', 'id'))
-                    ->searchable(),
+                    ->searchable()->required(),
                 Forms\Components\Toggle::make('is_active')
                     ->required(),
             ]);

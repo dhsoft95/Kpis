@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\APIs;
 
 use App\Http\Controllers\Controller;
+use App\Models\Subcategory;
 use App\Models\TransactionCharge;
 use Illuminate\Http\Request;
 
@@ -65,4 +66,24 @@ class TransactionChargeController extends Controller
                 return [];
         }
     }
+
+    public function GetServices(): \Illuminate\Http\JsonResponse
+    {
+        $subcategories = Subcategory::select('id', 'name')->get();
+        return $this->formatResponse($subcategories, 'SML-SERVICES');
+    }
+    private function formatResponse($data, $key)
+    {
+        return response()->json([
+            'status' => 'success',
+            'data' => [
+                $key => $data->map(function ($item) {
+                    return [
+                        'name' => $item->name
+                    ];
+                })
+            ],
+        ]);
+    }
+
 }

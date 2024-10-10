@@ -22,6 +22,11 @@ class SubcategoryResource extends Resource
 
     protected static ?string $navigationGroup = 'Service Categories  ';
 
+
+    protected static ?string $modelLabel = 'Service';
+
+    protected static ?string $pluralModelLabel = 'Services';
+
     public static function form(Form $form): Form
     {
         return $form

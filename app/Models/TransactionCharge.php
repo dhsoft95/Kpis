@@ -11,7 +11,7 @@ class TransactionCharge extends Model
     use HasFactory;
 
     protected $fillable = [
-        'service_name',
+        'service_id',
         'charge_type',
         'fixed_amount',
         'percentage',
@@ -25,10 +25,13 @@ class TransactionCharge extends Model
         'is_active' => 'boolean',
     ];
 
-
     public function currency()
     {
         return $this->belongsTo(Currency::class);
     }
 
+    public function service(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(Subcategory::class);
+    }
 }
