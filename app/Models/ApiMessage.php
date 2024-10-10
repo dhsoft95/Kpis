@@ -11,7 +11,7 @@ class ApiMessage extends Model
      *
      * @var string
      */
-    protected $connection = 'mysql_second';
+
 
     /**
      * The table associated with the model.

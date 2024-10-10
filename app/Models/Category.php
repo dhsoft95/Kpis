@@ -8,8 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Category extends Model
 {
     use HasFactory;
-    protected $connection = 'mysql_second';
-    protected $fillable = ['id', 'name'];
+    protected $fillable = ['name'];
     public $timestamps = false;
     public $incrementing = false;
 

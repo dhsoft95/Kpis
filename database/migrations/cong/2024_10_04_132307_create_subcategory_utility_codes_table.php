@@ -13,7 +13,7 @@ return new class extends Migration
 
     public function up()
     {
-        Schema::connection($this->connection)->create('subcategory_utility_codes', function (Blueprint $table) {
+        Schema::create('subcategory_utility_codes', function (Blueprint $table) {
             $table->integer('subcategory_id');
             $table->unsignedBigInteger('utility_code_id');
             $table->primary(['subcategory_id', 'utility_code_id']);
@@ -24,6 +24,6 @@ return new class extends Migration
 
     public function down()
     {
-        Schema::connection($this->connection)->dropIfExists('subcategory_utility_codes');
+        Schema::dropIfExists('subcategory_utility_codes');
     }
 };

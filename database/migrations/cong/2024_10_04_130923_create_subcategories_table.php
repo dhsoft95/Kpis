@@ -11,22 +11,22 @@ return new class extends Migration
      */
 
 
-    protected $connection = 'mysql_second';
     public function up(): void
     {
-        Schema::connection($this->connection)->create('subcategories', function (Blueprint $table) {
-            $table->integer('id')->primary();
+        Schema::create('subcategories', function (Blueprint $table) {
+            $table->id('id');
             $table->integer('category_id');
             $table->string('name', 100);
-            $table->foreign('category_id')->references('id')->on('categories');
+
         });
     }
 
     /**
      * Reverse the migrations.
      */
-    public function down()
+    public function down(): void
     {
-        Schema::connection($this->connection)->dropIfExists('subcategories');
+        Schema::dropIfExists('subcategories');
     }
+
 };

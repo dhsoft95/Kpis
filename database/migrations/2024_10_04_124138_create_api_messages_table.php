@@ -9,11 +9,11 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    protected $connection = 'mysql_second';
+//    protected $connection = 'mysql_second';
 
     public function up()
     {
-        Schema::connection($this->connection)->create('api_messages', function (Blueprint $table) {
+        Schema::create('api_messages', function (Blueprint $table) {
             $table->id();
             $table->string('message_key', 50);
             $table->text('message_text');
@@ -26,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::connection($this->connection)->dropIfExists('api_messages');
+        Schema::dropIfExists('api_messages');
     }
 };

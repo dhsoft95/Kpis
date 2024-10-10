@@ -7,15 +7,22 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration
 {
     /**
+     * The database connection that should be used by the migration.
+     *
+     * @var string
+     */
+
+
+
+    /**
      * Run the migrations.
      */
-    protected $connection = 'mysql_second';
-
-    public function up()
+    public function up(): void
     {
-        Schema::connection($this->connection)->create('categories', function (Blueprint $table) {
-            $table->integer('id')->primary();
+        Schema::create('categories', function (Blueprint $table) {
+            $table->id();
             $table->string('name', 100);
+            $table->timestamps();
         });
     }
 
@@ -24,6 +31,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::connection($this->connection)->dropIfExists('categories');
+        Schema::dropIfExists('categories');
     }
 };

@@ -13,7 +13,7 @@ return new class extends Migration
 
     public function up()
     {
-        Schema::connection($this->connection)->create('terrapay_config', function (Blueprint $table) {
+        Schema::create('terrapay_config', function (Blueprint $table) {
             $table->id();
             $table->boolean('enabled');
             $table->text('allowed_corridors');

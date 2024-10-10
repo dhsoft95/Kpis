@@ -9,7 +9,7 @@ class SimbaTransaction extends Model
 {
     use HasFactory;
 
-    protected $connection ='mysql_second';
+
 
     protected $table = 'simba_transactions';
 

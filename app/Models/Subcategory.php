@@ -9,7 +9,7 @@ class Subcategory extends Model
 {
     use HasFactory;
 
-    protected $connection = 'mysql_second';
+
     protected $fillable = ['id', 'category_id', 'name'];
     public $timestamps = false;
     public $incrementing = false;

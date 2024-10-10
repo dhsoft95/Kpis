@@ -10,10 +10,9 @@ return new class extends Migration
      * Run the migrations.
      */
 
-    protected $connection = 'mysql_second';
     public function up(): void
     {
-        Schema::connection($this->connection)->create('identity_types', function (Blueprint $table) {
+        Schema::create('identity_types', function (Blueprint $table) {
             $table->integer('id')->primary();
             $table->string('type_name', 50);
         });

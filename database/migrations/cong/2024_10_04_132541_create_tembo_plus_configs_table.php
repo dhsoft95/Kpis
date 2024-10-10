@@ -13,7 +13,7 @@ return new class extends Migration
 
     public function up()
     {
-        Schema::connection($this->connection)->create('tembo_plus_config', function (Blueprint $table) {
+        Schema::create('tembo_plus_config', function (Blueprint $table) {
             $table->id();
             $table->string('callback_url', 255)->nullable();
             $table->string('forwarding_secret', 255)->nullable();

@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class currency_settings extends Model
 {
     use HasFactory;
-    protected $connection ='mysql_second';
+
     protected $table="currency_settings";
 
     /**

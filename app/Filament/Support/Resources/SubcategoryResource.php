@@ -33,7 +33,7 @@ class SubcategoryResource extends Resource
     {
         return $form
             ->schema([
-                Select::make('category')
+                Select::make('category_id')
                     ->label('Category')
                     ->options(category::all()->pluck('name', 'id'))
                     ->searchable()->required(),

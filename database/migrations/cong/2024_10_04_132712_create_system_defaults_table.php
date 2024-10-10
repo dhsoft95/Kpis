@@ -9,11 +9,11 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    protected $connection = 'mysql_second';
+
 
     public function up()
     {
-        Schema::connection($this->connection)->create('system_defaults', function (Blueprint $table) {
+        Schema::create('system_defaults', function (Blueprint $table) {
             $table->id();
             $table->string('key_name', 50);
             $table->string('value', 255);
@@ -22,6 +22,6 @@ return new class extends Migration
 
     public function down(): void
     {
-        Schema::connection($this->connection)->dropIfExists('system_defaults');
+        Schema::dropIfExists('system_defaults');
     }
 };

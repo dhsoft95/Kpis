@@ -9,7 +9,7 @@ class UtilityCode extends Model
 {
     use HasFactory;
 
-    protected $connection = 'mysql_second';
+//    protected $connection = 'mysql_second';
     protected $fillable = ['code', 'description'];
     public $timestamps = false;
 

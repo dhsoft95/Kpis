@@ -9,7 +9,7 @@ class TransactionType extends Model
 {
     use HasFactory;
 
-    protected $connection = 'mysql_second';
+
     protected $fillable = ['type_name', 'type_code'];
     public $timestamps = false;
 }

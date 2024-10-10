@@ -13,7 +13,7 @@ return new class extends Migration
 
     public function up()
     {
-        Schema::connection($this->connection)->create('transaction_types', function (Blueprint $table) {
+        Schema::create('transaction_types', function (Blueprint $table) {
             $table->id();
             $table->string('type_name', 50);
             $table->string('type_code', 50);
