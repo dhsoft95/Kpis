@@ -19,7 +19,9 @@ class TransactionChargeResource extends Resource
 {
     protected static ?string $model = TransactionCharge::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-currency-dollar';
+    protected static ?string $navigationGroup = 'Transaction Processing';
+
 
     public static function form(Form $form): Form
     {
