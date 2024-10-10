@@ -38,10 +38,12 @@ class FetchWalletBalances implements ShouldQueue
             $username = config('services.zendesk.username');
             $token = config('services.zendesk.token');
 
+            // Debug logging
             $this->failSafeLog('Zendesk configuration', [
                 'subdomain' => $subdomain,
                 'username' => $username,
                 'token_set' => !empty($token),
+                'config_dump' => var_export(config('services.zendesk'), true)
             ]);
 
             if (empty($subdomain) || empty($username) || empty($token)) {
@@ -51,38 +53,46 @@ class FetchWalletBalances implements ShouldQueue
 
             $url = "https://{$subdomain}.zendesk.com/api/v2/tickets.json";
 
-            $response = Http::withBasicAuth($username . '/token', $token)
-                ->get($url);
+            // Use a try-catch block specifically for the API call
+            try {
+                $response = Http::withBasicAuth($username . '/token', $token)
+                    ->get($url);
 
-            if ($response->successful()) {
-                $tickets = $response->json()['tickets'];
-                $this->failSafeLog('Zendesk tickets fetched successfully', ['count' => count($tickets)]);
+                if ($response->successful()) {
+                    $tickets = $response->json()['tickets'];
+                    $this->failSafeLog('Zendesk tickets fetched successfully', ['count' => count($tickets)]);
 
-                foreach ($tickets as $ticket) {
-                    Ticket::updateOrCreate(
-                        ['zendesk_id' => $ticket['id']],
-                        [
-                            'subject' => $ticket['subject'],
-                            'description' => $ticket['description'],
-                            'status' => $ticket['status'],
-                            'priority' => $ticket['priority'],
-                            'requester_id' => $ticket['requester_id'],
-                            'assignee_id' => $ticket['assignee_id'],
-                            'ticket_created_at' => $ticket['created_at'],
-                            'ticket_updated_at' => $ticket['updated_at'],
-                        ]
-                    );
+                    foreach ($tickets as $ticket) {
+                        Ticket::updateOrCreate(
+                            ['zendesk_id' => $ticket['id']],
+                            [
+                                'subject' => $ticket['subject'],
+                                'description' => $ticket['description'],
+                                'status' => $ticket['status'],
+                                'priority' => $ticket['priority'],
+                                'requester_id' => $ticket['requester_id'],
+                                'assignee_id' => $ticket['assignee_id'],
+                                'ticket_created_at' => $ticket['created_at'],
+                                'ticket_updated_at' => $ticket['updated_at'],
+                            ]
+                        );
+                    }
+
+                    $this->failSafeLog('Zendesk tickets stored in database');
+                } else {
+                    $this->failSafeLog('Zendesk API Error', ['status' => $response->status(), 'response' => $response->body()]);
                 }
-
-                $this->failSafeLog('Zendesk tickets stored in database');
-            } else {
-                $this->failSafeLog('Zendesk API Error', ['status' => $response->status(), 'response' => $response->body()]);
+            } catch (\TypeError $e) {
+                $this->failSafeLog('TypeError in Zendesk API call', [
+                    'error' => $e->getMessage(),
+                    'file' => $e->getFile(),
+                    'line' => $e->getLine()
+                ]);
             }
         } catch (\Exception $e) {
             $this->failSafeLog('Error in fetchZendeskTickets', ['error' => $e->getMessage(), 'trace' => $e->getTraceAsString()]);
         }
     }
-
 
     private function fetchTeraPay(): void
     {
