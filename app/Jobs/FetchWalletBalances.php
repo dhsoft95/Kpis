@@ -34,10 +34,20 @@ class FetchWalletBalances implements ShouldQueue
     {
         $this->failSafeLog('Fetching Zendesk tickets');
         try {
-
             $subdomain = config('services.zendesk.subdomain');
             $username = config('services.zendesk.username');
             $token = config('services.zendesk.token');
+
+            $this->failSafeLog('Zendesk configuration', [
+                'subdomain' => $subdomain,
+                'username' => $username,
+                'token_set' => !empty($token),
+            ]);
+
+            if (empty($subdomain) || empty($username) || empty($token)) {
+                $this->failSafeLog('Zendesk configuration is incomplete. Skipping ticket fetch.');
+                return;
+            }
 
             $url = "https://{$subdomain}.zendesk.com/api/v2/tickets.json";
 
