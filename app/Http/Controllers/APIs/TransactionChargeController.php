@@ -53,8 +53,8 @@ class TransactionChargeController extends Controller
         return [
             $charge->subcategory->name => [
                 'charge_type' => $charge->charge_type,
-                'charging_rate' => $charge->charge_type === 'fixed' ? 0 : $charge->percentage,
-                'charging_fixed_amount' => $charge->charge_type === 'percentage' ? 0 : $charge->fixed_amount,
+                'charging_rate' => $charge->charge_type === 'fixed' ? '0' : $charge->percentage,
+                'charging_fixed_amount' => $charge->charge_type === 'percentage' ? '0' : $charge->fixed_amount,
             ],
         ];
     }
