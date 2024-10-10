@@ -7,7 +7,6 @@ use Illuminate\Support\Facades\DB;
 
 class ConfigDatabaseSeeder extends Seeder
 {
-    protected $connection = 'mysql_second';
 
     public function run()
     {
@@ -35,7 +34,7 @@ class ConfigDatabaseSeeder extends Seeder
             // Add more messages here
         ];
 
-        DB::connection($this->connection)->table('api_messages')->insert($messages);
+        DB::table('api_messages')->insert($messages);
     }
 
     private function seedCommonPins()
@@ -49,7 +48,7 @@ class ConfigDatabaseSeeder extends Seeder
             // Add more common PINs here
         ];
 
-        DB::connection($this->connection)->table('common_pins')->insert($pins);
+        DB:: table('common_pins')->insert($pins);
     }
 
     private function seedOtpTypes()
@@ -61,7 +60,7 @@ class ConfigDatabaseSeeder extends Seeder
             ['type_name' => 'otp'],
         ];
 
-        DB::connection($this->connection)->table('otp_types')->insert($types);
+        DB:: table('otp_types')->insert($types);
     }
 
     private function seedTransactionTypes()
@@ -77,7 +76,7 @@ class ConfigDatabaseSeeder extends Seeder
             ['type_name' => 'AIRTIME PURCHASE', 'type_code' => 'airtime_purchase'],
         ];
 
-        DB::connection($this->connection)->table('transaction_types')->insert($types);
+        DB:: table('transaction_types')->insert($types);
     }
 
     private function seedIdentityTypes()
@@ -92,7 +91,7 @@ class ConfigDatabaseSeeder extends Seeder
             ['id' => 7, 'type_name' => 'OTHER'],
         ];
 
-        DB::connection($this->connection)->table('identity_types')->insert($types);
+        DB:: table('identity_types')->insert($types);
     }
 
     private function seedCategories()
@@ -109,7 +108,7 @@ class ConfigDatabaseSeeder extends Seeder
             ['id' => 9, 'name' => 'Internet'],
         ];
 
-        DB::connection($this->connection)->table('categories')->insert($categories);
+        DB:: table('categories')->insert($categories);
     }
 
     private function seedSubcategories()
@@ -124,7 +123,7 @@ class ConfigDatabaseSeeder extends Seeder
 
         ];
 
-        DB::connection($this->connection)->table('subcategories')->insert($subcategories);
+        DB:: table('subcategories')->insert($subcategories);
     }
 
     private function seedUtilityCodes()
@@ -147,7 +146,7 @@ class ConfigDatabaseSeeder extends Seeder
             ['code' => 'SELCOMPAY', 'description' => 'SelcomPay/Masterpass Merchant Payments'],
         ];
 
-        DB::connection($this->connection)->table('utility_codes')->insert($utilityCodes);
+        DB::table('utility_codes')->insert($utilityCodes);
 
         // Seed the pivot table
         $subcategoryUtilityCodes = [
@@ -156,12 +155,12 @@ class ConfigDatabaseSeeder extends Seeder
             // Add more relationships here
         ];
 
-        DB::connection($this->connection)->table('subcategory_utility_codes')->insert($subcategoryUtilityCodes);
+        DB:: table('subcategory_utility_codes')->insert($subcategoryUtilityCodes);
     }
 
     private function seedTerrapayConfig()
     {
-        DB::connection($this->connection)->table('terrapay_config')->insert([
+        DB:: table('terrapay_config')->insert([
             'enabled' => false,
             'allowed_corridors' => json_encode(['KE', 'TZ', 'UG', 'RW', 'BI', 'ZW', 'MZ', 'CD', 'ZM', 'MW', 'MG', 'SS']),
             'allowed_currencies' => json_encode(['KES', 'TZS', 'UGX', 'MZN', 'MGA', 'ZMW', 'SSP', 'BIF', 'RWF', 'MWK', 'USD']),
@@ -170,7 +169,7 @@ class ConfigDatabaseSeeder extends Seeder
 
     private function seedTemboPlusConfig()
     {
-        DB::connection($this->connection)->table('tembo_plus_config')->insert([
+        DB:: table('tembo_plus_config')->insert([
             'callback_url' => env('TEMBO_PLUS_CALLBACK_URL', 'https://live.simbamoney.co.tz/public/api/v1/tembo_plus/callback'),
             'forwarding_secret' => env('UAT_FORWARDING_SECRET', 'callback_secret'),
         ]);
@@ -184,6 +183,6 @@ class ConfigDatabaseSeeder extends Seeder
             ['key_name' => 'default_password', 'value' => 'Simba@2024'],
         ];
 
-        DB::connection($this->connection)->table('system_defaults')->insert($defaults);
+        DB:: table('system_defaults')->insert($defaults);
     }
 }

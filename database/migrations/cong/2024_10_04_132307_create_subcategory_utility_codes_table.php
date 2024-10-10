@@ -9,7 +9,6 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    protected $connection = 'mysql_second';
 
     public function up()
     {
