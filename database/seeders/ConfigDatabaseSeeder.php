@@ -176,7 +176,7 @@ class ConfigDatabaseSeeder extends Seeder
         ]);
     }
 
-    private function seedSystemDefaults()
+    private function seedSystemDefaults(): void
     {
         $defaults = [
             ['key_name' => 'default_first_name', 'value' => 'Simba'],

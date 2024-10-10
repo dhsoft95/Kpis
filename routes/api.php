@@ -3,6 +3,7 @@
 use App\Http\Controllers\APIs\CurrencyController;
 use App\Http\Controllers\APIs\CurrencyConversionController;
 use App\Http\Controllers\APIs\CustomerFeedbackController;
+use App\Http\Controllers\APIs\TransactionChargeController;
 use App\Http\Controllers\APIs\UserStatsConstroller;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\GoogleServices\GoogleAnalyticsController;
@@ -52,3 +53,6 @@ Route::prefix('v1')->group(function () {
     // Get supported currencies
     Route::get('/currencies', [CurrencyController::class, 'getSupportedCurrencies']);
 });
+
+
+Route::post('/charges', [TransactionChargeController::class, 'getChargesByService']);
