@@ -66,7 +66,7 @@ class TransactionChargeResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('service_name')
+                Tables\Columns\TextColumn::make('Service.name')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('charge_type'),
                 Tables\Columns\TextColumn::make('fixed_amount')

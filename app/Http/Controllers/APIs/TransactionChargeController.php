@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Subcategory;
 use App\Models\TransactionCharge;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class TransactionChargeController extends Controller
 {
@@ -23,47 +24,83 @@ class TransactionChargeController extends Controller
 
         $serviceName = $request->input('service_name');
 
-        $charge = TransactionCharge::where('service_name', $serviceName)
-            ->where('is_active', true)
-            ->with('currency')
-            ->first();
+        Log::info("Searching for service: " . $serviceName);
 
-        if (!$charge) {
-            return response()->json([
-                'message' => 'No charges found for the specified service.',
-            ], 404);
+        $subcategory = Subcategory::where('name', $serviceName)->first();
+        if (!$subcategory) {
+            Log::warning("Subcategory not found: " . $serviceName);
+            return $this->errorResponse('Service not found.', 404);
         }
 
-        $response = [
-            'service_name' => $charge->service_name,
-            'charging_type' => $charge->charge_type,
-            'charger' => $this->formatCharger($charge),
-        ];
+        Log::info("Subcategory found with ID: " . $subcategory->id);
 
-        return response()->json($response);
+        $charge = TransactionCharge::where('is_active', true)
+            ->where('service_id', $subcategory->id)
+            ->with(['subcategory', 'currency'])
+            ->first();
+
+        Log::info("Charge query result: " . ($charge ? "Found" : "Not found"));
+
+        if (!$charge) {
+            return $this->errorResponse('No charges found for the specified service.', 404);
+        }
+
+        return $this->successResponse($this->formatChargeData($charge));
     }
 
-    /**
-     * Format the charger object based on the charge type.
-     *
-     * @param  TransactionCharge  $charge
-     * @return array
-     */
-    private function formatCharger(TransactionCharge $charge)
+    private function formatChargeData(TransactionCharge $charge)
+    {
+        return [
+            'service' => [
+//                'id' => $charge->subcategory->id,
+                'name' => $charge->subcategory->name,
+            ],
+            'charge' => [
+//                'id' => $charge->id,
+                'type' => $charge->charge_type,
+                'details' => $this->getChargeDetails($charge),
+                'total_value' => $this->calculateTotalCharge($charge),
+            ],
+            'currency' => [
+//                'id' => $charge->currency->id,
+                'code' => $charge->currency->code,
+                'name' => $charge->currency->name,
+            ],
+        ];
+    }
+
+    private function getChargeDetails(TransactionCharge $charge)
+    {
+        $details = [];
+
+        if (in_array($charge->charge_type, ['percentage', 'both'])) {
+            $details['percentage'] = [
+                'value' => $charge->percentage,
+                'formatted' => number_format($charge->percentage, 2) . '%',
+            ];
+        }
+
+        if (in_array($charge->charge_type, ['fixed', 'both'])) {
+            $details['fixed'] = [
+                'value' => $charge->fixed_amount,
+                'formatted' => number_format($charge->fixed_amount, 2),
+            ];
+        }
+
+        return $details;
+    }
+
+    private function calculateTotalCharge(TransactionCharge $charge)
     {
         switch ($charge->charge_type) {
             case 'percentage':
-                return ['percent' => $charge->percentage];
+                return $charge->percentage;
             case 'fixed':
-                return ['flat' => $charge->fixed_amount];
+                return $charge->fixed_amount;
             case 'both':
-                return [
-                    'percent' => $charge->percentage,
-                    'flat' => $charge->fixed_amount,
-                    'sum' => $charge->percentage + $charge->fixed_amount
-                ];
+                return $charge->percentage + $charge->fixed_amount;
             default:
-                return [];
+                return 0;
         }
     }
 
@@ -72,6 +109,7 @@ class TransactionChargeController extends Controller
         $subcategories = Subcategory::select('id', 'name')->get();
         return $this->formatResponse($subcategories, 'SML-SERVICES');
     }
+
     private function formatResponse($data, $key)
     {
         return response()->json([
@@ -86,4 +124,19 @@ class TransactionChargeController extends Controller
         ]);
     }
 
+    private function successResponse($data, $code = 200)
+    {
+        return response()->json([
+            'status' => 'success',
+            'data' => $data,
+        ], $code);
+    }
+
+    private function errorResponse($message, $code)
+    {
+        return response()->json([
+            'status' => 'error',
+            'message' => $message,
+        ], $code);
+    }
 }

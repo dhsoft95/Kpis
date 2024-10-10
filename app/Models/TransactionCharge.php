@@ -32,6 +32,13 @@ class TransactionCharge extends Model
 
     public function service(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
-        return $this->belongsTo(Subcategory::class);
+        return $this->belongsTo(Subcategory::class, 'service_id');
     }
+
+    public function subcategory()
+    {
+        return $this->belongsTo(Subcategory::class, 'service_id', 'id');
+    }
+
+
 }
